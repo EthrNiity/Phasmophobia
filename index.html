@@ -463,7 +463,7 @@ footer{margin-top:36px;padding-top:16px;color:var(--cendre);font-size:13.5px;max
 <div class="barre" id="barre"><span id="barre-txt"></span><button class="btn" data-act="voir">Voir</button></div>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
-<script src="vendor/supabase.js"></script>
+<script src="supabase.js"></script>
 <script src="config.js"></script>
 <script>
 /*ENGINE-START*/
@@ -950,7 +950,10 @@ function rendreCompte(){
   $("#bloc-amis").hidden=!(sb&&uid()&&!RECUP);
   if(!sb){
     etat.textContent="mode local";
-    z.innerHTML=`<p class="vide">Les comptes ne sont pas encore activés sur cette installation. Ton carnet est gardé sur cet appareil. Pour activer les comptes, les amis et le classement, renseigne l’adresse et la clé de ton projet Supabase dans <b>config.js</b> (voir le README).</p>`;
+    const cause=!window.supabase?"Le fichier <b>supabase.js</b> est introuvable : il doit être déposé à côté de index.html, au même niveau."
+      :(!CFG.url||!CFG.anonKey)?"Le fichier <b>config.js</b> est absent ou vide : il doit contenir l’adresse et la clé publique du projet Supabase."
+      :"L’adresse ou la clé indiquée dans <b>config.js</b> n’est pas valide.";
+    z.innerHTML=`<p class="vide">Les comptes ne sont pas activés sur cette installation, et ton carnet est gardé sur cet appareil. ${cause}</p>`;
     return;
   }
   if(RECUP){
