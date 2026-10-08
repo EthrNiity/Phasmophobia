@@ -362,7 +362,11 @@ input,select{font:inherit;color:inherit;background:var(--nuit);border:1px solid 
 .enq .issues{display:flex;flex-wrap:wrap;gap:5px;justify-content:flex-end;justify-self:end}
 .enq .meta{display:flex;flex-wrap:wrap;gap:1px 6px;font-size:13.5px;color:var(--cendre);min-width:0}
 .enq .meta span:not(:last-child)::after{content:","}
-.enq .actions{justify-self:end}
+.enq .actions{justify-self:end;display:flex;flex-wrap:wrap;gap:4px 14px;justify-content:flex-end}
+/* Modification d’une enquête du carnet : le formulaire prend la place de la ligne */
+.fil .modif{position:relative}
+.fil .modif::before{content:"";position:absolute;left:-25px;top:26px;width:11px;height:11px;border-radius:50%;background:var(--cierge);box-shadow:0 0 0 3px var(--nuit)}
+.modif{border-color:var(--cierge)}
 /* Réussite par difficulté et par lieu, confusions */
 .reussites{display:grid;grid-template-columns:minmax(0,1fr);gap:24px 34px}
 @media (min-width:760px){.reussites{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -1181,6 +1185,7 @@ let LOCAL=lireLocal();          // enquêtes gardées sur l’appareil (pas de c
 let SESSION=null, PROFIL=null, RECUP=false, MODE_AUTH="connexion", dernierUid;
 let DISTANT=[];                 // mes enquêtes dans le compte
 let LIENS=[], PSEUDOS={}, RANGS=[], TRI="trouvees", AMI_VU=null, AMI_ENQ=[], A_SUPPR=null, A_RETIRER=null;
+let A_MODIF=null, M=null;       // enquête du carnet en cours de modification, et ses valeurs de travail
 const uid=()=>SESSION&&SESSION.user?SESSION.user.id:null;
 const mesEnquetes=()=>[...LOCAL.map(e=>({...e,local:true})),...DISTANT].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
 
@@ -1232,13 +1237,14 @@ const ligneCompte=(e,palier)=>{
   return l;
 };
 const colonneAbsente=er=>!!er&&(er.code==="PGRST204"||er.code==="42703"||/column/i.test(er.message||""));
-async function envoyer(lignes){
+async function parPaliers(requete){
   for(;;){
-    const r=await sb.from("investigations").insert(lignes(PALIER)).select();
+    const r=await requete(PALIER);
     if(!r.error||PALIER===0||!colonneAbsente(r.error)) return r;
     PALIER--;
   }
 }
+const envoyer=lignes=>parPaliers(p=>sb.from("investigations").insert(lignes(p)).select());
 async function enregistrerEnquete(e){
   if(sb&&uid()){
     const r=await envoyer(p=>ligneCompte(e,p));
@@ -1305,9 +1311,10 @@ function rendreCarnet(){
   let h="", jour=null;
   l.forEach(e=>{ const j=nomJour(e.created_at);
     if(j!==jour){ if(jour!==null) h+="</div></div>"; h+=`<div class="jour"><h3>${j}</h3><div class="fil">`; jour=j; }
-    h+=ligneEnquete(e,true,false); });
+    h+=A_MODIF===e.id&&M?formModif(e):ligneEnquete(e,true,false); });
   if(jour!==null) h+="</div></div>";
   $("#historique").innerHTML=h||`<p class="vide">Aucune enquête pour l’instant. À la fin d’un contrat, ouvre l’onglet Enquête et appuie sur « Clôturer l’enquête ».</p>`;
+  majModif();
 }
 /* Réussite par difficulté, par lieu, seul ou en groupe, et entités confondues (annoncée contre réelle). */
 function tauxPar(l,cle){ const m=new Map(); l.forEach(e=>{ const k=cle(e); if(k==null) return; const r=m.get(k)||{n:0,ok:0}; r.n++; if(reussie(e)) r.ok++; m.set(k,r); }); return m; }
@@ -1336,7 +1343,55 @@ function ligneEnquete(e,mienne,avecDate){
   return `<div class="enq ${ok?"ok":"rate"}"><span class="quoi">${ok?esc(nomEntite(e.reelle)):`<s>${esc(nomEntite(e.annoncee))}</s> → ${esc(nomEntite(e.reelle))}`}</span>
     <span class="issues">${e.parfaite?`<span class="issue or">parfaite</span>`:""}<span class="issue ${ok?"":"rate"}">${ok?"trouvée":"ratée"}</span></span>
     <span class="meta">${infos.map(i=>`<span>${esc(i)}</span>`).join("")}</span>
-    ${mienne?`<span class="actions"><button class="lien" data-act="enq-suppr" data-id="${esc(e.id)}">${A_SUPPR===e.id?"Confirmer la suppression":"Supprimer"}</button></span>`:""}</div>`;
+    ${mienne?`<span class="actions"><button class="lien" data-act="enq-modif" data-id="${esc(e.id)}">Modifier</button><button class="lien" data-act="enq-suppr" data-id="${esc(e.id)}">${A_SUPPR===e.id?"Confirmer la suppression":"Supprimer"}</button></span>`:""}</div>`;
+}
+
+/* ---------- Modifier une enquête après coup ---------- */
+/* Tout se corrige sauf la date : entités, lieu, difficulté, survie et détails. Les valeurs de travail sont dans M. */
+function ouvrirModif(e){
+  A_SUPPR=null; A_MODIF=e.id;
+  M={annoncee:e.annoncee,reelle:e.reelle,lieu:e.lieu||"",niveau:niveauDe(e).id,survecu:!!e.survecu,
+     joueurs:e.joueurs??null,objectifs:e.objectifs??null,os:!!e.os,parfaite:!!e.parfaite};
+}
+function formModif(e){
+  const opt=(v,nom,choisi)=>`<option value="${esc(v)}"${v===choisi?" selected":""}>${esc(nom)}</option>`;
+  const entites=c=>GHOSTS.slice().sort((a,b)=>a.n.localeCompare(b.n,"fr")).map(g=>opt(g.id,g.n,c)).join("");
+  const lieux=LIEUX.includes(M.lieu)||!M.lieu?LIEUX:[M.lieu,...LIEUX];        // un ancien nom de lieu reste proposé
+  const choix=(k,liste)=>liste.map(([v,nom])=>`<button type="button" data-act="m-set" data-k="${k}" data-v="${v}">${nom}</button>`).join("");
+  return `<form id="f-modif" class="cloture champs modif">
+    <h3>Modifier l’enquête <span class="petit">· ${quand(e.created_at)}</span></h3>
+    <div class="paire"><label>Entité annoncée<select id="m-annoncee">${entites(M.annoncee)}</select></label><label>Vraie entité<select id="m-reelle">${entites(M.reelle)}</select></label></div>
+    <div class="paire"><label>Lieu<select id="m-lieu">${opt("","Non précisé",M.lieu)}${lieux.map(l=>opt(l,l,M.lieu)).join("")}</select></label>
+      <label>Difficulté<select id="m-niveau">${NIVEAUX.map(v=>opt(v.id,v.nom,M.niveau)).join("")}</select></label></div>
+    <div class="paire"><div class="question"><span class="label">Tu as survécu ?</span><div class="choix" role="group" aria-label="Survie">${choix("survecu",[[1,"Oui"],[0,"Non"]])}</div></div>
+      <div class="question"><span class="label">Joueurs</span><div class="choix" role="group" aria-label="Nombre de joueurs">${choix("joueurs",[[1,"Solo"],[2,"2"],[3,"3"],[4,"4"]])}</div></div></div>
+    <div class="paire"><div class="question"><span class="label">Objectifs facultatifs remplis</span><div class="choix" role="group" aria-label="Objectifs facultatifs remplis">${choix("objectifs",[[0,"0"],[1,"1"],[2,"2"],[3,"3"]])}</div></div>
+      <div class="question"><span class="label">Os et enquête parfaite</span><div class="choix" role="group" aria-label="Os et enquête parfaite">${choix("os",[[1,"Os trouvé"]])}${choix("parfaite",[[1,"Enquête parfaite"]])}</div></div></div>
+    <div class="ligne"><button class="btn plein" type="submit">Enregistrer</button><button class="btn discret" type="button" data-act="modif-fermer">Annuler</button></div>
+    <p class="message" id="msg-modif" role="status"></p></form>`;
+}
+function majModif(){
+  const f=$("#f-modif"); if(!f||!M) return;
+  if(M.annoncee!==M.reelle) M.parfaite=false;      // pas d’enquête parfaite sans la bonne entité
+  $$("[data-act=m-set]",f).forEach(b=>{ const k=b.dataset.k, v=+b.dataset.v;
+    b.setAttribute("aria-pressed",k==="survecu"?M.survecu===!!v:k==="os"||k==="parfaite"?M[k]:M[k]===v);
+    if(k==="parfaite") b.disabled=M.annoncee!==M.reelle; });
+}
+async function soumettreModif(){
+  const id=A_MODIF; if(!id||!M) return;
+  const maj={annoncee:M.annoncee,reelle:M.reelle,lieu:M.lieu||null,difficulte:NIV[M.niveau].n,niveau:M.niveau,survecu:M.survecu,
+    joueurs:M.joueurs,objectifs:M.objectifs,os:M.os,parfaite:M.parfaite&&M.annoncee===M.reelle};
+  const locale=LOCAL.find(e=>e.id===id);
+  if(locale){ Object.assign(locale,maj); ecrireLocal(); }
+  else{
+    const avant=DISTANT.find(e=>e.id===id);
+    if(!avant||!sb||!uid()){ message("modif","Modification impossible : reconnecte-toi.","erreur"); return; }
+    message("modif","Un instant…");
+    const r=await parPaliers(p=>sb.from("investigations").update(ligneCompte({...avant,...maj},p)).eq("id",id).select());
+    if(r.error||!r.data||!r.data[0]){ message("modif",r.error?traduire(r.error):"Modification refusée.","erreur"); return; }
+    DISTANT=DISTANT.map(e=>e.id===id?r.data[0]:e); chargerClassement();
+  }
+  A_MODIF=null; M=null; rendreCarnet(); rendreClassement(); toast("Enquête modifiée");
 }
 
 /* ---------- Compte ---------- */
@@ -1549,9 +1604,20 @@ Object.assign(ACT,{
     document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),2000);
     toast("Carnet exporté"); return false;
   },
+  "enq-modif":b=>{
+    const e=mesEnquetes().find(x=>x.id===b.dataset.id); if(!e) return false;
+    ouvrirModif(e); rendreCarnet(); majModif(); $("#m-reelle").focus(); return false;
+  },
+  "modif-fermer":()=>{ A_MODIF=null; M=null; rendreCarnet(); return false; },
+  "m-set":b=>{ const k=b.dataset.k, v=+b.dataset.v; if(!M) return false;
+    if(k==="survecu") M.survecu=!!v;
+    else if(k==="os"){ M.os=!M.os; if(!M.os) M.parfaite=false; }
+    else if(k==="parfaite"){ M.parfaite=!M.parfaite; if(M.parfaite){ M.os=true; M.objectifs=3; } }
+    else{ M[k]=M[k]===v?null:v; if(k==="objectifs"&&M.objectifs!==3) M.parfaite=false; }
+    majModif(); return false; },
   "enq-suppr":b=>{
     const id=b.dataset.id;
-    if(A_SUPPR!==id){ A_SUPPR=id; rendreCarnet(); return false; }
+    if(A_SUPPR!==id){ A_SUPPR=id; A_MODIF=null; M=null; rendreCarnet(); return false; }
     A_SUPPR=null;
     (async()=>{
       if(LOCAL.some(e=>e.id===id)){ LOCAL=LOCAL.filter(e=>e.id!==id); ecrireLocal(); }
@@ -1592,6 +1658,7 @@ ACT.reset=b=>{ fermerCloture(); return resetDeBase(b); };
 document.addEventListener("submit",e=>{
   const f=e.target; e.preventDefault();
   if(f.id==="cloture") soumettreCloture();
+  else if(f.id==="f-modif") soumettreModif();
   else if(f.id==="f-auth") soumettreAuth(f);
   else if(f.id==="f-recup") soumettreRecup(f);
   else if(f.id==="f-pseudo") soumettrePseudo(f);
@@ -1601,6 +1668,8 @@ document.addEventListener("change",e=>{
   if(e.target.id==="c-reelle") reelleTouchee=true;
   else if(e.target.id==="c-annoncee"&&!reelleTouchee) $("#c-reelle").value=e.target.value;
   if(e.target.id==="c-reelle"||e.target.id==="c-annoncee") majDetails();
+  const champ={"m-annoncee":"annoncee","m-reelle":"reelle","m-lieu":"lieu","m-niveau":"niveau"}[e.target.id];
+  if(champ&&M){ M[champ]=e.target.value; majModif(); }
 });
 document.addEventListener("keydown",e=>{ if(e.key==="Enter"&&e.target.matches&&e.target.matches("li[data-ami]")) e.target.click(); });
 
