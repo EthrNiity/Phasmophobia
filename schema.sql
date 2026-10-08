@@ -22,13 +22,21 @@ create table if not exists public.investigations (
   correct    boolean generated always as (annoncee = reelle) stored,
   survecu    boolean not null default true,
   preuves    text[] not null default '{}',
-  niveau     text check (niveau is null or char_length(niveau) between 1 and 20)  -- difficulté choisie : normale, pro, cauchemar, demence, zero
+  niveau     text check (niveau is null or char_length(niveau) between 1 and 20),  -- difficulté choisie : normale, pro, cauchemar, demence, zero
+  joueurs    smallint check (joueurs is null or joueurs between 1 and 4),        -- nombre de joueurs, si précisé
+  objectifs  smallint check (objectifs is null or objectifs between 0 and 3),    -- objectifs facultatifs remplis, si précisé
+  os         boolean not null default false,                                     -- os trouvé
+  parfaite   boolean not null default false                                      -- enquête parfaite
 );
 create index if not exists investigations_user_date on public.investigations (user_id, created_at desc);
 
--- Bases créées avant l'ajout du niveau Professionnel : la colonne est ajoutée sans toucher aux enquêtes existantes.
+-- Bases créées avant ces colonnes : elles sont ajoutées sans toucher aux enquêtes existantes.
 alter table public.investigations
-  add column if not exists niveau text check (niveau is null or char_length(niveau) between 1 and 20);
+  add column if not exists niveau    text check (niveau is null or char_length(niveau) between 1 and 20),
+  add column if not exists joueurs   smallint check (joueurs is null or joueurs between 1 and 4),
+  add column if not exists objectifs smallint check (objectifs is null or objectifs between 0 and 3),
+  add column if not exists os        boolean not null default false,
+  add column if not exists parfaite  boolean not null default false;
 
 create table if not exists public.friendships (
   id         uuid primary key default gen_random_uuid(),
@@ -213,8 +221,10 @@ begin
 end $$;
 
 -- Classement : moi et mes amis confirmés, avec les compteurs.
+-- La liste des colonnes renvoyées a changé (enquêtes parfaites) : l'ancienne version est retirée avant d'être recréée.
+drop function if exists public.classement();
 create or replace function public.classement()
-returns table (user_id uuid, pseudo text, enquetes bigint, trouvees bigint, survies bigint, serie int, derniere timestamptz)
+returns table (user_id uuid, pseudo text, enquetes bigint, trouvees bigint, survies bigint, serie int, derniere timestamptz, parfaites bigint)
 language sql stable security definer set search_path = public as $$
   with cercle as (
     select auth.uid() as id
@@ -228,7 +238,8 @@ language sql stable security definer set search_path = public as $$
          count(i.id) filter (where i.correct),
          count(i.id) filter (where i.survecu),
          public.serie_en_cours(p.id),
-         max(i.created_at)
+         max(i.created_at),
+         count(i.id) filter (where i.parfaite)
     from cercle c
     join public.profiles p on p.id = c.id
     left join public.investigations i on i.user_id = p.id

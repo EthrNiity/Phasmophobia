@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr" data-theme="dark"><!-- data-theme="dark" : l’appli reste sombre même si l’appareil est réglé en clair. Retire l’attribut pour suivre le réglage de l’appareil. -->
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -28,6 +28,7 @@ img{max-width:100%}
   --f-texte:"Spectral",Georgia,"Times New Roman",serif;
   --f-data:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
   --feuille:20px 5px 20px 5px; --petale:13px 4px 13px 4px; --vignette:0;
+  --lune:#c1121f; --lune-ciel:rgba(205,14,32,.42); --lune-bord:rgba(92,0,12,.46);
 }
 @media (prefers-color-scheme: light){
   :root:not([data-theme="dark"]){
@@ -36,6 +37,7 @@ img{max-width:100%}
     --os:#1b1730; --cendre:#5c5778;
     --follet:#0b7468; --sur-follet:#ffffff; --cierge:#8f5a05; --sang:#b0223c; --ecto:#5238b8;
     --halo:rgba(11,116,104,.10); --lueur:rgba(11,116,104,.30);
+    --lune:#b00f24; --lune-ciel:rgba(205,14,32,.26); --lune-bord:rgba(150,10,30,.16);
   }
 }
 :root[data-theme="light"]{
@@ -44,6 +46,7 @@ img{max-width:100%}
   --os:#1b1730; --cendre:#5c5778;
   --follet:#0b7468; --sur-follet:#ffffff; --cierge:#8f5a05; --sang:#b0223c; --ecto:#5238b8;
   --halo:rgba(11,116,104,.10); --lueur:rgba(11,116,104,.30);
+    --lune:#b00f24; --lune-ciel:rgba(205,14,32,.26); --lune-bord:rgba(150,10,30,.16);
 }
 
 /* Difficulté : Normale (jetons de base), puis Professionnel, Cauchemar, Démence, 0 preuve. La nuit s’épaissit et la couleur se retire. */
@@ -65,8 +68,8 @@ img{max-width:100%}
 *{box-sizing:border-box}
 body{background:var(--nuit);color:var(--os);font-family:var(--f-texte);font-size:16px;line-height:1.5;margin:0;transition:background-color .7s}
 body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 50% 30%,transparent 40%,rgba(0,0,0,var(--vignette)) 100%)}
-/* Lune de sang : une lueur rouge descend du haut de la page */
-:root[data-lune] body::before{background:radial-gradient(ellipse at 50% -12%,rgba(214,48,72,.22),transparent 62%),radial-gradient(ellipse at 50% 30%,transparent 40%,rgba(0,0,0,var(--vignette)) 100%)}
+/* Lune de sang : un ciel rouge sang descend du haut de la page, les bords rougissent, les orbes aussi (voir teinte()) */
+:root[data-lune] body::before{background:radial-gradient(ellipse at 50% -10%,var(--lune-ciel),transparent 68%),radial-gradient(ellipse at 50% 30%,transparent 38%,var(--lune-bord) 100%),radial-gradient(ellipse at 50% 30%,transparent 40%,rgba(0,0,0,var(--vignette)) 100%)}
 /* Grain de vieux papier : texture en surimpression, sans voile (le gris moyen ne change rien en mode overlay) */
 body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:8;opacity:.28;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1 0 0 0 0  1 0 0 0 0  1 0 0 0 0  0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E")}
 #orbes{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
@@ -128,7 +131,7 @@ main>section.vient-d{animation:vient-d .85s cubic-bezier(.22,.8,.24,1) .1s both}
 .deux{display:grid;grid-template-columns:minmax(0,1fr);gap:30px}
 @media (min-width:940px){.deux{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.colonne-fixe{position:sticky;top:calc(env(safe-area-inset-top,0px) + 62px);align-self:start}}
 .colonne{display:flex;flex-direction:column;gap:28px;min-width:0}
-#resultat{scroll-margin-top:calc(env(safe-area-inset-top,0px) + 64px)}
+#resultat,#bloc-fiche{scroll-margin-top:calc(env(safe-area-inset-top,0px) + 64px)}
 
 .btn{background:var(--voile2);border:1px solid var(--trait);border-radius:var(--petale);padding:7px 14px;font-family:var(--f-data);font-size:13px}
 .btn:hover{border-color:var(--follet)}
@@ -139,9 +142,10 @@ main>section.vient-d{animation:vient-d .85s cubic-bezier(.22,.8,.24,1) .1s both}
 .choix button:hover{border-color:var(--follet);color:var(--os)}
 .choix button svg{width:14px;height:14px;vertical-align:-2px;margin-right:7px}
 .choix button[aria-pressed="true"]{background:var(--follet);border-color:var(--follet);color:var(--sur-follet);font-weight:600;box-shadow:0 0 16px var(--halo)}
+.choix button:disabled{opacity:.4;cursor:not-allowed}
 .question{display:flex;flex-direction:column;gap:7px}
 .ligne{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
-.choix button.lune[aria-pressed="true"]{background:var(--sang);border-color:var(--sang);color:var(--nuit);box-shadow:0 0 16px rgba(214,48,72,.3)}
+.choix button.lune[aria-pressed="true"]{background:var(--lune);border-color:var(--lune);color:#fff;box-shadow:0 0 20px rgba(205,14,32,.55)}
 
 /* Rond des pas : un appui à chaque pas entendu, la vitesse s’écrit au centre */
 .pas{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px 20px;align-items:center}
@@ -238,6 +242,24 @@ details.rang>summary::-webkit-details-marker{display:none}
 .fiche .signe{display:grid;grid-template-columns:auto minmax(0,1fr);gap:9px;align-items:baseline}
 .fiche .signe::before{content:"";width:7px;height:7px;background:var(--cierge);transform:rotate(45deg) translateY(-2px)}
 .fiche .chiffres{font-family:var(--f-data);font-size:12.5px;color:var(--cendre)}
+/* Détails d’une fiche : force, faiblesse, à savoir, ce qui l’écarte */
+.traits{margin:0;display:flex;flex-direction:column;gap:8px}
+.traits>div{display:grid;grid-template-columns:82px minmax(0,1fr);gap:10px;align-items:baseline}
+.traits dt{font-family:var(--f-data);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--cendre)}
+.traits dd{margin:0;font-size:15px}
+.traits ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px}
+.traits .force dt{color:var(--sang)} .traits .faible dt{color:var(--follet)} .traits .exclu dt{color:var(--cierge)}
+details.savoir>summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:9px;font-family:var(--f-data);font-size:12.5px;color:var(--follet)}
+details.savoir>summary::-webkit-details-marker{display:none}
+details.savoir>summary::after{content:"";width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform .2s}
+details.savoir[open]>summary::after{transform:translateY(1px) rotate(-135deg)}
+details.savoir[open]>summary{margin-bottom:10px}
+/* Fiche complète dans l’aide-mémoire */
+.fiche-aide{border:1px solid var(--ecto);border-radius:var(--feuille);background:var(--voile);overflow:hidden}
+.fiche-aide>header{padding:12px 14px 2px;display:flex;flex-direction:column;gap:8px}
+.fiche-aide .puces{display:flex}
+.nom-fiche{background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer;text-decoration:underline dotted var(--cendre);text-underline-offset:4px}
+.nom-fiche:hover{color:var(--follet)}
 #ecartees{display:flex;flex-direction:column;gap:10px}
 details.ecartees summary{cursor:pointer;font-family:var(--f-data);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--cendre)}
 .ecartees ul{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:4px}
@@ -308,7 +330,7 @@ input,select{font:inherit;color:inherit;background:var(--nuit);border:1px solid 
 .anneau .plein{fill:none;stroke:var(--follet);stroke-width:9;stroke-linecap:round;transition:stroke-dashoffset .9s cubic-bezier(.2,.8,.2,1)}
 .anneau .val{fill:var(--os);font-family:var(--f-data);font-size:25px;font-weight:500;text-anchor:middle;dominant-baseline:central}
 .anneau .leg{fill:var(--cendre);font-family:var(--f-texte);font-size:13.5px;text-anchor:middle;dominant-baseline:central}
-.medaillons{flex:1 1 320px;max-width:620px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px 8px}
+.medaillons{flex:1 1 320px;max-width:560px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 8px}
 .medaillon{display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;min-width:0}
 .medaillon b{width:68px;height:68px;border-radius:50%;display:grid;place-items:center;background:var(--voile);border:1.5px solid var(--trait);box-shadow:0 0 0 4px var(--nuit),0 0 0 5px var(--trait);font-family:var(--f-data);font-size:23px;font-weight:500;font-variant-numeric:tabular-nums}
 .medaillon span{font-size:14.5px;line-height:1.2}
@@ -334,11 +356,24 @@ input,select{font:inherit;color:inherit;background:var(--nuit);border:1px solid 
 .fil .enq.rate::before{background:var(--sang)}
 .enq .quoi{font-weight:600;font-size:17px;min-width:0}
 .enq .quoi s{color:var(--cendre);font-weight:400}
-.enq .issue{font-size:13px;padding:1px 10px;border-radius:999px;border:1px solid var(--follet);color:var(--follet);white-space:nowrap;justify-self:end}
+.enq .issue{font-size:13px;padding:1px 10px;border-radius:999px;border:1px solid var(--follet);color:var(--follet);white-space:nowrap}
 .enq .issue.rate{border-color:var(--sang);color:var(--sang)}
+.enq .issue.or{border-color:var(--cierge);color:var(--cierge)}
+.enq .issues{display:flex;flex-wrap:wrap;gap:5px;justify-content:flex-end;justify-self:end}
 .enq .meta{display:flex;flex-wrap:wrap;gap:1px 6px;font-size:13.5px;color:var(--cendre);min-width:0}
 .enq .meta span:not(:last-child)::after{content:","}
 .enq .actions{justify-self:end}
+/* Réussite par difficulté et par lieu, confusions */
+.reussites{display:grid;grid-template-columns:minmax(0,1fr);gap:24px 34px}
+@media (min-width:760px){.reussites{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.groupe{display:flex;flex-direction:column;gap:9px;min-width:0}
+.ligne-stat{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:baseline}
+.ligne-stat b{font-weight:500;font-size:15.5px;min-width:0;overflow-wrap:anywhere}
+.ligne-stat .num{font-family:var(--f-data);font-size:12.5px;color:var(--cendre);white-space:nowrap}
+.ligne-stat .part{grid-column:1/-1}
+.confusions{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.confusions li{display:flex;flex-wrap:wrap;gap:2px 12px;justify-content:space-between;align-items:baseline;font-size:15.5px}
+.confusions s{color:var(--cendre)}
 .vide{color:var(--cendre);border:1px dashed var(--trait);border-radius:var(--feuille);padding:16px;max-width:70ch}
 
 /* Amis : code en tuiles, classement en barres */
@@ -440,6 +475,16 @@ footer{margin-top:36px;padding-top:16px;color:var(--cendre);font-size:13.5px;max
                 <div class="question"><span class="label">Tu as survécu ?</span>
                   <div class="choix" id="c-survie" role="group" aria-label="Survie"><button type="button" data-act="survie" data-v="1">Oui</button><button type="button" data-act="survie" data-v="0">Non</button></div></div>
               </div>
+              <div class="paire">
+                <div class="question"><span class="label">Joueurs</span>
+                  <div class="choix" id="c-joueurs" role="group" aria-label="Nombre de joueurs"><button type="button" data-act="c-joueurs" data-v="1">Solo</button><button type="button" data-act="c-joueurs" data-v="2">2</button><button type="button" data-act="c-joueurs" data-v="3">3</button><button type="button" data-act="c-joueurs" data-v="4">4</button></div></div>
+                <div class="question"><span class="label">Objectifs facultatifs remplis</span>
+                  <div class="choix" id="c-objectifs" role="group" aria-label="Objectifs facultatifs remplis"><button type="button" data-act="c-objectifs" data-v="0">0</button><button type="button" data-act="c-objectifs" data-v="1">1</button><button type="button" data-act="c-objectifs" data-v="2">2</button><button type="button" data-act="c-objectifs" data-v="3">3</button></div></div>
+              </div>
+              <div class="question">
+                <div class="choix" role="group" aria-label="Os et enquête parfaite"><button type="button" data-act="c-os" id="c-os" aria-pressed="false">Os trouvé</button><button type="button" data-act="c-parfaite" id="c-parfaite" aria-pressed="false">Enquête parfaite</button></div>
+                <p class="petit">Facultatif. Parfaite, comme l’affiche le jeu en fin de contrat&nbsp;: bonne entité, os ramassé, 3 objectifs et journal rempli de médias uniques (5 photos, 5 vidéos, 3 sons).</p>
+              </div>
               <div class="ligne"><button class="btn plein" type="submit">Enregistrer</button><button class="btn discret" type="button" data-act="cloture-fermer">Annuler</button></div>
               <p class="petit" id="c-info"></p>
             </form>
@@ -485,6 +530,10 @@ footer{margin-top:36px;padding-top:16px;color:var(--cendre);font-size:13.5px;max
 
     <!-- AIDE-MÉMOIRE -->
     <section id="t-aide" hidden>
+      <div class="bloc" id="bloc-fiche">
+        <header><h2>Fiche d’une entité</h2><select id="fiche-choix" aria-label="Choisir une entité"></select></header>
+        <div id="fiche-aide"></div>
+      </div>
       <div class="bloc">
         <header><h2>Les 30 entités</h2></header>
         <div class="legende"><span><i class="pt"></i> preuve</span><span><i class="pt g"></i> jamais cachée en Cauchemar et Démence</span><span><i class="pt f"></i> orbes en plus (Mimic)</span></div>
@@ -519,6 +568,10 @@ footer{margin-top:36px;padding-top:16px;color:var(--cendre);font-size:13.5px;max
         <header><h2>Mon carnet</h2><span class="label" id="carnet-mode"></span></header>
         <div class="bilan" id="stats"></div>
         <p class="petit" id="carnet-note" hidden></p>
+      </div>
+      <div class="bloc">
+        <header><h2>Réussite</h2><span class="label">où tu trouves, où tu te trompes</span></header>
+        <div id="reussites"></div>
       </div>
       <div class="bloc">
         <header><h2>Bestiaire</h2><span class="label" id="bestiaire-compte"></span></header>
@@ -774,7 +827,79 @@ const CLE="grimoire-entites-v2";
 let S=etatVide(), TAB="enquete";
 try{ const d=JSON.parse(localStorage.getItem(CLE)||"null"); if(d&&d.s&&d.s.ev){ S=Object.assign(etatVide(),d.s); if(!d.s.d) delete S.d; S.d=niveauDe(S).id; S.n=NIV[S.d].n; TAB=d.tab||TAB; } }catch(e){}
 function ecrire(){ try{ localStorage.setItem(CLE,JSON.stringify({s:S,tab:TAB})); }catch(e){} }
-const ouverts=new Set(), fermes=new Set();
+const ouverts=new Set(), fermes=new Set(), savoirs=new Set();
+
+/* Fiches détaillées. f : force, w : faiblesse, plus : à savoir, x : ce qui l’écarte à coup sûr (absent quand rien n’est certain).
+   Chiffres tirés du wiki du jeu et des relevés de la communauté ; ils complètent « signe » et « test » sans les répéter. */
+const FICHES = {
+ esprit:{f:"Aucune.", w:"L’encens le retient deux fois plus longtemps : 180 s sans chasse, au lieu de 90.",
+  plus:["N’importe quelle entité peut attendre 180 s après un encens. L’Esprit, lui, y est obligé."], x:"Une chasse moins de 180 s après un encens réussi."},
+ spectre:{f:"Ne laisse aucune trace de pas : impossible à pister au sol.", w:"Ne marche jamais dans le sel.",
+  plus:["Peut se téléporter près d’un joueur pris au hasard.","En chasse, il suit les joueurs comme les autres : il ne traverse pas les murs."], x:"Un tas de sel piétiné."},
+ fantome:{f:"Le regarder pendant une apparition ou une chasse fait fondre la santé mentale : 0,5 % par seconde à moins de 10 m.", w:"Une photo le fait disparaître pendant une apparition.",
+  plus:["En chasse, il reste invisible 0,7 à 1,9 s entre deux flashs, contre 0,1 à 0,9 s pour les autres.","Peut marcher jusqu’à un joueur pris au hasard, loin de sa pièce."], x:"Une apparition qui reste visible après la photo."},
+ poltergeist:{f:"Lance plusieurs objets à la fois, et fort.", w:"Sans objet à lancer autour de lui, il ne peut rien.", plus:[]},
+ banshee:{f:"Ne chasse qu’un seul joueur à la fois : sa cible.", w:"Craint le crucifix : il la bloque à 5 m, au lieu de 3.",
+  plus:["Elle chasse selon la santé mentale de sa cible, pas selon la moyenne de l’équipe.","Tout le monde entend son cri au micro parabolique, pas seulement la cible.","En solo, la cible, c’est toi. En groupe, elle en change quand un joueur meurt."], x:"En groupe : elle poursuit un autre joueur alors que sa cible est à l’intérieur."},
+ djinn:{f:"Fonce à 2,5 m/s vers un joueur qu’il voit à plus de 3 m, disjoncteur allumé.", w:"Disjoncteur coupé, il perd son pouvoir.",
+  plus:["Peut retirer 25 % de santé mentale aux joueurs proches, disjoncteur allumé.","Il peut faire sauter le courant en allumant trop de lumières, jamais en touchant le disjoncteur."], x:"L’entité coupe elle-même le disjoncteur."},
+ cauchemar:{f:"Dans le noir, elle chasse plus tôt : dès 60 %.", w:"Lumière allumée dans sa pièce, elle ne chasse qu’à 40 %.",
+  plus:["Lumière allumée, elle quitte plus souvent sa pièce, sans chercher l’obscurité pour autant."], x:"L’entité allume une lumière."},
+ revenant:{f:"Dès qu’il repère un joueur, il passe à 3 m/s.", w:"Tant qu’il ne détecte personne, il se traîne à 1 m/s.",
+  plus:["Il garde sa vitesse jusqu’au dernier endroit où il t’a repéré, puis ralentit peu à peu."], x:"Des pas à vitesse normale quand il ne détecte personne."},
+ ombre:{f:"Très discrète : peu d’interactions, difficile à trouver.", w:"Ni chasse ni interaction visible à l’EMF tant qu’un joueur est dans la même pièce qu’elle.",
+  plus:["Cela vaut pour toute pièce où elle se trouve, pas seulement la sienne : elle peut sortir et chasser depuis la pièce d’à côté.","Seule entité à pouvoir apparaître en ombre avec le cercle d’invocation, la boîte à musique ou la patte de singe."], x:"Une chasse qui démarre dans la pièce où se tient un joueur."},
+ demon:{f:"Chasse plus souvent : dès 70 %, et parfois à n’importe quel niveau.", w:"Craint le crucifix : portée augmentée de moitié (4,5 m, 6 m ou 7,5 m selon le niveau du crucifix).",
+  plus:["Peut rechasser 20 s après une chasse, au lieu de 25.","L’encens ne le retient que 60 s, au lieu de 90.","Un délai normal entre deux chasses ne l’écarte pas."]},
+ yurei:{f:"Son pouvoir retire environ 15 % de santé mentale aux joueurs à moins de 7,5 m.", w:"Encensé dans sa pièce, il y reste enfermé 90 s.",
+  plus:["Ce pouvoir claque une porte de sa pièce, sans apparition ni sifflement.","N’importe quelle entité peut fermer une porte pendant une chasse ou une apparition : ça ne prouve rien à ce moment-là."]},
+ oni:{f:"Plus actif quand des joueurs sont proches, et lance les objets fort et loin.", w:"Très actif, donc vite repéré. En chasse, il reste bien visible.",
+  plus:["Ses apparitions coûtent 20 % de santé mentale, le double des autres.","Se montre plus souvent sous sa forme complète.","Un sifflement seul ne suffit pas à l’écarter : il faut avoir vu la boule de brume."], x:"Une apparition en boule de brume."},
+ yokai:{f:"Parler près de lui l’énerve : il peut alors chasser dès 80 %.", w:"En chasse, il n’entend les voix et les appareils que de tout près (2,5 m).",
+  plus:["Parler près de lui augmente aussi son activité."]},
+ hantu:{f:"Plus il fait froid, plus il est rapide : jusqu’à 2,7 m/s sous 0 °C.", w:"Lent au chaud : 1,4 m/s au-dessus de 15 °C.",
+  plus:["N’accélère pas quand il te voit.","Coupe le disjoncteur deux fois plus souvent que les autres.","Il ne refroidit pas une pièce plus vite ni plus fort que les autres."], x:"L’entité allume le disjoncteur. En Cauchemar et Démence : pas de températures glaciales."},
+ goryo:{f:"Son D.O.T.S. ne se voit qu’à la caméra vidéo, et seulement quand personne n’est dans la pièce.", w:"S’éloigne peu de sa pièce et n’en change jamais.",
+  plus:["Apparitions et chasses normales : seul son D.O.T.S. est particulier.","L’os dans sa pièce ne prouve rien : c’est le hasard."], x:"Un D.O.T.S. vu à l’œil nu, ou un changement de pièce favorite."},
+ myling:{f:"Silencieux en chasse : ses pas ne s’entendent qu’à 12 m, contre 20 m pour les autres.", w:"Produit plus souvent des sons paranormaux au micro parabolique.",
+  plus:["Il peut quand même crier ou grogner en chasse, comme les autres."], x:"Des pas entendus de loin, bien avant que la lampe grésille."},
+ onryo:{f:"Chaque 3e flamme soufflée lance une tentative de chasse, quelle que soit la santé mentale.", w:"Une flamme allumée à moins de 4 m le bloque comme un crucifix : il la souffle au lieu de chasser.",
+  plus:["Sans flamme près de lui, il chasse dès 60 %.","Il ne fuit pas les flammes : il les souffle.","L’encenser retarde la chasse de la 3e flamme, sans l’annuler."]},
+ jumeaux:{f:"L’un ou l’autre peut lancer la chasse, depuis deux endroits différents.", w:"Interagissent souvent au même moment, à deux endroits.",
+  plus:["C’est une seule entité avec deux zones d’action, pas deux fantômes.","Compare deux chasses : 1,5 m/s pour l’un, 1,9 m/s pour l’autre.","Là où agit le second, ni froid ni réponse à la Spirit Box."]},
+ raiju:{f:"Près d’un appareil allumé, il file à 2,5 m/s, dans un rayon de 6, 8 ou 10 m selon la taille du lieu.", w:"En chasse, il fait grésiller les appareils de plus loin : 15 m au lieu de 10.",
+  plus:["Appareils tenus ou posés. Caméras frontales, capteurs et lumières du lieu ne comptent pas."]},
+ obake:{f:"Une fois sur quatre, il ne laisse aucune empreinte, et il peut effacer plus vite celles déjà posées.", w:"Laisse parfois une empreinte unique : main à six doigts, double trace sur un interrupteur, cinq doigts sur un clavier ou une porte de cellule.",
+  plus:["Change d’apparence le temps d’un flash à partir du 12e clignotement : pas garanti si la chasse dure moins de 8 s environ."], x:"En Cauchemar et Démence : pas d’ultraviolet."},
+ mimic:{f:"Imite le comportement et les pouvoirs d’une autre entité, et en change en cours de partie.", w:"Des orbes s’ajoutent toujours à ses preuves, même à 0 preuve.",
+  plus:["Il ne montre que ses propres preuves, jamais celles de l’entité imitée.","Ses orbes restent dans la pièce favorite et ressemblent aux vraies."], x:"Aucune orbe dans sa pièce."},
+ moroi:{f:"Plus la santé mentale moyenne est basse, plus il est rapide : de 1,5 à 2,25 m/s, et jusqu’à 3,71 m/s à vue.", w:"L’encens l’aveugle plus longtemps en chasse : 7 s au lieu de 5.",
+  plus:["Sans te voir, il reste plus lent qu’un jeune Thayé (2,75 m/s)."], x:"En Cauchemar et Démence : pas de Spirit Box."},
+ deogen:{f:"Sait toujours où tu es : se cacher ne sert à rien, il arrive à 3 m/s.", w:"Ralentit à 0,4 m/s en arrivant sur toi.",
+  plus:["Bien visible en chasse.","À la Spirit Box, on peut entendre sa respiration lourde."], x:"En Cauchemar et Démence : pas de Spirit Box."},
+ thaye:{f:"Très actif et rapide en début de contrat : 2,75 m/s, chasse dès 75 %.", w:"Vieillit quand un joueur reste près de lui (même pièce ou moins de 3 m) : à chaque âge, 0,175 m/s et 6 % de seuil en moins, jusqu’à 1 m/s et 15 %.",
+  plus:["Il tente de vieillir toutes les 1 à 2 min.","N’accélère jamais quand il te voit."], x:"Une entité qui accélère à vue."},
+ gallu:{f:"Sel, encens ou crucifix l’enragent : 1,96 m/s, chasse dès 60 %, encens efficace 4 s seulement, crucifix réduit de 2 m, et il ne piétine plus le sel.", w:"Après une chasse enragée, il est affaibli : 1,36 m/s, chasse à 40 %, encens 6 s, crucifix allongé de 1 m.",
+  plus:["Cycle : normal, enragé, affaibli, puis de nouveau normal au prochain sel, encens ou crucifix.","N’importe quel sel déclenche son pouvoir, pas seulement le niveau III."]},
+ dayan:{f:"À moins de 10 m, si tu bouges, elle passe à 2,25 m/s et peut chasser dès 65 %.", w:"Si tu restes immobile, elle tombe à 1,2 m/s et ne chasse qu’à 45 %.",
+  plus:["Au-delà de 10 m : 1,7 m/s, avec l’accélération à vue habituelle."], x:"Un nom ou une apparence masculine."},
+ obambo:{f:"Phase agressive : chasse dès 65 %, à 1,96 m/s.", w:"Phase calme : ne chasse qu’à 10 %, à 1,45 m/s.",
+  plus:["Une chasse lancée en phase agressive dure 20 % de moins."]},
+ aswang:{f:"À vue, il atteint sa vitesse maximale en 8,7 s, au lieu de 13 pour les autres.", w:"S’il atteint la cachette où tu es entré sous ses yeux, la chasse s’arrête net.",
+  plus:["Il doit arriver jusqu’à la cachette : te voir y entrer ne suffit pas.","Seules les vraies cachettes comptent : placards, casiers."]},
+ kormos:{f:"Entend tes déplacements à 10 m accroupi, 15 m en marchant, 30 m en sprintant, et fonce alors à 2,21 m/s.", w:"Presque aveugle : il ne te voit que si tu bouges à moins de 5 m.",
+  plus:["Il entend la voix et les appareils allumés comme les autres.","Même immobile, tu peux mourir s’il te marche dessus par hasard."]},
+ deildegast:{f:"Démarre chaque chasse très vite : 3 m/s.", w:"Chaque objet du lieu manipulé par un joueur entre deux chasses lui retire 0,1 m/s, jusqu’à 0,4 m/s (26 objets).",
+  plus:["Comptent : objets ramassés, interrupteurs, disjoncteur, robinets. Une seule fois chacun, n’importe où sur la carte.","Ne comptent pas : les objets qu’il lance lui-même, ni ceux touchés pendant la chasse.","Après chaque chasse ou tentative, il repart à 3 m/s."]}
+};
+/* Espaces insécables : pas de retour à la ligne avant « : » ni entre un nombre et son unité. */
+const insec=t=>t.replace(/ ([:;?!»])/g,"\u00a0$1").replace(/« /g,"«\u00a0").replace(/(\d) (s|m|m\/s|min|%|°C|fois)(?![\wà-ÿ])/g,"$1\u00a0$2");
+function traits(g){
+  const f=FICHES[g.id]; if(!f) return "";
+  return `<dl class="traits"><div class="force"><dt>Force</dt><dd>${insec(f.f)}</dd></div><div class="faible"><dt>Faiblesse</dt><dd>${insec(f.w)}</dd></div>${
+    f.plus&&f.plus.length?`<div><dt>À savoir</dt><dd><ul>${f.plus.map(t=>`<li>${insec(t)}</li>`).join("")}</ul></dd></div>`:""}${
+    f.x?`<div class="exclu"><dt>L’écarte</dt><dd>${insec(f.x)}</dd></div>`:""}</dl>`;
+}
 const AMB={n:16,sale:true,redessine:null};
 
 /* Onglets */
@@ -890,20 +1015,33 @@ function rendre(){
     return `<details class="rang" data-id="${g.id}" ${ouvert?"open":""}>
     <summary><span class="rang-nom">${g.n}</span><span class="rang-pct">${pct(x.p)}</span>
     <span class="rang-bar"><i style="width:${Math.max(4,x.p/max*100)}%"></i></span><span class="puces">${puces(g,res.found)}</span></summary>
-    <div class="fiche"><p class="signe"><span>${g.signe}</span></p><p class="petit">${g.test}</p>
+    <div class="fiche"><p class="signe"><span>${insec(g.signe)}</span></p><p class="petit">${insec(g.test)}</p>
     <p class="chiffres">Chasse dès ${seuil(g)}${g.note?" ("+g.note+")":""} · ${vitesse(g,S.lune?LUNE:1)}${S.lune&&g.id!=="mimic"?" sous la Lune de sang":""}</p>
+    <details class="savoir" data-savoir="${g.id}"${savoirs.has(g.id)?" open":""}><summary>Force, faiblesse, à savoir</summary>${traits(g)}</details>
     <div class="ligne"><button class="btn" data-act="vu" data-id="${g.id}" aria-pressed="${!!S.vu[g.id]}">Signe vu</button><button class="btn discret" data-act="ecarter" data-id="${g.id}">Écarter</button></div></div></details>`; }).join("");
   $("#ecartees").innerHTML=(faibles.length?`<details class="ecartees faibles"><summary>${faibles.length} peu probable${faibles.length>1?"s":""}</summary><ul>${
     faibles.map(x=>`<li><b>${x.g.n}</b><span>${pct(x.p)}</span></li>`).join("")}</ul></details>`:"")+(morts.length?`<details class="ecartees"><summary>${morts.length} écartée${morts.length>1?"s":""}</summary><ul>${
     morts.map(x=>`<li><b>${x.g.n}</b><span>${x.raison}${S.struck[x.g.id]?` · <button class="btn discret" style="padding:0 6px" data-act="reprendre" data-id="${x.g.id}">reprendre</button>`:""}</span></li>`).join("")}</ul></details>`:"");
   ecrire();
 }
-$("#rangs").addEventListener("toggle",e=>{ const d=e.target, id=d.dataset&&d.dataset.id; if(!id) return;
+$("#rangs").addEventListener("toggle",e=>{ const d=e.target, sv=d.dataset&&d.dataset.savoir;
+  if(sv){ d.open?savoirs.add(sv):savoirs.delete(sv); return; }
+  const id=d.dataset&&d.dataset.id; if(!id) return;
   if(d.open){ ouverts.add(id); fermes.delete(id); } else { ouverts.delete(id); fermes.add(id); } },true);
 
 /* Aide-mémoire */
 $("#matrice").innerHTML=`<thead><tr><th>Entité</th>${EV.map(e=>`<th class="c">${e.c}</th>`).join("")}<th>Chasse dès</th><th>Vitesse</th></tr></thead><tbody>${
-  GHOSTS.slice().sort((a,b)=>a.n.localeCompare(b.n,"fr")).map(g=>`<tr><td>${g.n}</td>${EV.map(e=>`<td class="c">${g.ev.includes(e.id)?`<i class="pt ${g.forced===e.id?"g":""}"></i>`:(g.id==="mimic"&&e.id==="orb")?`<i class="pt f"></i>`:""}</td>`).join("")}<td class="num">${seuil(g)}</td><td class="num">${vitesse(g)}</td></tr>`).join("")}</tbody>`;
+  GHOSTS.slice().sort((a,b)=>a.n.localeCompare(b.n,"fr")).map(g=>`<tr><td><button class="nom-fiche" type="button" data-act="fiche" data-id="${g.id}">${g.n}</button></td>${EV.map(e=>`<td class="c">${g.ev.includes(e.id)?`<i class="pt ${g.forced===e.id?"g":""}"></i>`:(g.id==="mimic"&&e.id==="orb")?`<i class="pt f"></i>`:""}</td>`).join("")}<td class="num">${seuil(g)}</td><td class="num">${vitesse(g)}</td></tr>`).join("")}</tbody>`;
+/* Fiche complète d’une entité, choisie dans la liste ou en appuyant sur son nom dans le tableau. */
+const parNom=GHOSTS.slice().sort((a,b)=>a.n.localeCompare(b.n,"fr"));
+$("#fiche-choix").innerHTML=parNom.map(g=>`<option value="${g.id}">${g.n}</option>`).join("");
+function rendreFiche(){
+  const g=GH[$("#fiche-choix").value]||parNom[0];
+  $("#fiche-aide").innerHTML=`<div class="fiche-aide"><header><span class="puces">${puces(g,[])}</span></header>
+    <div class="fiche" style="background:none"><p class="signe"><span>${insec(g.signe)}</span></p><p class="petit">${insec(g.test)}</p>
+    <p class="chiffres">Chasse dès ${seuil(g)}${g.note?" ("+g.note+")":""} · ${vitesse(g)}</p>${traits(g)}</div></div>`;
+}
+$("#fiche-choix").addEventListener("change",rendreFiche); rendreFiche();
 const OBJETS=[
  ["Planche Ouija","5 à 50 % par question","Dis « Au revoir » avant de t’éloigner, sinon chasse maudite."],
  ["Miroir hanté","20 % minimum, puis 7,5 % par seconde","Montre sa pièce. Se brise à 0 % de santé mentale."],
@@ -1001,6 +1139,7 @@ const ACT={
   vit:b=>{ S.vit=vitesseChoisie()===b.dataset.id?null:b.dataset.id; S.pas=null; PAS.t=[]; },
   "pas-zero":()=>{ S.pas=null; PAS.t=[]; },
   lune:()=>{ S.lune=!S.lune; },
+  fiche:b=>{ $("#fiche-choix").value=b.dataset.id; rendreFiche(); $("#bloc-fiche").scrollIntoView({behavior:CALME?"auto":"smooth",block:"start"}); return false; },
   chasse:b=>{ S.chasse=S.chasse===b.dataset.id?null:b.dataset.id; },
   vu:b=>{ const id=b.dataset.id; S.vu[id]?delete S.vu[id]:S.vu[id]=true; },
   ecarter:b=>{ const id=b.dataset.id; S.struck[id]=true; delete S.vu[id]; ouverts.delete(id); },
@@ -1035,7 +1174,7 @@ const CFG=window.GRIMOIRE_CONFIG||{};
 let sb=null;
 try{ if(window.supabase&&CFG.url&&CFG.anonKey) sb=window.supabase.createClient(CFG.url,CFG.anonKey); }catch(e){ sb=null; }
 
-const CLE_CARNET="grimoire-carnet-v1", CLE_LIEU="grimoire-lieu";
+const CLE_CARNET="grimoire-carnet-v1", CLE_LIEU="grimoire-lieu", CLE_JOUEURS="grimoire-joueurs";
 function lireLocal(){ try{ const d=JSON.parse(localStorage.getItem(CLE_CARNET)||"[]"); return Array.isArray(d)?d:[]; }catch(e){ return []; } }
 function ecrireLocal(){ try{ localStorage.setItem(CLE_CARNET,JSON.stringify(LOCAL)); }catch(e){} }
 let LOCAL=lireLocal();          // enquêtes gardées sur l’appareil (pas de compte, ou envoi en attente)
@@ -1049,13 +1188,23 @@ function bilan(l){
   const n=l.length, ok=l.filter(reussie).length, viv=l.filter(e=>e.survecu).length;
   let serie=0; for(const e of l){ if(reussie(e)) serie++; else break; }
   let best=0, cur=0; for(let i=l.length-1;i>=0;i--){ if(reussie(l[i])){ cur++; if(cur>best) best=cur; } else cur=0; }
-  return {n,ok,viv,serie,best,taux:n?ok/n:null};
+  return {n,ok,viv,serie,best,taux:n?ok/n:null,parf:l.filter(e=>e.parfaite).length,os:l.filter(e=>e.os).length};
 }
 const pc=t=>t==null?"—":Math.round(t*100)+" %";
 function message(id,txt,cls){ const m=$("#msg-"+id); if(m){ m.textContent=txt||""; m.className="message"+(cls?" "+cls:""); } }
 
 /* ---------- Clôture d’une enquête ---------- */
 let SURVIE=true, reelleTouchee=false;
+/* Détails facultatifs d’une enquête : joueurs (1 à 4), objectifs facultatifs remplis (0 à 3), os, enquête parfaite. */
+let JOUEURS=null, OBJECTIFS=null, OS=false, PARFAITE=false;
+function majDetails(){
+  const juste=$("#c-annoncee").value===$("#c-reelle").value;
+  if(!juste) PARFAITE=false;                      // pas d’enquête parfaite sans la bonne entité
+  $$("#c-joueurs button").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.v===JOUEURS));
+  $$("#c-objectifs button").forEach(b=>b.setAttribute("aria-pressed",OBJECTIFS!==null&&+b.dataset.v===OBJECTIFS));
+  $("#c-os").setAttribute("aria-pressed",OS);
+  const p=$("#c-parfaite"); p.setAttribute("aria-pressed",PARFAITE); p.disabled=!juste;
+}
 function ouvrirCloture(){
   const tete=calculer(S).liste.find(x=>x.p>0);
   const options=GHOSTS.slice().sort((a,b)=>a.n.localeCompare(b.n,"fr")).map(g=>`<option value="${g.id}">${g.n}</option>`).join("");
@@ -1064,32 +1213,50 @@ function ouvrirCloture(){
   let dernier=""; try{ dernier=localStorage.getItem(CLE_LIEU)||""; }catch(e){}
   $("#c-lieu").innerHTML=`<option value="">Non précisé</option>`+LIEUX.map(l=>`<option${l===dernier?" selected":""}>${l}</option>`).join("");
   SURVIE=true; reelleTouchee=false; majSurvie();
+  let j=null; try{ j=parseInt(localStorage.getItem(CLE_JOUEURS)||"",10); }catch(e){}
+  JOUEURS=j>=1&&j<=4?j:null; OBJECTIFS=null; OS=false; PARFAITE=false; majDetails();
   $("#c-info").textContent="Difficulté : "+NIV[S.d].nom+". "+(sb&&uid()?"L’enquête sera ajoutée à ton compte.":"L’enquête sera gardée sur cet appareil.");
   $("#cloture").hidden=false; $("#btn-cloture").hidden=true;
   $("#c-reelle").focus();
 }
 function fermerCloture(){ $("#cloture").hidden=true; $("#btn-cloture").hidden=false; }
 function majSurvie(){ $$("#c-survie button").forEach(b=>b.setAttribute("aria-pressed",(b.dataset.v==="1")===SURVIE)); }
-/* Ligne envoyée au compte. Le niveau (Professionnel, etc.) va dans la colonne « niveau » ; tant que la base
-   n’a pas cette colonne (schema.sql pas encore relancé), l’envoi est refait sans elle pour ne perdre aucune enquête. */
-const ligneCompte=(e,avecNiveau)=>{ const l={lieu:e.lieu,difficulte:e.difficulte,annoncee:e.annoncee,reelle:e.reelle,survecu:e.survecu,preuves:e.preuves||[]}; if(avecNiveau&&e.niveau) l.niveau=e.niveau; return l; };
+/* Ligne envoyée au compte, du plus complet au plus simple. Tant que la base n’a pas les colonnes récentes
+   (schema.sql pas encore relancé), l’envoi est refait sans elles pour ne perdre aucune enquête.
+   Palier 2 : tout. Palier 1 : sans les détails (joueurs, objectifs, os, parfaite). Palier 0 : sans le niveau non plus. */
+let PALIER=2;
+const ligneCompte=(e,palier)=>{
+  const l={lieu:e.lieu,difficulte:e.difficulte,annoncee:e.annoncee,reelle:e.reelle,survecu:e.survecu,preuves:e.preuves||[]};
+  if(palier>=1) l.niveau=e.niveau??null;
+  if(palier>=2){ l.joueurs=e.joueurs??null; l.objectifs=e.objectifs??null; l.os=!!e.os; l.parfaite=!!e.parfaite; }
+  return l;
+};
+const colonneAbsente=er=>!!er&&(er.code==="PGRST204"||er.code==="42703"||/column/i.test(er.message||""));
+async function envoyer(lignes){
+  for(;;){
+    const r=await sb.from("investigations").insert(lignes(PALIER)).select();
+    if(!r.error||PALIER===0||!colonneAbsente(r.error)) return r;
+    PALIER--;
+  }
+}
 async function enregistrerEnquete(e){
   if(sb&&uid()){
-    let r=await sb.from("investigations").insert(ligneCompte(e,true)).select().single();
-    if(r.error&&e.niveau) r=await sb.from("investigations").insert(ligneCompte(e,false)).select().single();
-    if(!r.error&&r.data){ DISTANT.unshift(r.data); chargerClassement(); return "compte"; }
+    const r=await envoyer(p=>ligneCompte(e,p));
+    if(!r.error&&r.data&&r.data[0]){ DISTANT.unshift(r.data[0]); chargerClassement(); return "compte"; }
   }
   LOCAL.unshift(e); ecrireLocal(); return "local";
 }
 async function soumettreCloture(){
   const res=calculer(S);
   const e={id:"l-"+Date.now(),created_at:new Date().toISOString(),lieu:$("#c-lieu").value||null,difficulte:S.n,niveau:S.d,
-    annoncee:$("#c-annoncee").value,reelle:$("#c-reelle").value,survecu:SURVIE,preuves:res.found};
-  try{ localStorage.setItem(CLE_LIEU,e.lieu||""); }catch(x){}
+    annoncee:$("#c-annoncee").value,reelle:$("#c-reelle").value,survecu:SURVIE,preuves:res.found,
+    joueurs:JOUEURS,objectifs:OBJECTIFS,os:OS,parfaite:false};
+  e.parfaite=PARFAITE&&reussie(e);
+  try{ localStorage.setItem(CLE_LIEU,e.lieu||""); if(JOUEURS) localStorage.setItem(CLE_JOUEURS,JOUEURS); }catch(x){}
   const ou=await enregistrerEnquete(e);
   fermerCloture();
   repartir(); rendre();
-  toast((reussie(e)?"Entité trouvée : "+nomEntite(e.reelle):"Raté : c’était "+nomEntite(e.reelle))+(ou==="local"&&sb&&uid()?" (envoi en attente)":""));
+  toast((e.parfaite?"Enquête parfaite : "+nomEntite(e.reelle):reussie(e)?"Entité trouvée : "+nomEntite(e.reelle):"Raté : c’était "+nomEntite(e.reelle))+(ou==="local"&&sb&&uid()?" (envoi en attente)":""));
   rendreCarnet(); rendreClassement();
 }
 
@@ -1113,12 +1280,14 @@ function rendreCarnet(){
   const l=mesEnquetes(), b=bilan(l);
   $("#carnet-mode").textContent=!sb?"mode local":uid()?(PROFIL?PROFIL.pseudo:"connecté"):"non connecté";
   $("#stats").innerHTML=`<div class="jauge">${anneau(b.taux)}</div><div class="medaillons">${
-    [[b.n,pl(b.n,"enquête"),""],[b.ok,pl(b.ok,"entité")+" "+pl(b.ok,"trouvée"),""],[b.viv,pl(b.viv,"survie"),""],[b.serie,"d’affilée","record : "+b.best]]
+    [[b.n,pl(b.n,"enquête"),""],[b.ok,pl(b.ok,"entité")+" "+pl(b.ok,"trouvée"),""],[b.viv,pl(b.viv,"survie"),""],[b.serie,"d’affilée","record : "+b.best],[b.parf,pl(b.parf,"enquête")+" "+pl(b.parf,"parfaite"),""],[b.os,"os "+pl(b.os,"trouvé"),""]]
     .map(([v,t,s])=>`<div class="medaillon"><b>${v}</b><span>${t}</span>${s?`<small>${s}</small>`:""}</div>`).join("")}</div>`;
   const note=$("#carnet-note");
   if(LOCAL.length&&sb&&!uid()){ note.hidden=false; note.textContent=`${LOCAL.length} ${pl(LOCAL.length,"enquête")} ${pl(LOCAL.length,"gardée")} sur cet appareil. Connecte-toi dans l’onglet Amis pour les ajouter à ton compte.`; }
   else if(LOCAL.length&&sb&&uid()){ note.hidden=false; note.textContent=`${LOCAL.length} ${pl(LOCAL.length,"enquête")} en attente d’envoi vers ton compte.`; }
   else note.hidden=true;
+
+  rendreReussites(l);
 
   /* Bestiaire : une carte par entité déjà croisée, les autres en attente. */
   const par={};
@@ -1140,12 +1309,32 @@ function rendreCarnet(){
   if(jour!==null) h+="</div></div>";
   $("#historique").innerHTML=h||`<p class="vide">Aucune enquête pour l’instant. À la fin d’un contrat, ouvre l’onglet Enquête et appuie sur « Clôturer l’enquête ».</p>`;
 }
+/* Réussite par difficulté, par lieu, seul ou en groupe, et entités confondues (annoncée contre réelle). */
+function tauxPar(l,cle){ const m=new Map(); l.forEach(e=>{ const k=cle(e); if(k==null) return; const r=m.get(k)||{n:0,ok:0}; r.n++; if(reussie(e)) r.ok++; m.set(k,r); }); return m; }
+const ligneStat=(nom,r)=>`<div class="ligne-stat"><b>${esc(nom)}</b><span class="num">${r.ok} sur ${r.n} · ${pc(r.ok/r.n)}</span><span class="part"><i style="width:${r.ok/r.n*100}%"></i></span></div>`;
+const groupe=(titre,corps)=>`<div class="groupe"><span class="label">${titre}</span>${corps}</div>`;
+function rendreReussites(l){
+  const z=$("#reussites");
+  if(!l.length){ z.innerHTML=`<p class="vide">Ta réussite par difficulté et par lieu apparaîtra ici, avec les entités que tu confonds le plus.</p>`; return; }
+  const niv=tauxPar(l,e=>niveauDe(e).id), lieux=[...tauxPar(l,e=>e.lieu||null)].sort((a,b)=>b[1].n-a[1].n||a[0].localeCompare(b[0],"fr"));
+  const equipe=tauxPar(l,e=>e.joueurs==null?null:e.joueurs===1?"Solo":"En groupe");
+  const conf=new Map(); l.forEach(e=>{ if(!reussie(e)){ const k=e.annoncee+">"+e.reelle; conf.set(k,(conf.get(k)||0)+1); } });
+  const pires=[...conf].sort((a,b)=>b[1]-a[1]).slice(0,5);
+  z.innerHTML=`<div class="reussites">${
+    groupe("Par difficulté",NIVEAUX.filter(v=>niv.has(v.id)).map(v=>ligneStat(v.nom,niv.get(v.id))).join(""))}${
+    groupe("Par lieu",lieux.length?lieux.map(([nom,r])=>ligneStat(nom,r)).join(""):`<p class="petit">Aucun lieu précisé à la clôture.</p>`)}${
+    equipe.size?groupe("Seul ou en groupe",["Solo","En groupe"].filter(k=>equipe.has(k)).map(k=>ligneStat(k,equipe.get(k))).join("")):""}${
+    groupe("Tes confusions",pires.length?`<ul class="confusions">${pires.map(([k,n])=>{ const [a,r]=k.split(">"); return `<li><span><s>${esc(nomEntite(a))}</s> → ${esc(nomEntite(r))}</span><span class="num">${n} fois</span></li>`; }).join("")}</ul>`:`<p class="petit">Aucune erreur pour l’instant.</p>`)}</div>`;
+}
 function ligneEnquete(e,mienne,avecDate){
   const ok=reussie(e);
   const infos=[avecDate?quand(e.created_at):heure(e.created_at),e.lieu||"lieu non précisé",niveauDe(e).nom,e.survecu?"survécu":"mort"].filter(Boolean);
+  if(e.joueurs) infos.push(e.joueurs===1?"solo":"à "+e.joueurs);
+  if(e.objectifs!=null) infos.push(e.objectifs+" "+pl(e.objectifs,"objectif")+" sur 3");
+  if(e.os) infos.push("os trouvé");
   if(e.local) infos.push("sur cet appareil");
   return `<div class="enq ${ok?"ok":"rate"}"><span class="quoi">${ok?esc(nomEntite(e.reelle)):`<s>${esc(nomEntite(e.annoncee))}</s> → ${esc(nomEntite(e.reelle))}`}</span>
-    <span class="issue ${ok?"":"rate"}">${ok?"trouvée":"ratée"}</span>
+    <span class="issues">${e.parfaite?`<span class="issue or">parfaite</span>`:""}<span class="issue ${ok?"":"rate"}">${ok?"trouvée":"ratée"}</span></span>
     <span class="meta">${infos.map(i=>`<span>${esc(i)}</span>`).join("")}</span>
     ${mienne?`<span class="actions"><button class="lien" data-act="enq-suppr" data-id="${esc(e.id)}">${A_SUPPR===e.id?"Confirmer la suppression":"Supprimer"}</button></span>`:""}</div>`;
 }
@@ -1263,15 +1452,18 @@ async function soumettreAmi(f){
 }
 
 /* ---------- Classement ---------- */
-const TRIS=[["trouvees","Entités trouvées"],["enquetes","Enquêtes"],["taux","Réussite"],["serie","Série"]];
+const TRIS=[["trouvees","Entités trouvées"],["enquetes","Enquêtes"],["taux","Réussite"],["serie","Série"],["parfaites","Parfaites"]];
 $("#tri").innerHTML=TRIS.map(([id,n])=>`<button type="button" data-act="tri" data-id="${id}" aria-pressed="false">${n}</button>`).join("");
-const UNITE={trouvees:n=>pl(n,"entité")+" "+pl(n,"trouvée"),enquetes:n=>pl(n,"enquête"),taux:()=>"de réussite",serie:()=>"d’affilée"};
+const UNITE={trouvees:n=>pl(n,"entité")+" "+pl(n,"trouvée"),enquetes:n=>pl(n,"enquête"),taux:()=>"de réussite",serie:()=>"d’affilée",parfaites:n=>pl(n,"enquête")+" "+pl(n,"parfaite")};
 function rendreClassement(){
-  $$("#tri button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.id===TRI));
   const enLigne=!!(sb&&uid());
   let rangs;
-  if(enLigne&&RANGS.length) rangs=RANGS.map(r=>({id:r.user_id,pseudo:r.pseudo,enquetes:+r.enquetes,trouvees:+r.trouvees,serie:+r.serie}));
-  else{ const b=bilan(mesEnquetes()); rangs=[{id:"moi",pseudo:"Toi",enquetes:b.n,trouvees:b.ok,serie:b.serie}]; }
+  /* Tant que la base n’a pas été mise à jour, le classement en ligne ne connaît pas les enquêtes parfaites : le tri est masqué. */
+  const sansParfaites=enLigne&&RANGS.length>0&&!("parfaites" in RANGS[0]);
+  if(sansParfaites&&TRI==="parfaites") TRI="trouvees";
+  $$("#tri button").forEach(b=>{ b.hidden=sansParfaites&&b.dataset.id==="parfaites"; b.setAttribute("aria-pressed",b.dataset.id===TRI); });
+  if(enLigne&&RANGS.length) rangs=RANGS.map(r=>({id:r.user_id,pseudo:r.pseudo,enquetes:+r.enquetes,trouvees:+r.trouvees,serie:+r.serie,parfaites:+(r.parfaites||0)}));
+  else{ const b=bilan(mesEnquetes()); rangs=[{id:"moi",pseudo:"Toi",enquetes:b.n,trouvees:b.ok,serie:b.serie,parfaites:b.parf}]; }
   rangs.forEach(r=>{ r.taux=r.enquetes?r.trouvees/r.enquetes:-1; });
   rangs.sort((a,b)=>b[TRI]-a[TRI]||b.trouvees-a.trouvees||b.enquetes-a.enquetes||a.pseudo.localeCompare(b.pseudo,"fr"));
   const moi=uid()||"moi";
@@ -1279,7 +1471,7 @@ function rendreClassement(){
   /* La barre compare chaque joueur au premier ; pour la réussite, elle montre le taux lui-même. */
   const part=r=>TRI==="taux"?Math.max(0,r.taux):r[TRI]/max;
   const valeur=r=>TRI==="taux"?(r.enquetes?pc(r.taux):"—"):r[TRI];
-  const autres=r=>[["enquetes",r.enquetes+" "+pl(r.enquetes,"enquête")],["trouvees",r.trouvees+" "+pl(r.trouvees,"trouvée")],["taux",r.enquetes?pc(r.taux)+" de réussite":""],["serie","série de "+r.serie]]
+  const autres=r=>[["enquetes",r.enquetes+" "+pl(r.enquetes,"enquête")],["trouvees",r.trouvees+" "+pl(r.trouvees,"trouvée")],["taux",r.enquetes?pc(r.taux)+" de réussite":""],["serie","série de "+r.serie],["parfaites",r.parfaites?r.parfaites+" "+pl(r.parfaites,"parfaite"):""]]
     .filter(([k,t])=>k!==TRI&&t).map(x=>x[1]).join(", ");
   $("#classement").innerHTML=`<ol class="podium">${rangs.map((r,i)=>{ const estMoi=r.id===moi, ouvert=AMI_VU===r.id&&!estMoi;
     return `<li class="${estMoi?"moi":""}${ouvert?" ouvert":""}" ${!estMoi&&enLigne?`data-ami="${esc(r.id)}" data-act="ami-voir" tabindex="0" role="button" aria-expanded="${ouvert}"`:""}>
@@ -1294,9 +1486,7 @@ function rendreClassement(){
 /* ---------- Chargements ---------- */
 async function synchroniser(){
   if(!sb||!uid()||!LOCAL.length) return 0;
-  const lot=avec=>LOCAL.map(e=>({created_at:e.created_at,...ligneCompte(e,avec)}));
-  let {error}=await sb.from("investigations").insert(lot(true));
-  if(error&&LOCAL.some(e=>e.niveau)) ({error}=await sb.from("investigations").insert(lot(false)));
+  const {error}=await envoyer(p=>LOCAL.map(e=>({created_at:e.created_at,...ligneCompte(e,p)})));
   if(error) return 0;
   const n=LOCAL.length; LOCAL=[]; ecrireLocal(); return n;
 }
@@ -1346,6 +1536,11 @@ Object.assign(ACT,{
   "cloture-ouvrir":()=>{ ouvrirCloture(); return false; },
   "cloture-fermer":()=>{ fermerCloture(); return false; },
   survie:b=>{ SURVIE=b.dataset.v==="1"; majSurvie(); return false; },
+  "c-joueurs":b=>{ const v=+b.dataset.v; JOUEURS=JOUEURS===v?null:v; majDetails(); return false; },
+  "c-objectifs":b=>{ const v=+b.dataset.v; OBJECTIFS=OBJECTIFS===v?null:v; if(OBJECTIFS!==3) PARFAITE=false; majDetails(); return false; },
+  "c-os":()=>{ OS=!OS; if(!OS) PARFAITE=false; majDetails(); return false; },
+  /* Une enquête parfaite suppose l’os et les trois objectifs : ils se cochent avec elle. */
+  "c-parfaite":()=>{ PARFAITE=!PARFAITE; if(PARFAITE){ OS=true; OBJECTIFS=3; } majDetails(); return false; },
   exporter:()=>{
     const donnees={exporte_le:new Date().toISOString(),pseudo:PROFIL?PROFIL.pseudo:null,enquetes:mesEnquetes().map(({local,...e})=>e)};
     const a=document.createElement("a");
@@ -1405,6 +1600,7 @@ document.addEventListener("submit",e=>{
 document.addEventListener("change",e=>{
   if(e.target.id==="c-reelle") reelleTouchee=true;
   else if(e.target.id==="c-annoncee"&&!reelleTouchee) $("#c-reelle").value=e.target.value;
+  if(e.target.id==="c-reelle"||e.target.id==="c-annoncee") majDetails();
 });
 document.addEventListener("keydown",e=>{ if(e.key==="Enter"&&e.target.matches&&e.target.matches("li[data-ami]")) e.target.click(); });
 
@@ -1442,7 +1638,7 @@ document.addEventListener("click",e=>{
   const orbes=Array.from({length:16},()=>({x:Math.random(),y:Math.random(),r:1.5+Math.random()*3.5,vx:(Math.random()-.5)*.00012,vy:-.00004-Math.random()*.0001,p:Math.random()*6.28}));
   function taille(){ const d=Math.min(devicePixelRatio||1,2); W=c.clientWidth; H=c.clientHeight; c.width=W*d; c.height=H*d; x.setTransform(d,0,0,d,0,0); }
   function rvb(nom,defaut){ const m=/^#([0-9a-f]{6})$/i.exec(getComputedStyle(document.documentElement).getPropertyValue(nom).trim()); if(!m) return defaut; const n=parseInt(m[1],16); return [n>>16,(n>>8)&255,n&255].join(","); }
-  function teinte(){ coul=rvb("--follet",coul); coul2=rvb("--ecto",coul2); }
+  function teinte(){ const lune=document.documentElement.hasAttribute("data-lune"); coul=lune?"232,42,58":rvb("--follet",coul); coul2=lune?"176,16,36":rvb("--ecto",coul2); }
   function dessin(t){
     if(!calme&&(image++&1)){ requestAnimationFrame(dessin); return; }
     x.clearRect(0,0,W,H);
