@@ -46,15 +46,18 @@ img{max-width:100%}
   --halo:rgba(11,116,104,.10); --lueur:rgba(11,116,104,.30);
 }
 
-/* Difficulté : Normale (jetons de base), puis Cauchemar, Démence, 0 preuve. La nuit s’épaissit et la couleur se retire. */
+/* Difficulté : Normale (jetons de base), puis Professionnel, Cauchemar, Démence, 0 preuve. La nuit s’épaissit et la couleur se retire. */
+:root[data-niveau="p"]{--nuit:#0c0a16; --voile:#151228; --voile2:#1d1a38; --trait:#312d58; --cendre:#a39fbc; --follet:#86cdea; --sur-follet:#06182a; --cierge:#ecb463; --sang:#ee7385; --ecto:#ae9afa; --halo:rgba(134,205,234,.125); --lueur:rgba(134,205,234,.44); --vignette:.14}
 :root[data-niveau="2"]{--nuit:#0a0914; --voile:#121027; --voile2:#1a1736; --trait:#2d2a55; --cendre:#a09cba; --follet:#8fb4ff; --sur-follet:#071226; --cierge:#ecb463; --sang:#ee7385; --ecto:#a48cf5; --halo:rgba(143,180,255,.12); --lueur:rgba(143,180,255,.42); --vignette:.28}
 :root[data-niveau="1"]{--nuit:#07060d; --voile:#0e0b1c; --voile2:#151128; --trait:#2a2148; --cendre:#9a94b3; --follet:#c39bff; --sur-follet:#150a2b; --cierge:#ecb463; --sang:#ee7385; --ecto:#8f78c9; --halo:rgba(195,155,255,.11); --lueur:rgba(195,155,255,.40); --vignette:.48}
 :root[data-niveau="0"]{--nuit:#030305; --voile:#09090d; --voile2:#101016; --trait:#24232e; --cendre:#8f8c9c; --follet:#d9d6cf; --sur-follet:#0b0b0e; --cierge:#ecb463; --sang:#ee7385; --ecto:#7d7a8c; --halo:rgba(217,214,207,.08); --lueur:rgba(217,214,207,.30); --vignette:.68}
 @media (prefers-color-scheme: light){
+  :root[data-niveau="p"]:not([data-theme="dark"]){--nuit:#e1e0ec; --voile:#edecf5; --voile2:#f9f8fc; --trait:#c0bcd7; --cendre:#595473; --follet:#16628e; --sur-follet:#ffffff; --cierge:#8a5604; --sang:#ac213a; --ecto:#563bbc; --halo:rgba(22,98,142,.10); --lueur:rgba(22,98,142,.30); --vignette:.04}
   :root[data-niveau="2"]:not([data-theme="dark"]){--nuit:#d9d8e6; --voile:#e6e5f0; --voile2:#f3f2f9; --trait:#b7b3d0; --cendre:#57526f; --follet:#2a4fb0; --sur-follet:#ffffff; --cierge:#855304; --sang:#a81f38; --ecto:#5a3fc0; --halo:rgba(42,79,176,.10); --lueur:rgba(42,79,176,.30); --vignette:.08}
   :root[data-niveau="1"]:not([data-theme="dark"]){--nuit:#c6c3d6; --voile:#d5d2e2; --voile2:#e4e1ee; --trait:#a29dc0; --cendre:#4e4963; --follet:#5b2a9e; --sur-follet:#ffffff; --cierge:#784803; --sang:#9c1a32; --ecto:#6a4a9c; --halo:rgba(91,42,158,.10); --lueur:rgba(91,42,158,.28); --vignette:.14}
   :root[data-niveau="0"]:not([data-theme="dark"]){--nuit:#aeacb8; --voile:#bfbdc8; --voile2:#cfcdd6; --trait:#8d8a99; --cendre:#45424f; --follet:#26242e; --sur-follet:#f1f0f4; --cierge:#5e3a02; --sang:#8a1228; --ecto:#55525f; --halo:rgba(38,36,46,.10); --lueur:rgba(38,36,46,.25); --vignette:.20}
 }
+:root[data-theme="light"][data-niveau="p"]{--nuit:#e1e0ec; --voile:#edecf5; --voile2:#f9f8fc; --trait:#c0bcd7; --cendre:#595473; --follet:#16628e; --sur-follet:#ffffff; --cierge:#8a5604; --sang:#ac213a; --ecto:#563bbc; --halo:rgba(22,98,142,.10); --lueur:rgba(22,98,142,.30); --vignette:.04}
 :root[data-theme="light"][data-niveau="2"]{--nuit:#d9d8e6; --voile:#e6e5f0; --voile2:#f3f2f9; --trait:#b7b3d0; --cendre:#57526f; --follet:#2a4fb0; --sur-follet:#ffffff; --cierge:#855304; --sang:#a81f38; --ecto:#5a3fc0; --halo:rgba(42,79,176,.10); --lueur:rgba(42,79,176,.30); --vignette:.08}
 :root[data-theme="light"][data-niveau="1"]{--nuit:#c6c3d6; --voile:#d5d2e2; --voile2:#e4e1ee; --trait:#a29dc0; --cendre:#4e4963; --follet:#5b2a9e; --sur-follet:#ffffff; --cierge:#784803; --sang:#9c1a32; --ecto:#6a4a9c; --halo:rgba(91,42,158,.10); --lueur:rgba(91,42,158,.28); --vignette:.14}
 :root[data-theme="light"][data-niveau="0"]{--nuit:#aeacb8; --voile:#bfbdc8; --voile2:#cfcdd6; --trait:#8d8a99; --cendre:#45424f; --follet:#26242e; --sur-follet:#f1f0f4; --cierge:#5e3a02; --sang:#8a1228; --ecto:#55525f; --halo:rgba(38,36,46,.10); --lueur:rgba(38,36,46,.25); --vignette:.20}
@@ -62,6 +65,8 @@ img{max-width:100%}
 *{box-sizing:border-box}
 body{background:var(--nuit);color:var(--os);font-family:var(--f-texte);font-size:16px;line-height:1.5;margin:0;transition:background-color .7s}
 body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 50% 30%,transparent 40%,rgba(0,0,0,var(--vignette)) 100%)}
+/* Lune de sang : une lueur rouge descend du haut de la page */
+:root[data-lune] body::before{background:radial-gradient(ellipse at 50% -12%,rgba(214,48,72,.22),transparent 62%),radial-gradient(ellipse at 50% 30%,transparent 40%,rgba(0,0,0,var(--vignette)) 100%)}
 /* Grain de vieux papier : texture en surimpression, sans voile (le gris moyen ne change rien en mode overlay) */
 body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:8;opacity:.28;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1 0 0 0 0  1 0 0 0 0  1 0 0 0 0  0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E")}
 #orbes{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
@@ -136,6 +141,31 @@ main>section.vient-d{animation:vient-d .85s cubic-bezier(.22,.8,.24,1) .1s both}
 .choix button[aria-pressed="true"]{background:var(--follet);border-color:var(--follet);color:var(--sur-follet);font-weight:600;box-shadow:0 0 16px var(--halo)}
 .question{display:flex;flex-direction:column;gap:7px}
 .ligne{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.choix button.lune[aria-pressed="true"]{background:var(--sang);border-color:var(--sang);color:var(--nuit);box-shadow:0 0 16px rgba(214,48,72,.3)}
+
+/* Rond des pas : un appui à chaque pas entendu, la vitesse s’écrit au centre */
+.pas{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px 20px;align-items:center}
+.pas-cote{display:flex;flex-direction:column;gap:9px;min-width:0}
+.tambour{position:relative;width:108px;height:108px;margin:6px;padding:0;border-radius:50%;border:1.5px solid var(--trait);background:radial-gradient(circle at 50% 32%,var(--voile2),var(--voile));box-shadow:0 0 0 5px var(--nuit),0 0 0 6px var(--trait);display:grid;place-content:center;justify-items:center;gap:3px;color:var(--cendre);touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;transition:border-color .2s,box-shadow .2s,transform .08s}
+.tambour:hover{border-color:var(--follet)}
+.tambour:active{transform:scale(.95)}
+.tambour svg{width:34px;height:34px}
+.tambour b{font-family:var(--f-data);font-size:27px;font-weight:500;line-height:1;font-variant-numeric:tabular-nums;color:var(--os)}
+.tambour small{font-family:var(--f-data);font-size:11px;letter-spacing:.07em;text-transform:uppercase}
+.tambour.mesure{border-color:var(--follet);color:var(--follet);box-shadow:0 0 0 5px var(--nuit),0 0 0 6px var(--follet),0 0 26px var(--lueur)}
+.tambour.bat::after{content:"";position:absolute;inset:-8px;border-radius:50%;border:2px solid var(--follet);animation:eclat .5s ease-out forwards;pointer-events:none}
+
+/* Annonce : événement du jeu en cours, repliable sur une ligne */
+#annonces{display:flex;flex-direction:column;gap:8px}
+.annonce{border:1px solid var(--cierge);border-radius:var(--feuille);background:var(--voile);overflow:hidden}
+.annonce>summary{list-style:none;cursor:pointer;padding:10px 16px 10px 14px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 14px;align-items:center}
+.annonce>summary::-webkit-details-marker{display:none}
+.annonce>summary .label{color:var(--cierge)}
+.annonce>summary b{grid-column:1;font-weight:600;font-size:17px}
+.annonce>summary::after{content:"";grid-column:2;grid-row:1/3;width:7px;height:7px;border-right:1.5px solid var(--cendre);border-bottom:1.5px solid var(--cendre);transform:translateY(-2px) rotate(45deg);transition:transform .2s}
+.annonce[open]>summary::after{transform:translateY(2px) rotate(-135deg)}
+.annonce .corps{padding:0 14px 13px;display:flex;flex-direction:column;gap:7px;font-size:15px;max-width:78ch}
+.annonce .corps a{color:var(--follet);text-underline-offset:3px;font-family:var(--f-data);font-size:12.5px}
 
 /* La planche : voûte en haut, sept sceaux ronds en arc */
 .planche{position:relative;container-type:inline-size;background:radial-gradient(120% 90% at 50% 0%,var(--voile2),var(--voile) 70%);border:1px solid var(--trait);border-radius:130px 130px 22px 22px / 64px 64px 22px 22px;padding:30px 14px 16px;display:flex;flex-direction:column;gap:16px;align-items:center}
@@ -355,6 +385,7 @@ footer{margin-top:36px;padding-top:16px;color:var(--cendre);font-size:13.5px;max
   <main>
     <!-- ENQUÊTE -->
     <section id="t-enquete">
+      <div id="annonces" hidden></div>
       <div class="deux">
         <div class="colonne">
           <div class="bloc">
@@ -374,7 +405,18 @@ footer{margin-top:36px;padding-top:16px;color:var(--cendre);font-size:13.5px;max
             <header><h2>Pendant les chasses</h2><span class="label">facultatif</span></header>
             <div class="question">
               <span>Vitesse des pas, quand elle ne te voit pas</span>
-              <div class="choix" id="seg-vit" role="group" aria-label="Vitesse des pas"></div>
+              <div class="pas">
+                <button type="button" class="tambour" id="tambour" aria-label="Rond des pas : appuie à chaque pas de l’entité pour mesurer sa vitesse"></button>
+                <div class="pas-cote">
+                  <p class="petit" id="pas-etat" role="status"></p>
+                  <div class="choix" id="seg-vit" role="group" aria-label="Vitesse des pas, à l’oreille"></div>
+                </div>
+              </div>
+            </div>
+            <div class="question">
+              <span>Météo du contrat</span>
+              <div class="choix"><button class="lune" data-act="lune" id="btn-lune" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="currentColor"/></svg>Lune de sang</button></div>
+              <p class="petit" id="lune-aide" hidden>Ciel rouge et pluie fine : les entités sont environ 15 % plus rapides en chasse. Les vitesses des fiches en tiennent compte.</p>
             </div>
             <div class="question">
               <span>Première chasse, selon la santé mentale moyenne</span>
@@ -463,6 +505,7 @@ footer{margin-top:36px;padding-top:16px;color:var(--cendre);font-size:13.5px;max
         <ul class="reperes">
           <li>Seuil de chasse standard : 50 % de santé mentale moyenne. Vitesse standard : 1,7 m/s.</li>
           <li>À vue, presque toutes accélèrent jusqu’à 1,65 fois leur vitesse en 13 s environ.</li>
+          <li>Sous une Lune de sang (ciel rouge, pluie fine), les entités sont environ 15 % plus rapides en chasse et la santé mentale baisse plus vite.</li>
           <li>Tu marches à 1,6 m/s et sprintes à 3 m/s pendant 3 s.</li>
           <li>En chasse, elle entend ta voix à 9 m et un appareil allumé en main à 7,5 m. Un appareil posé au sol ne l’attire pas.</li>
           <li>Le crucifix bloque une chasse qui démarre dans sa portée, pas une chasse en cours.</li>
@@ -511,7 +554,7 @@ footer{margin-top:36px;padding-top:16px;color:var(--cendre);font-size:13.5px;max
     </section>
   </main>
 
-  <footer>Outil de fan non officiel, sans lien avec Kinetic Games. Données de la version 0.18 du jeu, octobre 2026.</footer>
+  <footer>Outil de fan non officiel, sans lien avec Kinetic Games. Données de la version 0.19.1 du jeu, octobre 2026.</footer>
 </div>
 
 <div class="barre" id="barre"><span id="barre-txt"></span><button class="btn" data-act="voir">Voir</button></div>
@@ -519,6 +562,7 @@ footer{margin-top:36px;padding-top:16px;color:var(--cendre);font-size:13.5px;max
 
 <script src="supabase.js"></script>
 <script src="config.js"></script>
+<script src="annonces.js"></script>
 <script>
 /*ENGINE-START*/
 const EV = [
@@ -597,10 +641,37 @@ const GHOSTS = [
 ];
 const GH = Object.fromEntries(GHOSTS.map(g=>[g.id,g]));
 
-const VITESSES = [{id:"l",n:"Lente",r:[0.4,1.55]},{id:"n",n:"Normale",r:[1.62,1.78]},{id:"r",n:"Rapide",r:[1.85,3.1]}];
+const VITESSES = [{id:"l",n:"Lente",r:[0.4,1.55]},{id:"n",n:"Normale",r:[1.62,1.78]},{id:"r",n:"Rapide",r:[1.85,3.6]}];
 const CHASSES = [{id:"tot",n:"Au-dessus de 50 %"},{id:"tard",n:"Aucune sous 40 %"}];
 
-function etatVide(){ return {n:3, ev:Object.fromEntries(EV.map(e=>[e.id,0])), vit:null, chasse:null, vu:{}, struck:{}}; }
+/* Difficultés. n : nombre de preuves fournies. Professionnel donne trois preuves comme Normale, avec des chasses plus dures. */
+const NIVEAUX = [
+  {id:"normale", n:3, nom:"Normale", aide:""},
+  {id:"pro", n:3, nom:"Professionnel", aide:"Trois preuves, comme en Normale. Aucun temps de préparation, 3\u00a0s pour fuir quand une chasse démarre, et des chasses de 30\u00a0s à 1\u00a0min selon la taille du lieu."},
+  {id:"cauchemar", n:2, nom:"Cauchemar", aide:"Une preuve est cachée."},
+  {id:"demence", n:1, nom:"Démence", aide:"Deux preuves sont cachées."},
+  {id:"zero", n:0, nom:"0 preuve", aide:"Seuls les signes comptent. Des orbes désignent le Mimic."}
+];
+const NIV = Object.fromEntries(NIVEAUX.map(x=>[x.id,x]));
+/* Niveau d’un état ou d’une enquête du carnet : l’identifiant s’il est connu, sinon le nombre de preuves (anciennes données). */
+function niveauDe(x){ return NIV[x.d] || NIV[x.niveau] || NIVEAUX.find(v=>v.id!=="pro" && v.n===(x.n ?? x.difficulte)) || NIVEAUX[0]; }
+
+/* Lune de sang : toutes les entités sont 15 % plus rapides en chasse. */
+const LUNE = 1.15;
+/* Rythme des pas : l’entité fait un pas toutes les (1/v − 0,075) secondes, v en m/s. */
+const PAS_FIXE = 0.075;
+const vitesseDesPas = T => 1/(T+PAS_FIXE);        // T : intervalle moyen entre deux pas, en secondes
+const cadenceDe = v => 60/(1/v-PAS_FIXE);         // pas par minute à la vitesse v
+/* Ce qui a été observé : une mesure au rond des pas (précise à 5 % près), sinon un choix à l’oreille. */
+function vitesseVue(s){
+  if(s.pas) return {r:[s.pas*.95,s.pas*1.05], flou:.1};
+  if(s.vit) return {r:VITESSES.find(v=>v.id===s.vit).r, flou:.2};
+  return null;
+}
+/* Catégorie à l’oreille qui correspond à une vitesse mesurée. */
+function categorieDe(v){ return v<1.585?"l":v<=1.815?"n":"r"; }
+
+function etatVide(){ return {d:"normale", n:3, ev:Object.fromEntries(EV.map(e=>[e.id,0])), vit:null, pas:null, lune:false, chasse:null, vu:{}, struck:{}}; }
 function combos(arr,k){
   if(k===0) return [[]];
   if(arr.length<k) return [];
@@ -629,13 +700,14 @@ function preuveL(g,n,found,excl){
   if(forcee) return {l:0,r:EVN[forcee].c+" exclue"};
   return {l:0,r:"Trop de preuves"};
 }
-function vitesseL(g,vit){
-  if(!vit) return 1;
-  const [olo,ohi]=VITESSES.find(v=>v.id===vit).r;
+function vitesseL(g,s){
+  const vue=vitesseVue(s);
+  if(!vue) return 1;
+  const [olo,ohi]=vue.r, k=s.lune?LUNE:1;
   let best=0;
   for(const [lo,hi] of g.sp){
-    const d=Math.max(0,lo-ohi,olo-hi);
-    best=Math.max(best,d===0?1:Math.max(.04,Math.exp(-((d/.2)**2))));
+    const d=Math.max(0,lo*k-ohi,olo-hi*k);
+    best=Math.max(best,d===0?1:Math.max(.04,Math.exp(-((d/vue.flou)**2))));
   }
   return best;
 }
@@ -658,7 +730,7 @@ function calculer(s){
       if(id===g.id) continue;
       if(g.id==="mimic") w*=.15; else tue("Signe vu : "+GH[id].n);
     }
-    w*=vitesseL(g,s.vit)*chasseL(g,s.chasse);
+    w*=vitesseL(g,s)*chasseL(g,s.chasse);
     return {g,w,raison};
   });
   const total=liste.reduce((a,x)=>a+x.w,0);
@@ -696,10 +768,11 @@ const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelect
 const fr=v=>v.toLocaleString("fr-FR",{maximumFractionDigits:2});
 const pct=p=>p>=.995?"100 %":p<.01&&p>0?"< 1 %":Math.round(p*100)+" %";
 const seuil=g=>g.id==="mimic"?"variable":g.tMin===g.tMax?g.tMax+" %":g.tMin+" à "+g.tMax+" %";
-const vitesse=g=>{ if(g.id==="mimic") return "variable"; const a=Math.min(...g.sp.map(r=>r[0])), b=Math.max(...g.sp.map(r=>r[1])); return (a===b?fr(a):fr(a)+" à "+fr(b))+" m/s"; };
+const vitesse=(g,k=1)=>{ if(g.id==="mimic") return "variable"; const m=x=>Math.round(x*k*1000)/1000, a=m(Math.min(...g.sp.map(r=>r[0]))), b=m(Math.max(...g.sp.map(r=>r[1]))); return (a===b?fr(a):fr(a)+" à "+fr(b))+" m/s"; };
+const fr2=v=>v.toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2});
 const CLE="grimoire-entites-v2";
 let S=etatVide(), TAB="enquete";
-try{ const d=JSON.parse(localStorage.getItem(CLE)||"null"); if(d&&d.s&&d.s.ev){ S=Object.assign(etatVide(),d.s); TAB=d.tab||TAB; } }catch(e){}
+try{ const d=JSON.parse(localStorage.getItem(CLE)||"null"); if(d&&d.s&&d.s.ev){ S=Object.assign(etatVide(),d.s); if(!d.s.d) delete S.d; S.d=niveauDe(S).id; S.n=NIV[S.d].n; TAB=d.tab||TAB; } }catch(e){}
 function ecrire(){ try{ localStorage.setItem(CLE,JSON.stringify({s:S,tab:TAB})); }catch(e){} }
 const ouverts=new Set(), fermes=new Set();
 const AMB={n:16,sale:true,redessine:null};
@@ -750,10 +823,11 @@ $("#preuves").innerHTML=EV.map(e=>`<button class="sceau" id="p-${e.id}" data-act
   <span class="disque"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${GLYPHES[e.id]}</svg></span>
   <span class="nom">${e.c==="UV"?"Ultraviolet":e.c}</span></button>`).join("");
 
-const N_OPT=[[3,"Normale",""],[2,"Cauchemar","Une preuve est cachée."],[1,"Démence","Deux preuves sont cachées."],[0,"0 preuve","Seuls les signes comptent. Des orbes désignent le Mimic."]];
-/* La lune décroît avec la difficulté : pleine, demi, croissant, nouvelle. */
-const LUNES={3:`<circle cx="8" cy="8" r="6" fill="currentColor"/>`,2:`<path d="M8 2a6 6 0 0 1 0 12z" fill="currentColor"/>`,1:`<path d="M8 2a6 6 0 0 1 0 12a3.400 6 0 0 0 0-12z" fill="currentColor"/>`,0:``};
-$("#seg-n").innerHTML=N_OPT.map(([v,l])=>`<button data-act="n" data-v="${v}"><svg viewBox="0 0 16 16" aria-hidden="true">${LUNES[v]}<circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.300"/></svg>${l}</button>`).join("");
+/* La lune décroît avec la difficulté : pleine, gibbeuse, demi, croissant, nouvelle. */
+const LUNES={normale:`<circle cx="8" cy="8" r="6" fill="currentColor"/>`,pro:`<path d="M8 2a6 6 0 0 1 0 12a3.400 6 0 0 1 0-12z" fill="currentColor"/>`,cauchemar:`<path d="M8 2a6 6 0 0 1 0 12z" fill="currentColor"/>`,demence:`<path d="M8 2a6 6 0 0 1 0 12a3.400 6 0 0 0 0-12z" fill="currentColor"/>`,zero:``};
+$("#seg-n").innerHTML=NIVEAUX.map(v=>`<button data-act="niveau" data-id="${v.id}"><svg viewBox="0 0 16 16" aria-hidden="true">${LUNES[v.id]}<circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.300"/></svg>${v.nom}</button>`).join("");
+/* Thème et nombre d’orbes d’ambiance par difficulté. */
+const AMBIANCE={normale:["3",16],pro:["p",14],cauchemar:["2",12],demence:["1",8],zero:["0",4]};
 $("#seg-vit").innerHTML=VITESSES.map(v=>`<button data-act="vit" data-id="${v.id}" aria-pressed="false">${v.n}</button>`).join("");
 $("#seg-chasse").innerHTML=CHASSES.map(v=>`<button data-act="chasse" data-id="${v.id}" aria-pressed="false">${v.n}</button>`).join("");
 
@@ -767,10 +841,12 @@ function puces(g,found){
 function rendre(){
   const res=calculer(S);
   const vivants=res.liste.filter(x=>x.p>0), morts=res.liste.filter(x=>x.p<=0);
-  document.documentElement.dataset.niveau=S.n;
-  AMB.n=[4,8,12,16][S.n]; AMB.sale=true; if(AMB.redessine) AMB.redessine();
-  $$("#seg-n button").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.v===S.n));
-  const aide=$("#n-aide"); aide.hidden=S.n===3; aide.textContent=N_OPT.find(o=>o[0]===S.n)[2];
+  const racine=document.documentElement;
+  racine.dataset.niveau=AMBIANCE[S.d][0];
+  if(S.lune) racine.dataset.lune=""; else delete racine.dataset.lune;
+  AMB.n=AMBIANCE[S.d][1]; AMB.sale=true; if(AMB.redessine) AMB.redessine();
+  $$("#seg-n button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.id===S.d));
+  const aide=$("#n-aide"); aide.hidden=!NIV[S.d].aide; aide.textContent=NIV[S.d].aide;
   let nb=0, trouvees=0;
   EV.forEach(e=>{
     const el=$("#p-"+e.id), v=S.ev[e.id]; if(v!==0) nb++; if(v===1) trouvees++;
@@ -780,12 +856,15 @@ function rendre(){
     el.setAttribute("aria-label",e.n+" : "+(imp?"plus possible":ETATS[v]));
   });
   $("#compte-preuves").textContent=trouvees?trouvees+" trouvée"+(trouvees>1?"s":""):"";
-  $$("#seg-vit button").forEach(b=>b.setAttribute("aria-pressed",S.vit===b.dataset.id));
+  const cat=vitesseChoisie();
+  $$("#seg-vit button").forEach(b=>b.setAttribute("aria-pressed",cat===b.dataset.id));
+  $("#btn-lune").setAttribute("aria-pressed",!!S.lune); $("#lune-aide").hidden=!S.lune;
+  majPas();
   $$("#seg-chasse button").forEach(b=>b.setAttribute("aria-pressed",S.chasse===b.dataset.id));
 
   const V=$("#verdict"), tete=vivants[0];
   const plancher=tete?tete.p*.1:0, probables=vivants.filter(x=>x.p>=plancher), faibles=vivants.filter(x=>x.p<plancher);
-  const vide=nb===0&&!S.vit&&!S.chasse&&!Object.keys(S.vu).length&&!Object.keys(S.struck).length;
+  const vide=nb===0&&!S.vit&&!S.pas&&!S.chasse&&!Object.keys(S.vu).length&&!Object.keys(S.struck).length;
   let barre;
   if(!vivants.length){
     V.innerHTML=`<div class="verdict alerte">${planchette("0")}<div><span class="label">Contradiction</span><h2>Aucune entité ne correspond</h2>
@@ -812,7 +891,7 @@ function rendre(){
     <summary><span class="rang-nom">${g.n}</span><span class="rang-pct">${pct(x.p)}</span>
     <span class="rang-bar"><i style="width:${Math.max(4,x.p/max*100)}%"></i></span><span class="puces">${puces(g,res.found)}</span></summary>
     <div class="fiche"><p class="signe"><span>${g.signe}</span></p><p class="petit">${g.test}</p>
-    <p class="chiffres">Chasse dès ${seuil(g)}${g.note?" ("+g.note+")":""} · ${vitesse(g)}</p>
+    <p class="chiffres">Chasse dès ${seuil(g)}${g.note?" ("+g.note+")":""} · ${vitesse(g,S.lune?LUNE:1)}${S.lune&&g.id!=="mimic"?" sous la Lune de sang":""}</p>
     <div class="ligne"><button class="btn" data-act="vu" data-id="${g.id}" aria-pressed="${!!S.vu[g.id]}">Signe vu</button><button class="btn discret" data-act="ecarter" data-id="${g.id}">Écarter</button></div></div></details>`; }).join("");
   $("#ecartees").innerHTML=(faibles.length?`<details class="ecartees faibles"><summary>${faibles.length} peu probable${faibles.length>1?"s":""}</summary><ul>${
     faibles.map(x=>`<li><b>${x.g.n}</b><span>${pct(x.p)}</span></li>`).join("")}</ul></details>`:"")+(morts.length?`<details class="ecartees"><summary>${morts.length} écartée${morts.length>1?"s":""}</summary><ul>${
@@ -874,17 +953,59 @@ function tick(){
 }
 setInterval(tick,250);
 
+/* Rond des pas : un appui par pas entendu. La moyenne des huit derniers intervalles donne la vitesse ;
+   la mesure entre dans l’enquête au quatrième appui et reste affichée jusqu’à « Effacer ». Quatre secondes sans appui : nouvelle série. */
+const PAS={t:[],v:null,veille:null};
+const GLYPHE_PAS=`<svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><ellipse cx="10.500" cy="20" rx="3.700" ry="5.400" transform="rotate(-8 10.500 20)"/><circle cx="10" cy="11.400" r="2.300"/><ellipse cx="21.500" cy="12.600" rx="3.700" ry="5.400" transform="rotate(8 21.500 12.600)"/><circle cx="22" cy="4" r="2.300"/></svg>`;
+const NOM_VITESSE={l:"lente",n:"normale",r:"rapide"};
+/* Catégorie allumée : celle choisie à l’oreille, sinon celle où tombe la mesure. */
+function vitesseChoisie(){ return S.vit||(S.pas?categorieDe(S.pas):null); }
+const enSerie=()=>PAS.t.length>0&&performance.now()-PAS.t[PAS.t.length-1]<4000;
+function majPas(){
+  const b=$("#tambour"), serie=enSerie(), v=serie&&PAS.v?PAS.v:S.pas;
+  b.classList.toggle("mesure",!!S.pas);
+  b.innerHTML=v?`<b>${v>4.6?"> 4,6":fr2(v)}</b><small>m/s</small>`:`${GLYPHE_PAS}<small>à chaque pas</small>`;
+  const e=$("#pas-etat");
+  if(serie&&PAS.v>4.6) e.textContent="Trop rapide pour des pas : reprends au rythme entendu.";
+  else if(S.pas) e.innerHTML=`${Math.round(cadenceDe(S.pas))} pas par minute, vitesse ${NOM_VITESSE[categorieDe(S.pas)]}. <button class="lien" type="button" data-act="pas-zero">Effacer</button>`;
+  else if(serie) e.textContent="Continue : encore quelques pas.";
+  else e.textContent="Appuie sur le rond à chaque pas entendu, ou choisis à l’oreille.";
+}
+function battre(){
+  const t=performance.now(), b=$("#tambour");
+  if(!enSerie()){ PAS.t=[]; PAS.v=null; }
+  PAS.t.push(t); if(PAS.t.length>9) PAS.t.shift();
+  b.classList.remove("bat"); void b.offsetWidth; b.classList.add("bat");
+  const n=PAS.t.length;
+  PAS.v=n>=3?vitesseDesPas((PAS.t[n-1]-PAS.t[0])/(n-1)/1000):null;
+  clearTimeout(PAS.veille); PAS.veille=setTimeout(majPas,4100);
+  if(n>=4&&PAS.v<=4.6){ S.pas=Math.round(PAS.v*100)/100; S.vit=null; rendre(); } else majPas();
+}
+(function(){
+  /* L’appui est compté dès que le doigt touche le rond (pointerdown), pas au relâchement : le rythme reste juste. */
+  const b=$("#tambour"), touche=e=>e.key===" "||e.key==="Enter"; let dejaCompte=false;
+  b.addEventListener("pointerdown",e=>{ if(e.button===0||e.pointerType!=="mouse"){ dejaCompte=true; battre(); } });
+  b.addEventListener("keydown",e=>{ if(touche(e)){ e.preventDefault(); if(!e.repeat) battre(); } });
+  b.addEventListener("keyup",e=>{ if(touche(e)) e.preventDefault(); });
+  /* Activation sans pointeur ni clavier (lecteur d’écran) : le clic seul compte comme un appui. */
+  b.addEventListener("click",()=>{ if(dejaCompte){ dejaCompte=false; return; } battre(); });
+})();
+
+/* Nouvelle enquête : tout repart de zéro, minuteurs et rond des pas compris. Seule la difficulté est conservée. */
+function repartir(){ const d=S.d; S=etatVide(); S.d=d; S.n=NIV[d].n; PAS.t=[]; PAS.v=null; ouverts.clear(); fermes.clear(); zero("enc"); zero("cd"); }
+
 /* Actions */
 const ACT={
-  n:b=>{ S.n=+b.dataset.v; },
+  niveau:b=>{ S.d=b.dataset.id; S.n=NIV[S.d].n; },
   ev:b=>{ const id=b.dataset.id; S.ev[id]=S.ev[id]===0?1:S.ev[id]===1?-1:0; b.classList.remove("eclat"); if(S.ev[id]===1){ void b.offsetWidth; b.classList.add("eclat"); } },
-  vit:b=>{ S.vit=S.vit===b.dataset.id?null:b.dataset.id; },
+  vit:b=>{ S.vit=vitesseChoisie()===b.dataset.id?null:b.dataset.id; S.pas=null; PAS.t=[]; },
+  "pas-zero":()=>{ S.pas=null; PAS.t=[]; },
+  lune:()=>{ S.lune=!S.lune; },
   chasse:b=>{ S.chasse=S.chasse===b.dataset.id?null:b.dataset.id; },
   vu:b=>{ const id=b.dataset.id; S.vu[id]?delete S.vu[id]:S.vu[id]=true; },
   ecarter:b=>{ const id=b.dataset.id; S.struck[id]=true; delete S.vu[id]; ouverts.delete(id); },
   reprendre:b=>{ delete S.struck[b.dataset.id]; },
-  /* Nouvelle enquête : tout repart de zéro, minuteurs compris. Seule la difficulté est conservée. */
-  reset:()=>{ const n=S.n; S=etatVide(); S.n=n; ouverts.clear(); fermes.clear(); zero("enc"); zero("cd"); toast("Nouvelle enquête : relevés et minuteurs à zéro"); },
+  reset:()=>{ repartir(); toast("Nouvelle enquête : relevés et minuteurs à zéro"); },
   voir:()=>{ $("#resultat").scrollIntoView({behavior:"smooth",block:"start"}); return false; },
   "enc-go":()=>{ T.enc=Date.now(); tick(); return false; },
   "enc-zero":()=>{ zero("enc"); return false; },
@@ -905,8 +1026,7 @@ const ACT={
    Sans configuration Supabase (config.js vide), tout fonctionne en mode local : le carnet reste sur l’appareil.
    Avec Supabase : comptes par mail, carnet dans le compte, amis par code, classement. */
 const esc=t=>String(t??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const DIFF={3:"Normale",2:"Cauchemar",1:"Démence",0:"0 preuve"};
-const LIEUX=["6 Tanglewood Drive","42 Edgefield Road","10 Ridgeview Court","13 Willow Street","Grafton Farmhouse","Camp Woodwind","Nell’s Diner","Bleasdale Farmhouse","Maple Lodge Campsite","Prison","Sunny Meadows Restricted","Point Hope","Brownstone High School","Sunny Meadows Mental Institution"];
+const LIEUX=["6 Tanglewood Drive","42 Edgefield Road","10 Ridgeview Court","13 Willow Street","Grafton Farmhouse","Camp Woodwind","Nell’s Diner","Bleasdale Farmhouse","Maple Lodge Campsite","Prison","Prison Restricted","Sunny Meadows Restricted","Point Hope","Point Hope Restricted","Brownstone High School","Brownstone High School Restricted","Sunny Meadows Mental Institution"];
 const nomEntite=id=>GH[id]?GH[id].n:id;
 const quand=d=>{ const x=new Date(d); return x.toLocaleDateString("fr-FR",{day:"numeric",month:"short",year:"numeric"})+" à "+x.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}); };
 const reussie=e=>e.annoncee===e.reelle;
@@ -944,27 +1064,31 @@ function ouvrirCloture(){
   let dernier=""; try{ dernier=localStorage.getItem(CLE_LIEU)||""; }catch(e){}
   $("#c-lieu").innerHTML=`<option value="">Non précisé</option>`+LIEUX.map(l=>`<option${l===dernier?" selected":""}>${l}</option>`).join("");
   SURVIE=true; reelleTouchee=false; majSurvie();
-  $("#c-info").textContent="Difficulté : "+DIFF[S.n]+". "+(sb&&uid()?"L’enquête sera ajoutée à ton compte.":"L’enquête sera gardée sur cet appareil.");
+  $("#c-info").textContent="Difficulté : "+NIV[S.d].nom+". "+(sb&&uid()?"L’enquête sera ajoutée à ton compte.":"L’enquête sera gardée sur cet appareil.");
   $("#cloture").hidden=false; $("#btn-cloture").hidden=true;
   $("#c-reelle").focus();
 }
 function fermerCloture(){ $("#cloture").hidden=true; $("#btn-cloture").hidden=false; }
 function majSurvie(){ $$("#c-survie button").forEach(b=>b.setAttribute("aria-pressed",(b.dataset.v==="1")===SURVIE)); }
+/* Ligne envoyée au compte. Le niveau (Professionnel, etc.) va dans la colonne « niveau » ; tant que la base
+   n’a pas cette colonne (schema.sql pas encore relancé), l’envoi est refait sans elle pour ne perdre aucune enquête. */
+const ligneCompte=(e,avecNiveau)=>{ const l={lieu:e.lieu,difficulte:e.difficulte,annoncee:e.annoncee,reelle:e.reelle,survecu:e.survecu,preuves:e.preuves||[]}; if(avecNiveau&&e.niveau) l.niveau=e.niveau; return l; };
 async function enregistrerEnquete(e){
   if(sb&&uid()){
-    const {data,error}=await sb.from("investigations").insert({lieu:e.lieu,difficulte:e.difficulte,annoncee:e.annoncee,reelle:e.reelle,survecu:e.survecu,preuves:e.preuves}).select().single();
-    if(!error&&data){ DISTANT.unshift(data); chargerClassement(); return "compte"; }
+    let r=await sb.from("investigations").insert(ligneCompte(e,true)).select().single();
+    if(r.error&&e.niveau) r=await sb.from("investigations").insert(ligneCompte(e,false)).select().single();
+    if(!r.error&&r.data){ DISTANT.unshift(r.data); chargerClassement(); return "compte"; }
   }
   LOCAL.unshift(e); ecrireLocal(); return "local";
 }
 async function soumettreCloture(){
   const res=calculer(S);
-  const e={id:"l-"+Date.now(),created_at:new Date().toISOString(),lieu:$("#c-lieu").value||null,difficulte:S.n,
+  const e={id:"l-"+Date.now(),created_at:new Date().toISOString(),lieu:$("#c-lieu").value||null,difficulte:S.n,niveau:S.d,
     annoncee:$("#c-annoncee").value,reelle:$("#c-reelle").value,survecu:SURVIE,preuves:res.found};
   try{ localStorage.setItem(CLE_LIEU,e.lieu||""); }catch(x){}
   const ou=await enregistrerEnquete(e);
   fermerCloture();
-  const n=S.n; S=etatVide(); S.n=n; ouverts.clear(); fermes.clear(); zero("enc"); zero("cd"); rendre();
+  repartir(); rendre();
   toast((reussie(e)?"Entité trouvée : "+nomEntite(e.reelle):"Raté : c’était "+nomEntite(e.reelle))+(ou==="local"&&sb&&uid()?" (envoi en attente)":""));
   rendreCarnet(); rendreClassement();
 }
@@ -1018,7 +1142,7 @@ function rendreCarnet(){
 }
 function ligneEnquete(e,mienne,avecDate){
   const ok=reussie(e);
-  const infos=[avecDate?quand(e.created_at):heure(e.created_at),e.lieu||"lieu non précisé",DIFF[e.difficulte]||"",e.survecu?"survécu":"mort"].filter(Boolean);
+  const infos=[avecDate?quand(e.created_at):heure(e.created_at),e.lieu||"lieu non précisé",niveauDe(e).nom,e.survecu?"survécu":"mort"].filter(Boolean);
   if(e.local) infos.push("sur cet appareil");
   return `<div class="enq ${ok?"ok":"rate"}"><span class="quoi">${ok?esc(nomEntite(e.reelle)):`<s>${esc(nomEntite(e.annoncee))}</s> → ${esc(nomEntite(e.reelle))}`}</span>
     <span class="issue ${ok?"":"rate"}">${ok?"trouvée":"ratée"}</span>
@@ -1170,10 +1294,11 @@ function rendreClassement(){
 /* ---------- Chargements ---------- */
 async function synchroniser(){
   if(!sb||!uid()||!LOCAL.length) return 0;
-  const lot=LOCAL.map(e=>({created_at:e.created_at,lieu:e.lieu,difficulte:e.difficulte,annoncee:e.annoncee,reelle:e.reelle,survecu:e.survecu,preuves:e.preuves||[]}));
-  const {error}=await sb.from("investigations").insert(lot);
+  const lot=avec=>LOCAL.map(e=>({created_at:e.created_at,...ligneCompte(e,avec)}));
+  let {error}=await sb.from("investigations").insert(lot(true));
+  if(error&&LOCAL.some(e=>e.niveau)) ({error}=await sb.from("investigations").insert(lot(false)));
   if(error) return 0;
-  LOCAL=[]; ecrireLocal(); return lot.length;
+  const n=LOCAL.length; LOCAL=[]; ecrireLocal(); return n;
 }
 async function chargerClassement(){
   if(!sb||!uid()) return;
@@ -1288,6 +1413,25 @@ document.addEventListener("click",e=>{
   const b=e.target.closest("[data-act]"); if(!b) return;
   const f=ACT[b.dataset.act]; if(f&&f(b)!==false) rendre();
 });
+
+/* Annonces : événements du jeu en cours, lus dans annonces.js. Une annonce s’affiche entre ses dates de début et de fin,
+   dépliée la première fois, puis repliée sur une ligne une fois refermée. */
+(function(){
+  const CLE_LUES="grimoire-annonces-lues";
+  const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+  const auj=iso(new Date());
+  const liste=(Array.isArray(window.GRIMOIRE_ANNONCES)?window.GRIMOIRE_ANNONCES:[]).filter(a=>a&&a.id&&a.titre&&(!a.debut||a.debut<=auj)&&(!a.fin||a.fin>=auj));
+  if(!liste.length) return;
+  let lues=[]; try{ const l=JSON.parse(localStorage.getItem(CLE_LUES)||"[]"); if(Array.isArray(l)) lues=l; }catch(e){}
+  const jour=t=>{ const [a,m,j]=t.split("-").map(Number); return (j===1?"1er":j)+" "+new Date(a,m-1,j).toLocaleDateString("fr-FR",{month:"long"}); };
+  const z=$("#annonces");
+  z.innerHTML=liste.map(a=>`<details class="annonce" data-id="${esc(a.id)}"${lues.includes(a.id)?"":" open"}>
+    <summary><span class="label">${esc(a.genre||"Annonce")}${a.fin?" · jusqu’au "+jour(a.fin):""}</span><b>${esc(a.titre)}</b></summary>
+    <div class="corps">${[].concat(a.texte||[]).map(t=>`<p>${esc(t)}</p>`).join("")}${/^https:\/\//.test(a.lien||"")?`<p><a href="${esc(a.lien)}" target="_blank" rel="noopener">Annonce officielle</a></p>`:""}</div></details>`).join("");
+  z.hidden=false;
+  z.addEventListener("toggle",e=>{ const id=e.target.dataset&&e.target.dataset.id; if(!id||e.target.open||lues.includes(id)) return;
+    lues=[...lues,id].slice(-20); try{ localStorage.setItem(CLE_LUES,JSON.stringify(lues)); }catch(x){} },true);
+})();
 
 /* Orbes d’ambiance */
 (function(){

@@ -21,9 +21,14 @@ create table if not exists public.investigations (
   reelle     text not null,                              -- entité révélée en fin de contrat
   correct    boolean generated always as (annoncee = reelle) stored,
   survecu    boolean not null default true,
-  preuves    text[] not null default '{}'
+  preuves    text[] not null default '{}',
+  niveau     text check (niveau is null or char_length(niveau) between 1 and 20)  -- difficulté choisie : normale, pro, cauchemar, demence, zero
 );
 create index if not exists investigations_user_date on public.investigations (user_id, created_at desc);
+
+-- Bases créées avant l'ajout du niveau Professionnel : la colonne est ajoutée sans toucher aux enquêtes existantes.
+alter table public.investigations
+  add column if not exists niveau text check (niveau is null or char_length(niveau) between 1 and 20);
 
 create table if not exists public.friendships (
   id         uuid primary key default gen_random_uuid(),
@@ -244,3 +249,6 @@ grant execute on function public.sont_lies(uuid, uuid)       to authenticated;
 grant execute on function public.demander_ami(text)          to authenticated;
 grant execute on function public.repondre_ami(uuid, boolean) to authenticated;
 grant execute on function public.classement()                to authenticated;
+
+-- Fait relire le schéma à l'API tout de suite, pour que l'appli voie les nouvelles colonnes.
+notify pgrst, 'reload schema';
