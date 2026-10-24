@@ -435,6 +435,36 @@ input,select{font:inherit;color:inherit;background:var(--nuit);border:1px solid 
 .cr-joueur.ouvert{border-color:var(--cierge)}
 .cr-joueur .cr-detail{display:flex;flex-direction:column;gap:12px;padding-top:10px;border-top:1px solid var(--trait)}
 .cr-danger{color:var(--sang);border-color:var(--sang)}
+#bloc-createur>header .ligne{flex-wrap:wrap;justify-content:flex-end}
+#bloc-createur .choix{flex-wrap:wrap}
+.cr-signal{background:var(--voile2);border:1px solid var(--trait);border-radius:var(--petale);padding:10px 14px;display:flex;flex-direction:column;gap:6px}
+.cr-signal.nouveau{border-color:color-mix(in srgb,var(--cierge) 60%,var(--trait))}
+.cr-signal p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.cr-signal .ligne{justify-content:space-between;flex-wrap:wrap}
+.cr-majs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.cr-majs li{display:flex;flex-direction:column;gap:2px;border-left:2px solid var(--trait);padding-left:12px}
+.cr-majs li.donnees{border-left-color:var(--cierge)}
+.cr-fiab{font-family:var(--f-data);font-size:34px;color:var(--os)}
+/* Défis vus par les joueurs */
+.defis{display:flex;flex-direction:column;gap:10px}
+.defi{background:var(--voile);border:1px solid color-mix(in srgb,var(--cierge) 40%,var(--trait));border-radius:var(--feuille);padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.defi .ligne{justify-content:space-between;flex-wrap:wrap}
+.defi b{font-size:17px}
+.defi p{margin:0}
+.defi-moi{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;align-items:center}
+.defi-moi .part i{background:linear-gradient(90deg,color-mix(in srgb,var(--cierge) 55%,transparent),var(--cierge))}
+.defi-rang{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 14px;font-size:14px;color:var(--cendre)}
+.defi-rang .fait{color:var(--cierge)}
+/* Fenêtre de signalement */
+.signal-voile{position:fixed;inset:0;z-index:40;display:grid;place-items:center;padding:16px;background:rgba(0,0,0,.55);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.signal-voile[hidden]{display:none}
+.signal{width:min(520px,100%);background:var(--voile);border:1px solid var(--trait);border-radius:var(--feuille);padding:20px;box-shadow:0 20px 60px -20px rgba(0,0,0,.6)}
+.signal h2{font-size:24px}
+.signaler{margin:6px 0 0}
+.signaler .lien{font-size:13.5px;color:var(--cendre)}
+/* Bouton de retour quand le créateur regarde l’appli comme un joueur */
+.vue-joueur{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:30;font-family:var(--f-data);font-size:12.5px;letter-spacing:.04em;padding:9px 16px;border-radius:999px;border:1px solid var(--cierge);background:color-mix(in srgb,var(--nuit) 85%,transparent);color:var(--cierge);box-shadow:0 0 22px -6px var(--cierge);cursor:pointer}
+.vue-joueur[hidden]{display:none}
 .cr-danger.plein{background:var(--sang);color:#fff}
 textarea{font:inherit;font-family:var(--f-texte);font-size:16px;color:var(--os);background:var(--nuit);border:1px solid var(--trait);border-radius:var(--petale);padding:8px 11px;min-height:110px;resize:vertical;max-width:100%}
 .champs label>textarea{letter-spacing:0;text-transform:none}
@@ -658,6 +688,10 @@ footer{margin-top:36px;padding-top:16px;color:var(--cendre);font-size:13.5px;max
           </div>
         </div>
         <div class="colonne">
+          <div class="bloc" id="bloc-defis" hidden>
+            <header><h2>Défis</h2><span class="label" id="defis-etat"></span></header>
+            <div id="defis" class="defis"></div>
+          </div>
           <div class="bloc">
             <header><h2>Classement</h2><span class="label">toi et tes amis</span></header>
             <div class="choix" id="tri" role="group" aria-label="Trier le classement"></div>
@@ -671,11 +705,21 @@ footer{margin-top:36px;padding-top:16px;color:var(--cendre);font-size:13.5px;max
     </section>
   </main>
 
-  <footer>Outil de fan non officiel, sans lien avec Kinetic Games. Données de la version 0.19.1 du jeu, octobre 2026.</footer>
+  <footer>Outil de fan non officiel, sans lien avec Kinetic Games. Données de la version <span id="version-jeu">0.19.1</span> du jeu, <span id="date-donnees">octobre 2026</span>.</footer>
 </div>
 
 <div class="barre" id="barre"><span id="barre-txt"></span><button class="btn" data-act="voir">Voir</button></div>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<div class="signal-voile" id="signalement" hidden>
+  <form class="signal champs" id="f-signal" role="dialog" aria-modal="true" aria-labelledby="signal-titre">
+    <h2 id="signal-titre">Signaler une erreur</h2>
+    <p class="petit" id="signal-sujet"></p>
+    <label>Qu’est-ce qui est faux ?<textarea name="message" id="signal-message" minlength="3" maxlength="1000" required placeholder="Ex. : depuis la dernière mise à jour, sa vitesse n’est plus la même."></textarea></label>
+    <div class="ligne"><button class="btn plein" type="submit" id="signal-envoyer">Envoyer au créateur</button><button class="lien" type="button" data-act="signal-fermer">Annuler</button></div>
+    <p class="message" id="msg-signal" role="status"></p>
+  </form>
+</div>
+<button class="vue-joueur" id="vue-joueur" type="button" data-act="vue-createur" hidden>Vue joueur · revenir en créateur</button>
 
 <script src="supabase.js"></script>
 <script src="config.js"></script>
@@ -961,11 +1005,12 @@ const FICHES = {
 };
 /* Espaces insécables : pas de retour à la ligne avant « : » ni entre un nombre et son unité. */
 const insec=t=>t.replace(/ ([:;?!»])/g,"\u00a0$1").replace(/« /g,"«\u00a0").replace(/(\d) (s|m|m\/s|min|%|°C|fois)(?![\wà-ÿ])/g,"$1\u00a0$2");
+const lienSignal=g=>`<p class="signaler"><button class="lien" type="button" data-act="signaler" data-id="${g.id}">Signaler une erreur sur cette fiche</button></p>`;
 function traits(g){
-  const f=FICHES[g.id]; if(!f) return "";
+  const f=FICHES[g.id]; if(!f) return lienSignal(g);
   return `<dl class="traits"><div class="force"><dt>Force</dt><dd>${insec(f.f)}</dd></div><div class="faible"><dt>Faiblesse</dt><dd>${insec(f.w)}</dd></div>${
     f.plus&&f.plus.length?`<div><dt>À savoir</dt><dd><ul>${f.plus.map(t=>`<li>${insec(t)}</li>`).join("")}</ul></dd></div>`:""}${
-    f.x?`<div class="exclu"><dt>L’écarte</dt><dd>${insec(f.x)}</dd></div>`:""}</dl>`;
+    f.x?`<div class="exclu"><dt>L’écarte</dt><dd>${insec(f.x)}</dd></div>`:""}</dl>${lienSignal(g)}`;
 }
 const AMB={n:16,sale:true,redessine:null};
 
@@ -1293,12 +1338,14 @@ function fermerCloture(){ $("#cloture").hidden=true; $("#btn-cloture").hidden=fa
 function majSurvie(){ $$("#c-survie button").forEach(b=>b.setAttribute("aria-pressed",(b.dataset.v==="1")===SURVIE)); }
 /* Ligne envoyée au compte, du plus complet au plus simple. Tant que la base n’a pas les colonnes récentes
    (schema.sql pas encore relancé), l’envoi est refait sans elles pour ne perdre aucune enquête.
-   Palier 2 : tout. Palier 1 : sans les détails (joueurs, objectifs, os, parfaite). Palier 0 : sans le niveau non plus. */
-let PALIER=2;
+   Palier 3 : tout. Palier 2 : sans la prédiction du Grimoire. Palier 1 : sans les détails (joueurs, objectifs, os, parfaite).
+   Palier 0 : sans le niveau non plus. */
+let PALIER=3;
 const ligneCompte=(e,palier)=>{
   const l={lieu:e.lieu,difficulte:e.difficulte,annoncee:e.annoncee,reelle:e.reelle,survecu:e.survecu,preuves:e.preuves||[]};
   if(palier>=1) l.niveau=e.niveau??null;
   if(palier>=2){ l.joueurs=e.joueurs??null; l.objectifs=e.objectifs??null; l.os=!!e.os; l.parfaite=!!e.parfaite; }
+  if(palier>=3) l.prediction=e.prediction??null;
   return l;
 };
 const colonneAbsente=er=>!!er&&(er.code==="PGRST204"||er.code==="42703"||/column/i.test(er.message||""));
@@ -1323,6 +1370,7 @@ async function soumettreCloture(){
     annoncee:$("#c-annoncee").value,reelle:$("#c-reelle").value,survecu:SURVIE,preuves:res.found,
     joueurs:JOUEURS,objectifs:OBJECTIFS,os:OS,parfaite:false};
   e.parfaite=PARFAITE&&reussie(e);
+  e.prediction=res.liste[0]&&res.liste[0].p>0?res.liste[0].g.id:null;   // ce que le Grimoire plaçait en tête : mesure sa fiabilité
   try{ localStorage.setItem(CLE_LIEU,e.lieu||""); if(JOUEURS) localStorage.setItem(CLE_JOUEURS,JOUEURS); }catch(x){}
   const ou=await enregistrerEnquete(e);
   fermerCloture();
@@ -1631,11 +1679,37 @@ async function chargerAmis(){
   PSEUDOS={};
   if(ids.length){ const {data:ps}=await lireProfils("id,pseudo",q=>q.in("id",ids)); (ps||[]).forEach(p=>{ PSEUDOS[p.id]=p.pseudo; noterCreateur(p.id,p.createur); }); }
   await chargerClassement();
+  chargerDefis();
 }
-function rendreTout(){ rendreCarnet(); rendreCompte(); rendreAmis(); rendreClassement(); rendreCreateur(); }
+function rendreTout(){ rendreCarnet(); rendreCompte(); rendreAmis(); rendreClassement(); rendreDefis(); rendreCreateur(); }
+/* Défis créés par le créateur : progression de chacun et de ses amis, pendant le défi et 7 jours après. */
+let DEFIS=[];
+async function chargerDefis(){
+  if(!sb||!uid()){ DEFIS=[]; rendreDefis(); return; }
+  const {data,error}=await sb.rpc("defis_en_cours");
+  DEFIS=error?[]:(data||[]); rendreDefis();
+}
+const CRITERES={enquetes:["Clôturer","enquête"],trouvees:["Trouver","entité"],survies:["Survivre à","enquête"],parfaites:["Réussir","enquête parfaite","enquêtes parfaites"]};
+function texteCritere(d){
+  const [verbe,un,plusieurs]=CRITERES[d.critere]||CRITERES.enquetes;
+  return `${verbe} ${d.objectif} ${d.objectif>1?(plusieurs||un+"s"):un}${d.niveau?" en "+nomNiveau(d.niveau):""}`;
+}
+function rendreDefis(){
+  const z=$("#bloc-defis"); if(!z) return;
+  if(!DEFIS.length){ z.hidden=true; return; }
+  z.hidden=false;
+  const auj=isoJour(new Date()), moi=uid();
+  $("#defis-etat").textContent=DEFIS.filter(d=>d.fin>=auj).length?"en cours":"terminés";
+  $("#defis").innerHTML=DEFIS.map(d=>{
+    const fini=d.fin<auj, j=d.joueurs||[], m=j.find(x=>x.id===moi)||{valeur:0}, v=Math.min(m.valeur,d.objectif);
+    return `<article class="defi"><div class="ligne"><b>${esc(d.titre)}</b><span class="cr-statut ${fini?"":"en-cours"}">${fini?"terminé":"jusqu’au "+esc(jourCourt(d.fin))}</span></div>
+      <p class="petit">${esc(texteCritere(d))}${d.description?" · "+esc(d.description):""}</p>
+      <div class="defi-moi"><span>Toi : <b>${m.valeur}</b> / ${d.objectif}${m.valeur>=d.objectif?" · réussi":""}</span><span class="part"><i style="width:${v/d.objectif*100}%"></i></span></div>
+      ${j.length>1?`<ol class="defi-rang">${j.map(x=>`<li class="${x.valeur>=d.objectif?"fait":""}">${x.createur?`<span class="nom-createur">${esc(x.pseudo)}</span>`:esc(x.pseudo)} ${x.valeur}${x.valeur>=d.objectif?" ✓":""}</li>`).join("")}</ol>`:""}</article>`; }).join("");
+}
 async function chargerCompte(){
   const moi=uid();
-  if(!sb||!moi){ PROFIL=null; DISTANT=[]; LIENS=[]; PSEUDOS={}; RANGS=[]; CREATEURS.clear(); CR.t=null; CR.erreur=""; CR.joueur=null; CR.edit=null; AMI_VU=null; rendreTout(); return; }
+  if(!sb||!moi){ PROFIL=null; DISTANT=[]; LIENS=[]; PSEUDOS={}; RANGS=[]; DEFIS=[]; CREATEURS.clear(); CR.t=null; CR.erreur=""; CR.joueur=null; CR.edit=null; AMI_VU=null; rendreTout(); return; }
   rendreTout();
   const {data:p}=await lireProfils("id,pseudo,code",q=>q.eq("id",moi).maybeSingle());
   if(p) noterCreateur(p.id,p.createur);
@@ -1734,9 +1808,15 @@ let rafraichirAnnonces=()=>{};
 /* ───────────────── Espace créateur ─────────────────
    Visible seulement pour le compte qui porte le sceau « Créateur ». Chaque action est revérifiée par la base
    (fonctions *_createur, moderer_*, règles de la table annonces) : masquer ce bloc ne protège rien à lui seul. */
-const CR={vue:"tableau", t:null, charge:false, erreur:"", annonces:[], edit:null, retirer:null, joueur:null, enq:[], supprEnq:null, supprCompte:null, msg:""};
+const CR={vue:"tableau", t:null, charge:false, erreur:"", annonces:[], edit:null, retirer:null, joueur:null, enq:[], supprEnq:null, supprCompte:null, msg:"",
+  fiab:null, signaux:[], sigSuppr:null, defis:[], defEdit:null, defSuppr:null, defMsg:"", majs:null, majsErreur:""};
 const CLE_AMB_CREA="grimoire-ambiance-createur";
-const estCreateur=()=>!!(sb&&uid()&&CREATEURS.has(uid()));
+const CLE_VUE_JOUEUR="grimoire-vue-joueur";
+let VUE_JOUEUR=false; try{ VUE_JOUEUR=localStorage.getItem(CLE_VUE_JOUEUR)==="1"; }catch(e){}
+const vraiCreateur=()=>!!(sb&&uid()&&CREATEURS.has(uid()));
+/* En « vue joueur », le créateur voit l’appli comme ses amis : ni onglet Créateur, ni ambiance. Son sceau reste, puisque les autres le voient. */
+const estCreateur=()=>vraiCreateur()&&!VUE_JOUEUR;
+function vueJoueur(oui){ VUE_JOUEUR=oui; try{ localStorage.setItem(CLE_VUE_JOUEUR,oui?"1":"0"); }catch(e){} }
 function ambianceCreateur(){
   let voulue=true; try{ voulue=localStorage.getItem(CLE_AMB_CREA)!=="0"; }catch(e){}
   const active=estCreateur()&&voulue;
@@ -1752,8 +1832,11 @@ const nomNiveau=id=>NIV[id]?NIV[id].nom:/^preuves-(\d)$/.test(id||"")?(({3:"3 pr
 async function chargerCreateur(){
   if(!estCreateur()) return;
   CR.charge=true; CR.erreur=""; rendreCreateur();
-  const [t,a]=await Promise.all([sb.rpc("tableau_createur"), sb.from("annonces").select("*").order("debut",{ascending:false,nullsFirst:false})]);
+  const [t,a,f,sg,df]=await Promise.all([sb.rpc("tableau_createur"), sb.from("annonces").select("*").order("debut",{ascending:false,nullsFirst:false}),
+    sb.rpc("fiabilite_createur"), sb.rpc("signalements_createur"), sb.from("defis").select("*").order("debut",{ascending:false})]);
   CR.charge=false;
+  CR.fiab=f.error?null:f.data; CR.signaux=sg.error?[]:(sg.data||[]); CR.defis=df.error?[]:(df.data||[]);
+  CR.horsBase=!!(f.error||sg.error||df.error);
   if(t.error) CR.erreur=/créateur|42501|function/i.test(t.error.message||"")?"La base n’est pas encore à jour : relance schema.sql dans Supabase.":"Chargement impossible : "+t.error.message;
   else CR.t=t.data;
   if(!a.error) CR.annonces=a.data||[];
@@ -1763,22 +1846,30 @@ function statutAnnonce(a){ const auj=isoJour(new Date()); if(a.fin&&a.fin<auj) r
 function rendreCreateur(){
   const z=$("#bloc-createur"); if(!z) return;
   ambianceCreateur();
+  $("#vue-joueur").hidden=!(vraiCreateur()&&VUE_JOUEUR);
   const o=$("#o-createur"), voit=estCreateur();
   if(o.hidden===voit){ o.hidden=!voit; placerLosange(); }
   if(!voit){ z.hidden=true; if(TAB==="createur") allerA("amis",false); return; }
   z.hidden=false;
   if(!CR.t&&!CR.charge&&!CR.erreur){ chargerCreateur(); return; }
   let amb=true; try{ amb=localStorage.getItem(CLE_AMB_CREA)!=="0"; }catch(e){}
-  const vues=[["tableau","Tableau de bord"],["annonces","Annonces"],["joueurs","Joueurs"]];
-  let h=`<header><h2>Espace créateur ${SCEAU}</h2><span class="ligne"><button class="btn" type="button" data-act="cr-ambiance" aria-pressed="${amb}">Ambiance du créateur</button><button class="lien" type="button" data-act="cr-actualiser">Actualiser</button></span></header>
+  const nouveaux=CR.signaux.filter(x=>!x.traite).length;
+  const vues=[["tableau","Tableau de bord"],["signalements","Signalements"+(nouveaux?` (${nouveaux})`:"")],["defis","Défis"],["annonces","Annonces"],["joueurs","Joueurs"],["majs","Mises à jour"]];
+  let h=`<header><h2>Espace créateur ${SCEAU}</h2><span class="ligne"><button class="btn" type="button" data-act="cr-ambiance" aria-pressed="${amb}">Ambiance du créateur</button><button class="btn" type="button" data-act="cr-sauvegarde">Sauvegarde</button><button class="btn" type="button" data-act="cr-vue-joueur">Voir comme un joueur</button><button class="lien" type="button" data-act="cr-actualiser">Actualiser</button></span></header>
     <div class="choix" role="group" aria-label="Espace créateur">${vues.map(([id,n])=>`<button type="button" data-act="cr-vue" data-id="${id}" aria-pressed="${CR.vue===id}">${n}</button>`).join("")}</div>`;
   if(CR.erreur) h+=`<p class="vide">${esc(CR.erreur)}</p>`;
   else if(!CR.t) h+=`<p class="petit">${CR.charge?"Chargement…":""}</p>`;
   else if(CR.vue==="tableau") h+=vueTableau(CR.t);
   else if(CR.vue==="annonces") h+=vueAnnonces();
+  else if(CR.vue==="signalements") h+=vueSignalements();
+  else if(CR.vue==="defis") h+=vueDefis();
+  else if(CR.vue==="majs") h+=vueMajs();
   else h+=vueJoueurs(CR.t);
+  if(CR.t&&CR.horsBase&&CR.vue!=="majs") h+=`<p class="petit">Une partie de l’Espace créateur attend la mise à jour de la base : relance schema.sql dans Supabase.</p>`;
   z.innerHTML=h;
   if(CR.vue==="annonces") remplirFormAnnonce();
+  if(CR.vue==="defis") remplirFormDefi();
+  if(CR.vue==="majs"&&CR.majs===null&&!CR.majsErreur) chargerMajs();
 }
 function vueTableau(t){
   const p=(a,b)=>b?Math.round(a/b*100)+" %":"—";
@@ -1797,6 +1888,7 @@ function vueTableau(t){
       <section class="cr-section"><h3>Entités les plus croisées</h3>${ent.length?`<ul class="cr-liste">${ent.map(e=>`<li><span>${esc(nomEntite(e.reelle))}</span><small>${e.n} fois · ${p(e.ok,e.n)} trouvée</small><span class="part"><i style="width:${e.n/maxE*100}%"></i></span></li>`).join("")}</ul>`:`<p class="vide">Aucune enquête pour l’instant.</p>`}</section>
       <section class="cr-section"><h3>Lieux</h3>${(t.lieux||[]).length?`<ul class="cr-liste">${t.lieux.map(l=>`<li><span>${esc(l.lieu)}</span><small>${l.n} ${pl(l.n,"enquête")}</small></li>`).join("")}</ul>`:`<p class="petit">Aucun lieu renseigné.</p>`}</section>
       <section class="cr-section"><h3>Difficultés</h3>${(t.niveaux||[]).length?`<ul class="cr-liste">${t.niveaux.map(v=>`<li><span>${esc(nomNiveau(v.niveau))}</span><small>${v.n} ${pl(v.n,"enquête")} · ${p(v.ok,v.n)} de réussite</small></li>`).join("")}</ul>`:`<p class="petit">—</p>`}</section>
+      ${sectionFiabilite(CR.fiab)}
     </div>`;
 }
 function vueAnnonces(){
@@ -1876,6 +1968,155 @@ async function soumettreRenommer(f){
   if(error||data!=="ok"){ if(m){ m.className="message erreur"; m.textContent=error?error.message:data==="invalide"?"Entre 2 et 24 caractères.":"Joueur introuvable."; } return; }
   await chargerCreateur(); await chargerAmis(); rendreTout(); toast("Pseudo modifié");
 }
+/* Fiabilité : la première proposition du Grimoire à la clôture, comparée à la vraie entité. */
+function sectionFiabilite(f){
+  const p=(a,b)=>b?Math.round(a/b*100)+" %":"—";
+  if(!f) return `<section class="cr-section"><h3>Fiabilité du Grimoire</h3><p class="petit">Disponible après la mise à jour de la base.</p></section>`;
+  if(!f.mesurees) return `<section class="cr-section"><h3>Fiabilité du Grimoire</h3><p class="petit">Mesurée à chaque enquête clôturée à partir de maintenant : le Grimoire note l’entité qu’il plaçait en tête, puis la compare à la vraie.</p></section>`;
+  return `<section class="cr-section"><h3>Fiabilité du Grimoire</h3>
+    <p><span class="cr-fiab">${p(f.justes,f.mesurees)}</span> <span class="petit">de premières propositions justes, sur ${f.mesurees} ${pl(f.mesurees,"enquête")}. Les joueurs, eux, ont trouvé ${p(f.joueurs_justes,f.mesurees)}.</span></p>
+    ${(f.niveaux||[]).length?`<ul class="cr-liste">${f.niveaux.map(v=>`<li><span>${esc(nomNiveau(v.niveau))}</span><small>${p(v.ok,v.n)} sur ${v.n}</small></li>`).join("")}</ul>`:""}
+    ${(f.erreurs||[]).length?`<h3>Ses erreurs les plus fréquentes</h3><ul class="cr-liste">${f.erreurs.map(x=>`<li><span>Proposait ${esc(nomEntite(x.prediction))}, c’était ${esc(nomEntite(x.reelle))}</span><small>${x.n} fois</small></li>`).join("")}</ul>`:""}</section>`;
+}
+function vueSignalements(){
+  const l=CR.signaux;
+  if(!l.length) return `<p class="vide">Aucun signalement. Les joueurs connectés peuvent en envoyer depuis chaque fiche d’entité (« Signaler une erreur sur cette fiche »).</p>`;
+  return `<div class="cr-section">${l.map(x=>`<div class="cr-signal${x.traite?"":" nouveau"}">
+      <div class="ligne"><b>${x.entite?esc(nomEntite(x.entite)):"Remarque générale"}</b><span class="cr-statut ${x.traite?"":"en-cours"}">${x.traite?"traité":"nouveau"}</span></div>
+      <p>${esc(x.message)}</p>
+      <span class="petit">${esc(x.pseudo)} · ${esc(quand(x.created_at))}${x.version?" · données "+esc(x.version):""}</span>
+      <span class="ligne"><button class="lien" type="button" data-act="cr-signal-traite" data-id="${esc(x.id)}" data-v="${x.traite?0:1}">${x.traite?"Rouvrir":"Marquer comme traité"}</button>
+        <button class="lien" type="button" data-act="cr-signal-suppr" data-id="${esc(x.id)}">${CR.sigSuppr===x.id?"Confirmer la suppression":"Supprimer"}</button></span></div>`).join("")}</div>`;
+}
+function vueDefis(){
+  const e=CR.defEdit, auj=isoJour(new Date());
+  const etat=d=>d.fin<auj?["terminé",""]:d.debut>auj?["à venir",""]:["en cours","en-cours"];
+  return `<div class="cr-grille">
+    <section class="cr-section"><h3>${e&&e.id?"Modifier le défi":"Nouveau défi"}</h3>
+      <form id="f-defi" class="champs">
+        <label>Titre<input name="titre" id="df-titre" maxlength="80" required placeholder="Semaine de l’horreur"></label>
+        <div class="cr-deux-champs"><label>Objectif<select name="critere" id="df-critere">${Object.keys(CRITERES).map(k=>`<option value="${k}">${esc(texteCritere({critere:k,objectif:2}).replace(" 2 "," … "))}</option>`).join("")}</select></label>
+          <label>Nombre<input name="objectif" id="df-objectif" type="number" min="1" max="1000" required value="10"></label></div>
+        <label>Difficulté<select name="niveau" id="df-niveau"><option value="">Toutes</option>${NIVEAUX.map(v=>`<option value="${v.id}">${esc(v.nom)}</option>`).join("")}</select></label>
+        <div class="cr-deux-champs"><label>Du<input name="debut" id="df-debut" type="date" required></label><label>Au<input name="fin" id="df-fin" type="date" required></label></div>
+        <label>Précision<input name="description" id="df-description" maxlength="300" placeholder="Facultatif"></label>
+        <div class="ligne"><button class="btn plein" type="submit">${e&&e.id?"Enregistrer":"Lancer le défi"}</button>${e?`<button class="lien" type="button" data-act="cr-defi-nouveau">Annuler</button>`:""}</div>
+        <p class="message" id="msg-defi" role="status">${esc(CR.defMsg)}</p>
+      </form></section>
+    <section class="cr-section"><h3>Défis</h3>
+      ${CR.defis.length?`<ul class="cr-annonces">${CR.defis.map(d=>{ const [s,c]=etat(d); return `<li><div class="ligne"><b>${esc(d.titre)}</b><span class="cr-statut ${c}">${s}</span></div>
+        <span class="petit">${esc(texteCritere(d))} · du ${esc(jourCourt(d.debut))} au ${esc(jourCourt(d.fin))}</span>
+        <span class="ligne"><button class="lien" type="button" data-act="cr-defi-modifier" data-id="${esc(d.id)}">Modifier</button><button class="lien" type="button" data-act="cr-defi-suppr" data-id="${esc(d.id)}">${CR.defSuppr===d.id?"Confirmer la suppression":"Supprimer"}</button></span></li>`; }).join("")}</ul>`:`<p class="petit">Aucun défi pour l’instant. Un défi en cours s’affiche dans l’onglet Amis de chaque joueur, avec sa progression et celle de ses amis.</p>`}
+    </section></div>`;
+}
+function remplirFormDefi(){
+  const e=CR.defEdit||{}, v=(id,x)=>{ const el=$("#"+id); if(el) el.value=x??""; };
+  const auj=new Date(), semaine=new Date(Date.now()+6*864e5);
+  v("df-titre",e.titre); v("df-critere",e.critere||"enquetes"); v("df-objectif",e.objectif||10); v("df-niveau",e.niveau||"");
+  v("df-debut",e.debut||isoJour(auj)); v("df-fin",e.fin||isoJour(semaine)); v("df-description",e.description);
+}
+async function soumettreDefi(f){
+  const msg=t=>{ CR.defMsg=t; const m=$("#msg-defi"); if(m) m.textContent=t; };
+  const d=Object.fromEntries(new FormData(f).entries());
+  if(d.debut>d.fin) return msg("La date de fin précède la date de début.");
+  const ligne={titre:d.titre.trim(), critere:d.critere, objectif:Math.max(1,Math.min(1000,parseInt(d.objectif,10)||1)), niveau:d.niveau||null,
+    debut:d.debut, fin:d.fin, description:(d.description||"").trim()||null};
+  msg("Enregistrement…");
+  const r=CR.defEdit&&CR.defEdit.id?await sb.from("defis").update(ligne).eq("id",CR.defEdit.id):await sb.from("defis").insert(ligne);
+  if(r.error) return msg("Refusé : "+r.error.message);
+  CR.defEdit=null; CR.defMsg="Défi enregistré : il s’affiche dans l’onglet Amis de chaque joueur pendant ses dates.";
+  await chargerCreateur(); chargerDefis();
+}
+/* Mises à jour : derniers changements publiés sur le dépôt (dont ceux de la veille automatique) et valeurs à compléter. */
+async function chargerMajs(){
+  CR.majs=[]; CR.majsErreur="";
+  try{
+    const r=await fetch("https://api.github.com/repos/EthrNiity/Phasmophobia/commits?per_page=15",{headers:{Accept:"application/vnd.github+json"}});
+    if(!r.ok) throw new Error("GitHub répond "+r.status);
+    CR.majs=(await r.json()).map(c=>({sha:c.sha,url:c.html_url,date:c.commit.author.date,titre:c.commit.message.split("\n")[0]}));
+  }catch(e){ CR.majsErreur="Historique indisponible pour le moment ("+e.message+")."; }
+  if(CR.vue==="majs") rendreCreateur();
+}
+function aCompleter(){
+  const vide=v=>v==null||(typeof v==="string"&&/à compléter/i.test(v));
+  const l=[];
+  GHOSTS.forEach(g=>{ const f=FICHES[g.id]||{}, manque=[];
+    if(g.tMin==null||g.tMax==null) manque.push("seuil de chasse");
+    if(!g.sp) manque.push("vitesse");
+    if(vide(g.signe)) manque.push("signe"); if(vide(g.test)) manque.push("test");
+    if(!FICHES[g.id]||vide(f.f)) manque.push("force"); if(!FICHES[g.id]||vide(f.w)) manque.push("faiblesse");
+    if(manque.length) l.push([g.n,manque]); });
+  return l;
+}
+function vueMajs(){
+  const v=($("#version-jeu")||{}).textContent||"?", d=($("#date-donnees")||{}).textContent||"", manques=aCompleter();
+  const donnees=t=>/^Données Phasmophobia/.test(t);
+  return `<div class="cr-grille">
+    <section class="cr-section"><h3>Données du jeu</h3>
+      <p>Version <b>${esc(v)}</b>${d?", "+esc(d):""}. La veille vérifie chaque matin les notes officielles et met le Grimoire à jour quand une mise à jour importante sort.</p>
+      <h3>À compléter à la main</h3>
+      ${manques.length?`<ul class="cr-liste">${manques.map(([n,m])=>`<li><span>${esc(n)}</span><small>${esc(m.join(", "))}</small></li>`).join("")}</ul>`:`<p class="petit">Rien : toutes les entités ont leurs valeurs.</p>`}
+      <p class="petit">${CR.signaux.filter(x=>!x.traite).length} ${pl(CR.signaux.filter(x=>!x.traite).length,"signalement")} en attente.</p></section>
+    <section class="cr-section"><h3>Derniers changements publiés</h3>
+      ${CR.majsErreur?`<p class="petit">${esc(CR.majsErreur)}</p>`:!CR.majs||!CR.majs.length?`<p class="petit">Chargement…</p>`:`<ul class="cr-majs">${CR.majs.map(c=>`<li class="${donnees(c.titre)?"donnees":""}"><a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.titre)}</a><span class="petit">${esc(quand(c.date))}${donnees(c.titre)?" · veille automatique":""}</span></li>`).join("")}</ul>`}
+    </section></div>`;
+}
+async function telechargerSauvegarde(){
+  toast("Préparation de la sauvegarde…");
+  const {data,error}=await sb.rpc("sauvegarde_complete");
+  if(error){ toast(/function|schema/i.test(error.message||"")?"La base n’est pas encore à jour : relance schema.sql.":"Sauvegarde impossible : "+error.message); return; }
+  const n=k=>(data[k]||[]).length;
+  const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:"application/json"}));
+  const a=document.createElement("a"); a.href=url; a.download=`grimoire-sauvegarde-${isoJour(new Date())}.json`; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),4000);
+  toast(`Sauvegarde téléchargée : ${n("profiles")} ${pl(n("profiles"),"joueur")}, ${n("investigations")} ${pl(n("investigations"),"enquête")}.`);
+}
+/* Signalement d’une fiche par un joueur */
+let SIGNAL=null;
+function ouvrirSignal(id){
+  SIGNAL={entite:id};
+  const connecte=!!(sb&&uid()), g=GH[id];
+  $("#signal-sujet").textContent=(g?"Fiche : "+g.n+". ":"")+(connecte?"Ton message part dans la boîte du créateur, avec ton pseudo.":"Connecte-toi dans l’onglet Amis pour envoyer un signalement.");
+  $("#signal-message").value=""; $("#signal-message").disabled=!connecte; $("#signal-envoyer").disabled=!connecte;
+  const m=$("#msg-signal"); m.textContent=""; m.className="message";
+  $("#signalement").hidden=false; if(connecte) $("#signal-message").focus();
+}
+function fermerSignal(){ $("#signalement").hidden=true; SIGNAL=null; }
+async function soumettreSignal(f){
+  const m=$("#msg-signal"), message=String(new FormData(f).get("message")||"").trim();
+  if(message.length<3){ m.textContent="Écris quelques mots."; return; }
+  m.className="message"; m.textContent="Envoi…";
+  const {error}=await sb.from("signalements").insert({entite:SIGNAL&&SIGNAL.entite||null,message,version:($("#version-jeu")||{}).textContent||null});
+  if(error){ m.className="message erreur"; m.textContent=/row-level|policy/i.test(error.message)?"Trop de signalements aujourd’hui, réessaie demain.":/relation|schema/i.test(error.message)?"Les signalements ne sont pas encore activés.":"Envoi impossible : "+error.message; return; }
+  fermerSignal(); toast("Merci, ton signalement a été envoyé au créateur.");
+  if(estCreateur()) chargerCreateur();
+}
+Object.assign(ACT,{
+  "signaler":b=>{ ouvrirSignal(b.dataset.id); return false; },
+  "signal-fermer":()=>{ fermerSignal(); return false; },
+  "cr-sauvegarde":()=>{ telechargerSauvegarde(); return false; },
+  "cr-vue-joueur":()=>{ vueJoueur(true); rendreTout(); allerA("amis",true); toast("Vue joueur : l’appli telle que la voient tes amis."); return false; },
+  "vue-createur":()=>{ vueJoueur(false); rendreTout(); allerA("createur",true); return false; },
+  "cr-signal-traite":b=>{ (async()=>{ const {error}=await sb.from("signalements").update({traite:b.dataset.v==="1"}).eq("id",b.dataset.id); if(error) toast("Modification impossible"); await chargerCreateur(); })(); return false; },
+  "cr-signal-suppr":b=>{
+    const id=b.dataset.id;
+    if(CR.sigSuppr!==id){ CR.sigSuppr=id; rendreCreateur(); return false; }
+    CR.sigSuppr=null;
+    (async()=>{ const {error}=await sb.from("signalements").delete().eq("id",id); toast(error?"Suppression impossible":"Signalement supprimé"); await chargerCreateur(); })();
+    return false;
+  },
+  "cr-defi-modifier":b=>{ CR.defEdit=CR.defis.find(d=>d.id===b.dataset.id)||null; CR.defMsg=""; rendreCreateur(); $("#df-titre")&&$("#df-titre").focus(); return false; },
+  "cr-defi-nouveau":()=>{ CR.defEdit=null; CR.defMsg=""; rendreCreateur(); return false; },
+  "cr-defi-suppr":b=>{
+    const id=b.dataset.id;
+    if(CR.defSuppr!==id){ CR.defSuppr=id; rendreCreateur(); return false; }
+    CR.defSuppr=null;
+    (async()=>{ const {error}=await sb.from("defis").delete().eq("id",id); toast(error?"Suppression impossible":"Défi supprimé"); await chargerCreateur(); chargerDefis(); })();
+    return false;
+  }
+});
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!$("#signalement").hidden) fermerSignal(); });
+$("#signalement").addEventListener("click",e=>{ if(e.target.id==="signalement") fermerSignal(); });
 Object.assign(ACT,{
   "cr-vue":b=>{ CR.vue=b.dataset.id; CR.retirer=null; rendreCreateur(); return false; },
   "cr-actualiser":()=>{ chargerCreateur(); return false; },
@@ -1922,6 +2163,8 @@ document.addEventListener("submit",e=>{
   else if(f.id==="f-ami") soumettreAmi(f);
   else if(f.id==="f-annonce") soumettreAnnonce(f);
   else if(f.id==="f-renommer") soumettreRenommer(f);
+  else if(f.id==="f-signal") soumettreSignal(f);
+  else if(f.id==="f-defi") soumettreDefi(f);
 });
 document.addEventListener("change",e=>{
   if(e.target.id==="c-reelle") reelleTouchee=true;

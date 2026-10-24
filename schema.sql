@@ -365,6 +365,150 @@ begin
   return 'supprime';
 end $$;
 
+-- ─────────────── Espace créateur : signalements, fiabilité, défis, sauvegarde ───────────────
+
+-- Entité que le Grimoire classait première au moment de la clôture : sert à mesurer sa fiabilité.
+alter table public.investigations
+  add column if not exists prediction text check (prediction is null or char_length(prediction) between 1 and 40);
+
+-- Signalements des joueurs (« cette fiche est fausse »). Un joueur écrit les siens ; seul le créateur les lit tous,
+-- les marque traités ou les supprime. Vingt par joueur et par jour au plus.
+create table if not exists public.signalements (
+  id         uuid primary key default gen_random_uuid(),
+  user_id    uuid not null default auth.uid() references public.profiles(id) on delete cascade,
+  entite     text check (entite is null or char_length(entite) between 1 and 40),
+  message    text not null check (char_length(message) between 3 and 1000),
+  version    text check (version is null or char_length(version) <= 20),
+  traite     boolean not null default false,
+  created_at timestamptz not null default now()
+);
+create index if not exists signalements_date on public.signalements (created_at desc);
+alter table public.signalements enable row level security;
+drop policy if exists signalements_ajout on public.signalements;
+create policy signalements_ajout on public.signalements for insert to authenticated
+  with check (user_id = auth.uid()
+    and (select count(*) from public.signalements s
+          where s.user_id = auth.uid() and s.created_at > now() - interval '1 day') < 20);
+drop policy if exists signalements_lecture on public.signalements;
+create policy signalements_lecture on public.signalements for select to authenticated
+  using (user_id = auth.uid() or public.est_createur());
+drop policy if exists signalements_traitement on public.signalements;
+create policy signalements_traitement on public.signalements for update to authenticated
+  using (public.est_createur()) with check (public.est_createur());
+drop policy if exists signalements_suppression on public.signalements;
+create policy signalements_suppression on public.signalements for delete to authenticated
+  using (public.est_createur());
+revoke all on public.signalements from anon, authenticated;
+grant select, delete on public.signalements to authenticated;
+grant insert (entite, message, version) on public.signalements to authenticated;   -- auteur, date et statut : jamais fournis par l'appli
+grant update (traite) on public.signalements to authenticated;
+
+-- Boîte de réception du créateur, avec le pseudo de l'auteur (qui n'est pas forcément son ami).
+create or replace function public.signalements_createur()
+returns table (id uuid, pseudo text, entite text, message text, version text, traite boolean, created_at timestamptz)
+language plpgsql stable security definer set search_path = public as $$
+begin
+  if not public.est_createur() then raise exception 'Réservé au créateur' using errcode = '42501'; end if;
+  return query
+    select s.id, p.pseudo, s.entite, s.message, s.version, s.traite, s.created_at
+      from public.signalements s join public.profiles p on p.id = s.user_id
+     order by s.traite, s.created_at desc
+     limit 300;
+end $$;
+
+-- Fiabilité du Grimoire : sa première proposition était-elle la bonne entité ?
+create or replace function public.fiabilite_createur() returns json
+language plpgsql stable security definer set search_path = public as $$
+begin
+  if not public.est_createur() then raise exception 'Réservé au créateur' using errcode = '42501'; end if;
+  return json_build_object(
+    'mesurees',       (select count(*) from public.investigations where prediction is not null),
+    'justes',         (select count(*) from public.investigations where prediction is not null and prediction = reelle),
+    'joueurs_justes', (select count(*) from public.investigations where prediction is not null and correct),
+    'niveaux', (select coalesce(json_agg(v order by v.n desc), '[]'::json) from (
+                  select coalesce(niveau, 'preuves-' || difficulte) as niveau, count(*) as n,
+                         count(*) filter (where prediction = reelle) as ok
+                    from public.investigations where prediction is not null group by 1) v),
+    'erreurs', (select coalesce(json_agg(x order by x.n desc, x.reelle), '[]'::json) from (
+                  select reelle, prediction, count(*) as n
+                    from public.investigations
+                   where prediction is not null and prediction <> reelle
+                   group by reelle, prediction order by count(*) desc limit 10) x)
+  );
+end $$;
+
+-- Défis : créés par le créateur, visibles par tous ; chacun voit sa progression et celle de ses amis.
+create table if not exists public.defis (
+  id          uuid primary key default gen_random_uuid(),
+  titre       text not null check (char_length(titre) between 1 and 80),
+  description text check (description is null or char_length(description) <= 300),
+  critere     text not null default 'enquetes' check (critere in ('enquetes','trouvees','survies','parfaites')),
+  objectif    int  not null default 10 check (objectif between 1 and 1000),
+  niveau      text check (niveau is null or char_length(niveau) between 1 and 20),
+  debut       date not null,
+  fin         date not null,
+  created_at  timestamptz not null default now(),
+  check (debut <= fin)
+);
+alter table public.defis enable row level security;
+drop policy if exists defis_lecture on public.defis;
+create policy defis_lecture on public.defis for select to anon, authenticated using (true);
+drop policy if exists defis_ecriture on public.defis;
+create policy defis_ecriture on public.defis for all to authenticated
+  using (public.est_createur()) with check (public.est_createur());
+revoke all on public.defis from anon, authenticated;
+grant select on public.defis to anon, authenticated;
+grant insert, update, delete on public.defis to authenticated;
+
+-- Défis en cours (et terminés depuis moins de 7 jours), avec la progression de moi et de mes amis confirmés.
+create or replace function public.defis_en_cours() returns json
+language sql stable security definer set search_path = public as $$
+  with auj as (select (now() at time zone 'Europe/Paris')::date as j),
+  cercle as (
+    select auth.uid() as id
+    union
+    select case when f.demandeur = auth.uid() then f.receveur else f.demandeur end
+      from public.friendships f
+     where f.statut = 'accepte' and auth.uid() in (f.demandeur, f.receveur)
+  )
+  select coalesce(json_agg(json_build_object(
+           'id', d.id, 'titre', d.titre, 'description', d.description, 'critere', d.critere,
+           'objectif', d.objectif, 'niveau', d.niveau, 'debut', d.debut, 'fin', d.fin,
+           'joueurs', (select coalesce(json_agg(r order by r.valeur desc, r.pseudo), '[]'::json) from (
+               select p.id, p.pseudo, p.createur,
+                      count(i.id) filter (where case d.critere when 'trouvees' then i.correct
+                                                               when 'survies'  then i.survecu
+                                                               when 'parfaites' then i.parfaite
+                                                               else true end) as valeur
+                 from cercle c
+                 join public.profiles p on p.id = c.id
+                 left join public.investigations i
+                        on i.user_id = p.id
+                       and (i.created_at at time zone 'Europe/Paris')::date between d.debut and d.fin
+                       and (d.niveau is null or i.niveau = d.niveau)
+                group by p.id, p.pseudo, p.createur) r)
+         ) order by d.fin, d.debut), '[]'::json)
+    from public.defis d, auj
+   where auth.uid() is not null and d.debut <= auj.j and d.fin >= auj.j - 7;
+$$;
+
+-- Sauvegarde complète en un clic (sans les adresses mail, qui restent dans Supabase).
+create or replace function public.sauvegarde_complete() returns json
+language plpgsql stable security definer set search_path = public as $$
+begin
+  if not public.est_createur() then raise exception 'Réservé au créateur' using errcode = '42501'; end if;
+  return json_build_object(
+    'application',    'Grimoire des Entités',
+    'exporte_le',     now(),
+    'profiles',       (select coalesce(json_agg(x order by x.created_at), '[]'::json) from public.profiles x),
+    'investigations', (select coalesce(json_agg(x order by x.created_at), '[]'::json) from public.investigations x),
+    'friendships',    (select coalesce(json_agg(x order by x.created_at), '[]'::json) from public.friendships x),
+    'annonces',       (select coalesce(json_agg(x order by x.created_at), '[]'::json) from public.annonces x),
+    'signalements',   (select coalesce(json_agg(x order by x.created_at), '[]'::json) from public.signalements x),
+    'defis',          (select coalesce(json_agg(x order by x.created_at), '[]'::json) from public.defis x)
+  );
+end $$;
+
 -- Droits d'exécution : uniquement les joueurs connectés, et jamais les fonctions internes.
 revoke all on function public.code_ami()                 from public, anon, authenticated;
 revoke all on function public.handle_new_user()          from public, anon, authenticated;
@@ -391,6 +535,14 @@ grant execute on function public.enquetes_joueur(uuid)      to authenticated;
 grant execute on function public.moderer_pseudo(uuid, text) to authenticated;
 grant execute on function public.moderer_enquete(uuid)      to authenticated;
 grant execute on function public.moderer_compte(uuid)       to authenticated;
+revoke all on function public.signalements_createur()     from public, anon;
+revoke all on function public.fiabilite_createur()        from public, anon;
+revoke all on function public.defis_en_cours()            from public, anon;
+revoke all on function public.sauvegarde_complete()       from public, anon;
+grant execute on function public.signalements_createur()    to authenticated;
+grant execute on function public.fiabilite_createur()       to authenticated;
+grant execute on function public.defis_en_cours()           to authenticated;
+grant execute on function public.sauvegarde_complete()      to authenticated;
 
 -- Fait relire le schéma à l'API tout de suite, pour que l'appli voie les nouvelles colonnes.
 notify pgrst, 'reload schema';

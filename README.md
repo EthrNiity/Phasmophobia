@@ -79,12 +79,18 @@ Les enquêtes clôturées sans être connecté restent sur l'appareil et sont aj
 
 ## Espace créateur
 
-Le compte qui porte le sceau « Créateur » (colonne `profiles.createur`, réglée à la main dans Supabase) voit, dans l'onglet Amis, un Espace créateur :
+Le compte qui porte le sceau « Créateur » (colonne `profiles.createur`, réglée à la main dans Supabase) a un onglet Créateur :
 
 - **Tableau de bord** : joueurs, activité sur 14 jours, entités les plus croisées, lieux et difficultés ;
 - **Annonces** : écrire, modifier et retirer des annonces (table `annonces`), affichées à tous en plus de celles de `annonces.js` ;
 - **Joueurs** : renommer un joueur, supprimer une enquête ou un compte (définitif) ;
 - **Ambiance du créateur** : thème or et braise, et pseudo mis en valeur partout.
+- **Sauvegarde** : un bouton télécharge toute la base (sans les adresses mail) en un fichier JSON ;
+- **Signalements** : chaque fiche d'entité a un lien « Signaler une erreur » ; les messages arrivent dans l'Espace créateur (table `signalements`, 20 par joueur et par jour au plus) ;
+- **Fiabilité** : à la clôture, l'appli note l'entité que le Grimoire plaçait en tête (`investigations.prediction`) ; le tableau de bord compare avec la vraie ;
+- **Défis** : défis datés (table `defis`), affichés dans l'onglet Amis avec la progression de chacun et de ses amis ;
+- **Vue joueur** : masque tout ce qui est réservé au créateur, un bouton en bas de l'écran ramène à la vue créateur ;
+- **Mises à jour** : version des données (pied de page), valeurs à compléter et derniers changements publiés sur le dépôt.
 
 Chaque action est vérifiée dans la base (`est_createur()`), pas seulement masquée dans l'appli.
 

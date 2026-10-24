@@ -130,6 +130,11 @@ try {
 const enDur = html.match(/(sur \d{2,}["'`]|Les \d+ entités|<h2>\d+ entités possibles|planchette\("[1-9]\d*"\))/g);
 if (enDur) erreur(`Nombre d'entités écrit en dur : ${[...new Set(enDur)].join(" ; ")} (utiliser GHOSTS.length).`);
 
+/* 9 bis. Version des données affichée en pied de page : la veille automatique la tient à jour. */
+const version = html.match(/<span id="version-jeu">([^<]*)<\/span>/), mois = html.match(/<span id="date-donnees">([^<]*)<\/span>/);
+if (!version || !/^\d+(\.\d+){1,3}$/.test(version[1].trim())) erreur('Pied de page : <span id="version-jeu"> absent ou version illisible (attendu par ex. 0.19.1).');
+if (!mois || !mois[1].trim()) erreur('Pied de page : <span id="date-donnees"> absent ou vide.');
+
 /* 10. Annonces (annonces.js), si le fichier existe. */
 try {
   const code = readFileSync(new URL("annonces.js", dossier), "utf8");
@@ -186,7 +191,7 @@ if (process.argv.includes("--page")) {
 }
 
 /* Bilan. */
-console.log(`${GHOSTS.length} entités, ${EV.length} preuves, ${NIVEAUX.length} difficultés, ${LIEUX ? LIEUX.length : "?"} lieux.`);
+console.log(`${GHOSTS.length} entités, ${EV.length} preuves, ${NIVEAUX.length} difficultés, ${LIEUX ? LIEUX.length : "?"} lieux, données v${version ? version[1] : "?"}.`);
 avertissements.forEach(m => console.log("À SURVEILLER  " + m));
 erreurs.forEach(m => console.log("ERREUR        " + m));
 console.log(erreurs.length ? `${erreurs.length} erreur(s) : ne pas publier.` : "Données valides.");
