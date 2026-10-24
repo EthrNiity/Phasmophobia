@@ -10,6 +10,9 @@ create table if not exists public.profiles (
   code       text not null unique,                       -- code ami, 6 caractères
   created_at timestamptz not null default now()
 );
+-- Sceau « Créateur » affiché à côté du pseudo. Il se règle uniquement à la main dans Supabase (SQL Editor) :
+-- aucun joueur ne peut se l'attribuer depuis l'appli, seul le pseudo est modifiable.
+alter table public.profiles add column if not exists createur boolean not null default false;
 
 create table if not exists public.investigations (
   id         uuid primary key default gen_random_uuid(),
@@ -221,10 +224,10 @@ begin
 end $$;
 
 -- Classement : moi et mes amis confirmés, avec les compteurs.
--- La liste des colonnes renvoyées a changé (enquêtes parfaites) : l'ancienne version est retirée avant d'être recréée.
+-- La liste des colonnes renvoyées a changé (enquêtes parfaites, sceau Créateur) : l'ancienne version est retirée avant d'être recréée.
 drop function if exists public.classement();
 create or replace function public.classement()
-returns table (user_id uuid, pseudo text, enquetes bigint, trouvees bigint, survies bigint, serie int, derniere timestamptz, parfaites bigint)
+returns table (user_id uuid, pseudo text, enquetes bigint, trouvees bigint, survies bigint, serie int, derniere timestamptz, parfaites bigint, createur boolean)
 language sql stable security definer set search_path = public as $$
   with cercle as (
     select auth.uid() as id
@@ -239,11 +242,12 @@ language sql stable security definer set search_path = public as $$
          count(i.id) filter (where i.survecu),
          public.serie_en_cours(p.id),
          max(i.created_at),
-         count(i.id) filter (where i.parfaite)
+         count(i.id) filter (where i.parfaite),
+         p.createur
     from cercle c
     join public.profiles p on p.id = c.id
     left join public.investigations i on i.user_id = p.id
-   group by p.id, p.pseudo;
+   group by p.id, p.pseudo, p.createur;
 $$;
 
 -- Droits d'exécution : uniquement les joueurs connectés, et jamais les fonctions internes.

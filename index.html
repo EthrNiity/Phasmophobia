@@ -392,6 +392,11 @@ input,select{font:inherit;color:inherit;background:var(--nuit);border:1px solid 
 .podium>li:first-child .place{color:var(--follet);text-shadow:0 0 18px var(--lueur)}
 .podium .qui{font-weight:600;font-size:17px;min-width:0;overflow-wrap:anywhere}
 .podium .qui small{font-weight:400;font-size:13px;color:var(--cendre);margin-left:7px}
+/* Sceau du créateur de l’appli, à côté de son pseudo */
+.createur{display:inline-flex;align-items:center;gap:5px;margin-left:8px;padding:1px 9px 2px;vertical-align:.12em;border:1px solid var(--cierge);border-radius:9px 3px 9px 3px;color:var(--cierge);font-family:var(--f-titre);font-size:12.5px;font-weight:400;letter-spacing:.05em;line-height:1.35;white-space:nowrap;box-shadow:0 0 12px -4px var(--cierge)}
+.createur svg{width:7px;height:7px;fill:currentColor}
+.createur-note{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.createur-note .createur{margin-left:0}
 .podium .valeur{text-align:right;white-space:nowrap}
 .podium .valeur b{font-family:var(--f-data);font-size:21px;font-weight:500;font-variant-numeric:tabular-nums}
 .podium .valeur small{color:var(--cendre);font-size:13px}
@@ -1187,6 +1192,7 @@ function ecrireLocal(){ try{ localStorage.setItem(CLE_CARNET,JSON.stringify(LOCA
 let LOCAL=lireLocal();          // enquêtes gardées sur l’appareil (pas de compte, ou envoi en attente)
 let SESSION=null, PROFIL=null, RECUP=false, MODE_AUTH="connexion", dernierUid;
 let DISTANT=[];                 // mes enquêtes dans le compte
+let CREATEURS=new Set();        // comptes qui portent le sceau « Créateur » (réglé dans Supabase)
 let LIENS=[], PSEUDOS={}, RANGS=[], TRI="trouvees", AMI_VU=null, AMI_ENQ=[], A_SUPPR=null, A_RETIRER=null;
 let A_MODIF=null, M=null;       // enquête du carnet en cours de modification, et ses valeurs de travail
 const uid=()=>SESSION&&SESSION.user?SESSION.user.id:null;
@@ -1434,7 +1440,7 @@ function rendreCompte(){
   z.innerHTML=`<form id="f-pseudo" class="champs"><label>Pseudo<input type="text" name="pseudo" id="p-pseudo" minlength="2" maxlength="24" required></label>
       <div class="ligne"><button class="btn" type="submit">Enregistrer le pseudo</button><button class="btn discret" type="button" data-act="deconnexion">Se déconnecter</button></div>
       <p class="message" id="msg-pseudo" role="status"></p></form>
-    <p class="petit" id="p-mail"></p>`;
+    <p class="petit" id="p-mail"></p>${CREATEURS.has(uid())?`<p class="petit createur-note">${SCEAU} Ton sceau de créateur du Grimoire, visible à côté de ton pseudo chez tes amis.</p>`:""}`;
   $("#p-pseudo").value=PROFIL?PROFIL.pseudo:"";
   $("#p-mail").textContent=SESSION.user.email||"";
 }
@@ -1486,7 +1492,7 @@ async function soumettrePseudo(f){
 /* ---------- Amis ---------- */
 function rendreAmis(){
   const z=$("#amis"); if(!sb||!uid()){ z.innerHTML=""; return; }
-  const moi=uid(), nom=id=>esc(PSEUDOS[id]||"Joueur");
+  const moi=uid(), nom=id=>esc(PSEUDOS[id]||"Joueur")+sceau(id);
   const recues=LIENS.filter(f=>f.statut==="attente"&&f.receveur===moi), envoyees=LIENS.filter(f=>f.statut==="attente"&&f.demandeur===moi), amis=LIENS.filter(f=>f.statut==="accepte");
   const autre=f=>f.demandeur===moi?f.receveur:f.demandeur;
   $("#compte-amis").textContent=amis.length+" ami"+(amis.length>1?"s":"");
@@ -1533,7 +1539,7 @@ function rendreClassement(){
     .filter(([k,t])=>k!==TRI&&t).map(x=>x[1]).join(", ");
   $("#classement").innerHTML=`<ol class="podium">${rangs.map((r,i)=>{ const estMoi=r.id===moi, ouvert=AMI_VU===r.id&&!estMoi;
     return `<li class="${estMoi?"moi":""}${ouvert?" ouvert":""}" ${!estMoi&&enLigne?`data-ami="${esc(r.id)}" data-act="ami-voir" tabindex="0" role="button" aria-expanded="${ouvert}"`:""}>
-      <span class="place">${i+1}</span><span class="qui">${esc(r.pseudo)}${estMoi&&r.pseudo!=="Toi"?`<small>toi</small>`:""}</span>
+      <span class="place">${i+1}</span><span class="qui">${esc(r.pseudo)}${sceau(r.id)}${estMoi&&r.pseudo!=="Toi"?`<small>toi</small>`:""}</span>
       <span class="valeur"><b>${valeur(r)}</b> <small>${UNITE[TRI](r[TRI])}</small></span>
       <span class="part"><i style="width:${part(r)>0?Math.max(4,part(r)*100):0}%"></i></span>
       <span class="reste">${autres(r)}</span></li>${ouvert?`<li class="detail"><div class="sous-titre"><span class="petit">Ses dernières enquêtes</span><button class="lien" type="button" data-act="ami-fermer">Fermer</button></div>
@@ -1548,9 +1554,18 @@ async function synchroniser(){
   if(error) return 0;
   const n=LOCAL.length; LOCAL=[]; ecrireLocal(); return n;
 }
+/* Lit des profils avec la colonne « createur » ; tant que schema.sql n’a pas été relancé dans Supabase, elle n’existe pas : on relit sans. */
+async function lireProfils(cols,filtre){
+  let r=await filtre(sb.from("profiles").select(cols+",createur"));
+  if(r.error) r=await filtre(sb.from("profiles").select(cols));
+  return r;
+}
+const noterCreateur=(id,oui)=>{ if(oui) CREATEURS.add(id); };
+const SCEAU=`<span class="createur" title="Créateur du Grimoire des Entités"><svg viewBox="0 0 8 8" aria-hidden="true"><path d="M4 0L8 4L4 8L0 4Z"/></svg>Créateur</span>`;
+const sceau=id=>CREATEURS.has(id)?SCEAU:"";
 async function chargerClassement(){
   if(!sb||!uid()) return;
-  const {data}=await sb.rpc("classement"); RANGS=data||[]; rendreClassement();
+  const {data}=await sb.rpc("classement"); RANGS=data||[]; RANGS.forEach(r=>noterCreateur(r.user_id,r.createur)); rendreClassement();
 }
 async function chargerAmis(){
   const moi=uid(); if(!sb||!moi) return;
@@ -1558,15 +1573,16 @@ async function chargerAmis(){
   LIENS=fs||[];
   const ids=[...new Set(LIENS.flatMap(f=>[f.demandeur,f.receveur]).filter(x=>x!==moi))];
   PSEUDOS={};
-  if(ids.length){ const {data:ps}=await sb.from("profiles").select("id,pseudo").in("id",ids); (ps||[]).forEach(p=>{ PSEUDOS[p.id]=p.pseudo; }); }
+  if(ids.length){ const {data:ps}=await lireProfils("id,pseudo",q=>q.in("id",ids)); (ps||[]).forEach(p=>{ PSEUDOS[p.id]=p.pseudo; noterCreateur(p.id,p.createur); }); }
   await chargerClassement();
 }
 function rendreTout(){ rendreCarnet(); rendreCompte(); rendreAmis(); rendreClassement(); }
 async function chargerCompte(){
   const moi=uid();
-  if(!sb||!moi){ PROFIL=null; DISTANT=[]; LIENS=[]; PSEUDOS={}; RANGS=[]; AMI_VU=null; rendreTout(); return; }
+  if(!sb||!moi){ PROFIL=null; DISTANT=[]; LIENS=[]; PSEUDOS={}; RANGS=[]; CREATEURS.clear(); AMI_VU=null; rendreTout(); return; }
   rendreTout();
-  const {data:p}=await sb.from("profiles").select("id,pseudo,code").eq("id",moi).maybeSingle();
+  const {data:p}=await lireProfils("id,pseudo,code",q=>q.eq("id",moi).maybeSingle());
+  if(p) noterCreateur(p.id,p.createur);
   if(uid()!==moi) return;
   PROFIL=p||null;
   const n=await synchroniser();
