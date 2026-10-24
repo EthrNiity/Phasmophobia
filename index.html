@@ -539,7 +539,7 @@ footer{margin-top:36px;padding-top:16px;color:var(--cendre);font-size:13.5px;max
         <div id="fiche-aide"></div>
       </div>
       <div class="bloc">
-        <header><h2>Les 30 entités</h2></header>
+        <header><h2>Les <span class="nb-entites">30</span> entités</h2></header>
         <div class="legende"><span><i class="pt"></i> preuve</span><span><i class="pt g"></i> jamais cachée en Cauchemar et Démence</span><span><i class="pt f"></i> orbes en plus (Mimic)</span></div>
         <div class="defile"><table id="matrice"></table></div>
       </div>
@@ -633,7 +633,8 @@ const EV = [
 ];
 const EVN = Object.fromEntries(EV.map(e=>[e.id,e]));
 
-/* sp : plages de vitesse sans ligne de vue (m/s). tMin/tMax : seuils de chasse. any : chance de chasser au-dessus du seuil. */
+/* sp : plages de vitesse sans ligne de vue (m/s). tMin/tMax : seuils de chasse. any : chance de chasser au-dessus du seuil.
+   Valeur absente des notes officielles : sp:null ou tMin/tMax:null. Elle s’affiche « à compléter » et ne pèse pas dans le calcul. */
 const GHOSTS = [
  {id:"esprit", n:"Esprit", ev:["emf","box","wri"], tMin:50,tMax:50, sp:[[1.7,1.7]],
   signe:"Aucune chasse pendant 3 min après un encens.", test:"Encense-le hors chasse et lance le minuteur. Une chasse avant 180 s l’élimine."},
@@ -759,7 +760,7 @@ function preuveL(g,n,found,excl){
 }
 function vitesseL(g,s){
   const vue=vitesseVue(s);
-  if(!vue) return 1;
+  if(!vue||!g.sp) return 1;
   const [olo,ohi]=vue.r, k=s.lune?LUNE:1;
   let best=0;
   for(const [lo,hi] of g.sp){
@@ -769,6 +770,7 @@ function vitesseL(g,s){
   return best;
 }
 function chasseL(g,c){
+  if(g.tMin==null||g.tMax==null) return 1;
   if(c==="tot") return g.tMax>=55 ? 1 : (g.any ?? .03);
   if(c==="tard") return g.tMin>43 ? .3 : 1;
   return 1;
@@ -822,10 +824,11 @@ function preuvePossible(s,id){
 (function(){
 "use strict";
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+$$(".nb-entites").forEach(e=>{ e.textContent=GHOSTS.length; });   /* nombre d’entités, jamais écrit en dur */
 const fr=v=>v.toLocaleString("fr-FR",{maximumFractionDigits:2});
 const pct=p=>p>=.995?"100 %":p<.01&&p>0?"< 1 %":Math.round(p*100)+" %";
-const seuil=g=>g.id==="mimic"?"variable":g.tMin===g.tMax?g.tMax+" %":g.tMin+" à "+g.tMax+" %";
-const vitesse=(g,k=1)=>{ if(g.id==="mimic") return "variable"; const m=x=>Math.round(x*k*1000)/1000, a=m(Math.min(...g.sp.map(r=>r[0]))), b=m(Math.max(...g.sp.map(r=>r[1]))); return (a===b?fr(a):fr(a)+" à "+fr(b))+" m/s"; };
+const seuil=g=>g.tMin==null||g.tMax==null?"à compléter":g.id==="mimic"?"variable":g.tMin===g.tMax?g.tMax+" %":g.tMin+" à "+g.tMax+" %";
+const vitesse=(g,k=1)=>{ if(!g.sp) return "vitesse à compléter"; if(g.id==="mimic") return "variable"; const m=x=>Math.round(x*k*1000)/1000, a=m(Math.min(...g.sp.map(r=>r[0]))), b=m(Math.max(...g.sp.map(r=>r[1]))); return (a===b?fr(a):fr(a)+" à "+fr(b))+" m/s"; };
 const fr2=v=>v.toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2});
 const CLE="grimoire-entites-v2";
 let S=etatVide(), TAB="enquete";
@@ -1000,9 +1003,9 @@ function rendre(){
       <p class="conseil">Un relevé est en trop. Vérifie la difficulté, puis retire le dernier.</p></div></div>`;
     barre="<b>Aucune entité ne correspond</b>";
   }else if(vide){
-    V.innerHTML=`<div class="verdict">${planchette("30")}<div><span class="label">Aucun relevé</span><h2>30 entités possibles</h2>
+    V.innerHTML=`<div class="verdict">${planchette(String(GHOSTS.length))}<div><span class="label">Aucun relevé</span><h2>${GHOSTS.length} entités possibles</h2>
       <p class="conseil">Appuie sur chaque preuve trouvée ou exclue : la liste se réduit toute seule.</p></div></div>`;
-    barre="<span>30 entités possibles</span>";
+    barre=`<span>${GHOSTS.length} entités possibles</span>`;
   }else{
     const seul=vivants.length===1||tete.p>=.995;
     const pt=seul?null:prochainTest(S,res);
@@ -1013,7 +1016,7 @@ function rendre(){
   }
   $("#barre-txt").innerHTML=barre;
 
-  $("#compte-rangs").textContent=probables.length+" sur 30";
+  $("#compte-rangs").textContent=probables.length+" sur "+GHOSTS.length;
   const max=vivants.length?vivants[0].p:1, peu=probables.length<=5;
   $("#rangs").innerHTML=probables.map(x=>{ const g=x.g, ouvert=ouverts.has(g.id)||(peu&&!fermes.has(g.id));
     return `<details class="rang" data-id="${g.id}" ${ouvert?"open":""}>
@@ -1300,12 +1303,12 @@ function rendreCarnet(){
   l.forEach(e=>{ const r=par[e.reelle]||(par[e.reelle]={vues:0,ok:0}); r.vues++; if(reussie(e)) r.ok++; });
   const vues=Object.entries(par).sort((a,b)=>b[1].vues-a[1].vues||nomEntite(a[0]).localeCompare(nomEntite(b[0]),"fr"));
   const inconnues=GHOSTS.filter(g=>!par[g.id]).map(g=>g.n).sort((a,b)=>a.localeCompare(b,"fr"));
-  $("#bestiaire-compte").textContent=vues.length?vues.length+" sur 30":"";
+  $("#bestiaire-compte").textContent=vues.length?vues.length+" sur "+GHOSTS.length:"";
   $("#stats-entites").innerHTML=vues.length?`<div class="bestiaire">${vues.map(([id,r])=>`<div class="bete"><b>${esc(nomEntite(id))}</b>
       <span class="trouvees">${r.ok===r.vues?(r.vues>1?"trouvée "+r.vues+" fois sur "+r.vues:"trouvée du premier coup"):r.ok+" sur "+r.vues+" "+pl(r.ok,"trouvée")}</span>
       <span class="part"><i style="width:${r.ok/r.vues*100}%"></i></span></div>`).join("")}</div>
     ${inconnues.length?`<p class="inconnues"><span class="petit">Pas encore ${pl(inconnues.length,"croisée")} :</span>${inconnues.map(n=>`<span class="puce">${n}</span>`).join("")}</p>`:""}`
-    :`<p class="vide">Les 30 entités apparaîtront ici au fil de tes rencontres, avec ton taux de réussite sur chacune.</p>`;
+    :`<p class="vide">Les ${GHOSTS.length} entités apparaîtront ici au fil de tes rencontres, avec ton taux de réussite sur chacune.</p>`;
 
   /* Historique : un fil par jour, pastille verte ou rouge selon le résultat. */
   let h="", jour=null;

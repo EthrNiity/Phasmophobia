@@ -8,10 +8,12 @@ Appli en un seul fichier (HTML, CSS et JavaScript sans framework), hébergée su
 
 | Fichier | Rôle |
 |---|---|
-| `index.html` | Toute l'appli |
+| `index.html` | Toute l'appli, dont les données du jeu (preuves, entités, fiches, lieux) |
+| `annonces.js` | Événements du jeu affichés en haut de l'onglet Enquête, avec dates de début et de fin |
 | `config.js` | Adresse et clé publique du projet Supabase (à remplir) |
-| `vendor/supabase.js` | Bibliothèque supabase-js 2.117.2, embarquée pour ne dépendre d'aucun CDN |
-| `supabase/schema.sql` | Tables, règles d'accès et fonctions à exécuter une fois dans Supabase |
+| `supabase.js` | Bibliothèque supabase-js 2.117.2, embarquée pour ne dépendre d'aucun CDN |
+| `schema.sql` | Tables, règles d'accès et fonctions à exécuter une fois dans Supabase |
+| `verifier.mjs` | Contrôle des données avant publication (`node verifier.mjs`, ou `--page` pour ouvrir l'appli dans Chromium) |
 
 Tant que `config.js` est vide, l'appli tourne en **mode local** : tout fonctionne sauf les comptes, les amis et le classement, et le carnet reste sur l'appareil.
 
@@ -20,13 +22,13 @@ Tant que `config.js` est vide, l'appli tourne en **mode local** : tout fonctionn
 ### 1. Supabase
 
 1. Crée un nouveau projet sur supabase.com.
-2. Ouvre **SQL Editor > New query**, colle tout le contenu de `supabase/schema.sql`, puis **Run**. Le script peut être relancé sans danger.
+2. Ouvre **SQL Editor > New query**, colle tout le contenu de `schema.sql`, puis **Run**. Le script peut être relancé sans danger.
 3. Ouvre **Project Settings > API** et copie l'adresse du projet (`https://xxxx.supabase.co`) et la clé publique (`anon`, ou `publishable` sur les projets récents).
 4. Colle ces deux valeurs dans `config.js`. Ne mets jamais la clé `service_role` dans ce fichier.
 
 ### 2. GitHub Pages
 
-1. Crée un dépôt et pousse-y `index.html`, `config.js`, `vendor/` et `supabase/`.
+1. Crée un dépôt et pousse-y tous les fichiers du projet, à la racine.
 2. Dans **Settings > Pages**, choisis **Deploy from a branch**, branche `main`, dossier `/ (root)`.
 3. Note l'adresse obtenue, par exemple `https://ton-compte.github.io/grimoire/`.
 
@@ -51,6 +53,14 @@ python3 -m http.server 8000
 ```
 
 puis ouvre `http://localhost:8000`. Si tu testes les comptes en local, ajoute aussi `http://localhost:8000` aux Redirect URLs.
+
+## Mise à jour des données du jeu
+
+Une tâche planifiée surveille chaque matin les versions de Phasmophobia. Quand une mise à jour importante change les entités, les preuves, les cartes ou les règles, elle modifie les données dans `index.html` (et `annonces.js` pour un événement), lance `node verifier.mjs --page`, puis publie sur `main` si tout est valide.
+
+- Les valeurs viennent uniquement des notes de version officielles.
+- Une valeur absente des notes est écrite « À compléter à la main » (textes) ou `null` (seuil `tMin`/`tMax`, vitesse `sp`) : elle s'affiche « à compléter » et ne pèse pas dans le calcul.
+- Le nombre d'entités n'est jamais écrit en dur : l'appli utilise `GHOSTS.length`.
 
 ## Données
 
