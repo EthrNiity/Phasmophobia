@@ -1782,7 +1782,7 @@ function vueTableau(t){
     <div class="cr-grille">
       <section class="cr-section"><h3>Enquêtes sur 14 jours</h3>
         <div class="cr-jours" role="img" aria-label="Enquêtes par jour sur 14 jours">${jours.map((d,i)=>`<div title="${esc(jourCourt(d.jour))} : ${d.n} ${pl(d.n,"enquête")}"><i style="height:${d.n?Math.max(6,d.n/max*100):2}%"></i>${i%2?"":`<small>${esc(jourCourt(d.jour).split(" ")[0])}</small>`}</div>`).join("")}</div></section>
-      <section class="cr-section"><h3>Entités les plus croisées</h3>${ent.length?`<ul class="cr-liste">${ent.map(e=>`<li><span>${esc(nomEntite(e.reelle))}</span><small>${e.n} ${pl(e.n,"fois")} · ${p(e.ok,e.n)} trouvée</small><span class="part"><i style="width:${e.n/maxE*100}%"></i></span></li>`).join("")}</ul>`:`<p class="vide">Aucune enquête pour l’instant.</p>`}</section>
+      <section class="cr-section"><h3>Entités les plus croisées</h3>${ent.length?`<ul class="cr-liste">${ent.map(e=>`<li><span>${esc(nomEntite(e.reelle))}</span><small>${e.n} fois · ${p(e.ok,e.n)} trouvée</small><span class="part"><i style="width:${e.n/maxE*100}%"></i></span></li>`).join("")}</ul>`:`<p class="vide">Aucune enquête pour l’instant.</p>`}</section>
       <section class="cr-section"><h3>Lieux</h3>${(t.lieux||[]).length?`<ul class="cr-liste">${t.lieux.map(l=>`<li><span>${esc(l.lieu)}</span><small>${l.n} ${pl(l.n,"enquête")}</small></li>`).join("")}</ul>`:`<p class="petit">Aucun lieu renseigné.</p>`}</section>
       <section class="cr-section"><h3>Difficultés</h3>${(t.niveaux||[]).length?`<ul class="cr-liste">${t.niveaux.map(v=>`<li><span>${esc(nomNiveau(v.niveau))}</span><small>${v.n} ${pl(v.n,"enquête")} · ${p(v.ok,v.n)} de réussite</small></li>`).join("")}</ul>`:`<p class="petit">—</p>`}</section>
     </div>`;
