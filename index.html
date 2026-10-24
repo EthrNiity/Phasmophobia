@@ -397,6 +397,51 @@ input,select{font:inherit;color:inherit;background:var(--nuit);border:1px solid 
 .createur svg{width:7px;height:7px;fill:currentColor}
 .createur-note{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
 .createur-note .createur{margin-left:0}
+/* ───── Espace créateur ───── */
+#bloc-createur{margin-top:34px;padding:20px 20px 22px;border:1px solid color-mix(in srgb,var(--cierge) 45%,var(--trait));border-radius:var(--feuille);background:linear-gradient(160deg,color-mix(in srgb,var(--cierge) 7%,var(--voile)),var(--voile) 55%);box-shadow:0 0 40px -18px var(--cierge)}
+#bloc-createur>header h2::before{background:var(--cierge)}
+#bloc-createur .choix button[aria-pressed="true"]{background:var(--cierge);border-color:var(--cierge);color:var(--nuit);box-shadow:0 0 16px -4px var(--cierge)}
+.cr-chiffres{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.cr-chiffre{background:var(--voile2);border:1px solid var(--trait);border-radius:var(--feuille);padding:12px 14px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.cr-chiffre b{font-family:var(--f-data);font-size:26px;font-weight:500;font-variant-numeric:tabular-nums;color:var(--os)}
+.cr-chiffre span{font-size:14px}
+.cr-chiffre small{font-size:12.5px;color:var(--cendre)}
+.cr-grille{display:grid;grid-template-columns:minmax(0,1fr);gap:22px}
+@media (min-width:940px){.cr-grille{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.cr-section{display:flex;flex-direction:column;gap:10px;min-width:0}
+.cr-section h3{font-size:17px;color:var(--cendre);font-weight:400}
+.cr-jours{display:flex;align-items:flex-end;gap:4px;height:92px;padding-top:6px}
+.cr-jours div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;height:100%;min-width:0}
+.cr-jours i{display:block;width:100%;max-width:26px;min-height:2px;border-radius:5px 5px 2px 2px;background:linear-gradient(var(--cierge),color-mix(in srgb,var(--cierge) 35%,transparent))}
+.cr-jours small{font-family:var(--f-data);font-size:10.5px;color:var(--cendre)}
+.cr-liste{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.cr-liste li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:baseline}
+.cr-liste li .part{grid-column:1/3}
+.cr-liste li small{color:var(--cendre);font-size:13px;white-space:nowrap}
+.cr-annonces,.cr-joueurs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.cr-annonces li,.cr-joueur{background:var(--voile2);border:1px solid var(--trait);border-radius:var(--petale);padding:10px 14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.cr-annonces li .ligne{justify-content:space-between}
+.cr-statut{font-family:var(--f-data);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;padding:1px 8px;border-radius:999px;border:1px solid var(--trait);color:var(--cendre)}
+.cr-statut.en-cours{border-color:var(--follet);color:var(--follet)}
+.cr-joueur>button.cr-tete{all:unset;cursor:pointer;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 12px;align-items:baseline}
+.cr-joueur>button.cr-tete:focus-visible{outline:2px solid var(--follet);outline-offset:4px;border-radius:4px}
+.cr-joueur.ouvert{border-color:var(--cierge)}
+.cr-joueur .cr-detail{display:flex;flex-direction:column;gap:12px;padding-top:10px;border-top:1px solid var(--trait)}
+.cr-danger{color:var(--sang);border-color:var(--sang)}
+.cr-danger.plein{background:var(--sang);color:#fff}
+textarea{font:inherit;font-family:var(--f-texte);font-size:16px;color:var(--os);background:var(--nuit);border:1px solid var(--trait);border-radius:var(--petale);padding:8px 11px;min-height:110px;resize:vertical;max-width:100%}
+.champs label>textarea{letter-spacing:0;text-transform:none}
+.cr-deux-champs{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+/* Apparence exclusive : pseudo du créateur mis en valeur partout où il apparaît */
+.nom-createur{background:linear-gradient(100deg,#f3d27a,#e7a64a 45%,#f6e3a8);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 18px rgba(240,190,90,.28)}
+:root[data-theme="light"] .nom-createur{background:linear-gradient(100deg,#8a5a00,#b4741a 50%,#7a4b00);-webkit-background-clip:text;background-clip:text}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .nom-createur{background:linear-gradient(100deg,#8a5a00,#b4741a 50%,#7a4b00);-webkit-background-clip:text;background-clip:text}}
+.podium>li.li-createur:not(.moi){border-color:color-mix(in srgb,var(--cierge) 55%,var(--trait))}
+.podium>li.li-createur .place{color:var(--cierge)}
+/* Ambiance du créateur : or et braise, réservée au compte créateur (activable dans l’Espace créateur) */
+:root[data-createur][data-createur][data-createur]{--follet:#e9c46a;--sur-follet:#1b1408;--ecto:#d07a3a;--halo:rgba(233,196,106,.10);--lueur:rgba(233,196,106,.32)}
+@media (prefers-color-scheme: light){:root[data-createur][data-createur][data-createur]:not([data-theme="dark"]){--follet:#8c5b00;--sur-follet:#ffffff;--ecto:#a24a12;--halo:rgba(140,91,0,.10);--lueur:rgba(140,91,0,.28)}}
+:root[data-theme="light"][data-createur][data-createur][data-createur]{--follet:#8c5b00;--sur-follet:#ffffff;--ecto:#a24a12;--halo:rgba(140,91,0,.10);--lueur:rgba(140,91,0,.28)}
 .podium .valeur{text-align:right;white-space:nowrap}
 .podium .valeur b{font-family:var(--f-data);font-size:21px;font-weight:500;font-variant-numeric:tabular-nums}
 .podium .valeur small{color:var(--cendre);font-size:13px}
@@ -613,6 +658,7 @@ footer{margin-top:36px;padding-top:16px;color:var(--cendre);font-size:13.5px;max
           </div>
         </div>
       </div>
+      <div class="bloc" id="bloc-createur" hidden></div>
     </section>
   </main>
 
@@ -1492,7 +1538,7 @@ async function soumettrePseudo(f){
 /* ---------- Amis ---------- */
 function rendreAmis(){
   const z=$("#amis"); if(!sb||!uid()){ z.innerHTML=""; return; }
-  const moi=uid(), nom=id=>esc(PSEUDOS[id]||"Joueur")+sceau(id);
+  const moi=uid(), nom=id=>(CREATEURS.has(id)?`<span class="nom-createur">${esc(PSEUDOS[id]||"Joueur")}</span>`:esc(PSEUDOS[id]||"Joueur"))+sceau(id);
   const recues=LIENS.filter(f=>f.statut==="attente"&&f.receveur===moi), envoyees=LIENS.filter(f=>f.statut==="attente"&&f.demandeur===moi), amis=LIENS.filter(f=>f.statut==="accepte");
   const autre=f=>f.demandeur===moi?f.receveur:f.demandeur;
   $("#compte-amis").textContent=amis.length+" ami"+(amis.length>1?"s":"");
@@ -1538,8 +1584,8 @@ function rendreClassement(){
   const autres=r=>[["enquetes",r.enquetes+" "+pl(r.enquetes,"enquête")],["trouvees",r.trouvees+" "+pl(r.trouvees,"trouvée")],["taux",r.enquetes?pc(r.taux)+" de réussite":""],["serie","série de "+r.serie],["parfaites",r.parfaites?r.parfaites+" "+pl(r.parfaites,"parfaite"):""]]
     .filter(([k,t])=>k!==TRI&&t).map(x=>x[1]).join(", ");
   $("#classement").innerHTML=`<ol class="podium">${rangs.map((r,i)=>{ const estMoi=r.id===moi, ouvert=AMI_VU===r.id&&!estMoi;
-    return `<li class="${estMoi?"moi":""}${ouvert?" ouvert":""}" ${!estMoi&&enLigne?`data-ami="${esc(r.id)}" data-act="ami-voir" tabindex="0" role="button" aria-expanded="${ouvert}"`:""}>
-      <span class="place">${i+1}</span><span class="qui">${esc(r.pseudo)}${sceau(r.id)}${estMoi&&r.pseudo!=="Toi"?`<small>toi</small>`:""}</span>
+    return `<li class="${estMoi?"moi":""}${ouvert?" ouvert":""}${CREATEURS.has(r.id)?" li-createur":""}" ${!estMoi&&enLigne?`data-ami="${esc(r.id)}" data-act="ami-voir" tabindex="0" role="button" aria-expanded="${ouvert}"`:""}>
+      <span class="place">${i+1}</span><span class="qui">${CREATEURS.has(r.id)?`<span class="nom-createur">${esc(r.pseudo)}</span>`:esc(r.pseudo)}${sceau(r.id)}${estMoi&&r.pseudo!=="Toi"?`<small>toi</small>`:""}</span>
       <span class="valeur"><b>${valeur(r)}</b> <small>${UNITE[TRI](r[TRI])}</small></span>
       <span class="part"><i style="width:${part(r)>0?Math.max(4,part(r)*100):0}%"></i></span>
       <span class="reste">${autres(r)}</span></li>${ouvert?`<li class="detail"><div class="sous-titre"><span class="petit">Ses dernières enquêtes</span><button class="lien" type="button" data-act="ami-fermer">Fermer</button></div>
@@ -1576,10 +1622,10 @@ async function chargerAmis(){
   if(ids.length){ const {data:ps}=await lireProfils("id,pseudo",q=>q.in("id",ids)); (ps||[]).forEach(p=>{ PSEUDOS[p.id]=p.pseudo; noterCreateur(p.id,p.createur); }); }
   await chargerClassement();
 }
-function rendreTout(){ rendreCarnet(); rendreCompte(); rendreAmis(); rendreClassement(); }
+function rendreTout(){ rendreCarnet(); rendreCompte(); rendreAmis(); rendreClassement(); rendreCreateur(); }
 async function chargerCompte(){
   const moi=uid();
-  if(!sb||!moi){ PROFIL=null; DISTANT=[]; LIENS=[]; PSEUDOS={}; RANGS=[]; CREATEURS.clear(); AMI_VU=null; rendreTout(); return; }
+  if(!sb||!moi){ PROFIL=null; DISTANT=[]; LIENS=[]; PSEUDOS={}; RANGS=[]; CREATEURS.clear(); CR.t=null; CR.erreur=""; CR.joueur=null; CR.edit=null; AMI_VU=null; rendreTout(); return; }
   rendreTout();
   const {data:p}=await lireProfils("id,pseudo,code",q=>q.eq("id",moi).maybeSingle());
   if(p) noterCreateur(p.id,p.createur);
@@ -1674,6 +1720,186 @@ Object.assign(ACT,{
 });
 const resetDeBase=ACT.reset;
 ACT.reset=b=>{ fermerCloture(); return resetDeBase(b); };
+let rafraichirAnnonces=()=>{};
+/* ───────────────── Espace créateur ─────────────────
+   Visible seulement pour le compte qui porte le sceau « Créateur ». Chaque action est revérifiée par la base
+   (fonctions *_createur, moderer_*, règles de la table annonces) : masquer ce bloc ne protège rien à lui seul. */
+const CR={vue:"tableau", t:null, charge:false, erreur:"", annonces:[], edit:null, retirer:null, joueur:null, enq:[], supprEnq:null, supprCompte:null, msg:""};
+const CLE_AMB_CREA="grimoire-ambiance-createur";
+const estCreateur=()=>!!(sb&&uid()&&CREATEURS.has(uid()));
+function ambianceCreateur(){
+  let voulue=true; try{ voulue=localStorage.getItem(CLE_AMB_CREA)!=="0"; }catch(e){}
+  const active=estCreateur()&&voulue;
+  if(active!==document.documentElement.hasAttribute("data-createur")){
+    if(active) document.documentElement.setAttribute("data-createur",""); else document.documentElement.removeAttribute("data-createur");
+    AMB.sale=true;
+  }
+  return active;
+}
+const isoJour=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const jourCourt=t=>{ if(!t) return ""; const [a,m,j]=String(t).slice(0,10).split("-").map(Number); return new Date(a,m-1,j).toLocaleDateString("fr-FR",{day:"numeric",month:"short"}); };
+const nomNiveau=id=>NIV[id]?NIV[id].nom:/^preuves-(\d)$/.test(id||"")?(({3:"3 preuves",2:"2 preuves",1:"1 preuve",0:"0 preuve"})[id.slice(-1)]):id;
+async function chargerCreateur(){
+  if(!estCreateur()) return;
+  CR.charge=true; CR.erreur=""; rendreCreateur();
+  const [t,a]=await Promise.all([sb.rpc("tableau_createur"), sb.from("annonces").select("*").order("debut",{ascending:false,nullsFirst:false})]);
+  CR.charge=false;
+  if(t.error) CR.erreur=/créateur|42501|function/i.test(t.error.message||"")?"La base n’est pas encore à jour : relance schema.sql dans Supabase.":"Chargement impossible : "+t.error.message;
+  else CR.t=t.data;
+  if(!a.error) CR.annonces=a.data||[];
+  rendreCreateur();
+}
+function statutAnnonce(a){ const auj=isoJour(new Date()); if(a.fin&&a.fin<auj) return ["passée",""]; if(a.debut&&a.debut>auj) return ["à venir",""]; return ["en cours","en-cours"]; }
+function rendreCreateur(){
+  const z=$("#bloc-createur"); if(!z) return;
+  ambianceCreateur();
+  if(!estCreateur()){ z.hidden=true; return; }
+  z.hidden=false;
+  if(!CR.t&&!CR.charge&&!CR.erreur){ chargerCreateur(); return; }
+  let amb=true; try{ amb=localStorage.getItem(CLE_AMB_CREA)!=="0"; }catch(e){}
+  const vues=[["tableau","Tableau de bord"],["annonces","Annonces"],["joueurs","Joueurs"]];
+  let h=`<header><h2>Espace créateur ${SCEAU}</h2><span class="ligne"><button class="btn" type="button" data-act="cr-ambiance" aria-pressed="${amb}">Ambiance du créateur</button><button class="lien" type="button" data-act="cr-actualiser">Actualiser</button></span></header>
+    <div class="choix" role="group" aria-label="Espace créateur">${vues.map(([id,n])=>`<button type="button" data-act="cr-vue" data-id="${id}" aria-pressed="${CR.vue===id}">${n}</button>`).join("")}</div>`;
+  if(CR.erreur) h+=`<p class="vide">${esc(CR.erreur)}</p>`;
+  else if(!CR.t) h+=`<p class="petit">${CR.charge?"Chargement…":""}</p>`;
+  else if(CR.vue==="tableau") h+=vueTableau(CR.t);
+  else if(CR.vue==="annonces") h+=vueAnnonces();
+  else h+=vueJoueurs(CR.t);
+  z.innerHTML=h;
+  if(CR.vue==="annonces") remplirFormAnnonce();
+}
+function vueTableau(t){
+  const p=(a,b)=>b?Math.round(a/b*100)+" %":"—";
+  const tuiles=[[t.joueurs,pl(t.joueurs,"joueur"),t.nouveaux_7j?`+${t.nouveaux_7j} cette semaine`:"aucun nouveau cette semaine"],
+    [t.actifs_7j,pl(t.actifs_7j,"joueur")+" "+pl(t.actifs_7j,"actif"),"sur les 7 derniers jours"],
+    [t.enquetes,pl(t.enquetes,"enquête"),`${t.enquetes_7j} cette semaine`],
+    [p(t.trouvees,t.enquetes),"de réussite",`${t.trouvees} ${pl(t.trouvees,"entité")} ${pl(t.trouvees,"trouvée")}`],
+    [p(t.survies,t.enquetes),"de survie",`${t.survies} ${pl(t.survies,"retour")} en vie`],
+    [t.parfaites,pl(t.parfaites,"enquête")+" "+pl(t.parfaites,"parfaite"),"tous objectifs remplis"]];
+  const jours=t.par_jour||[], max=Math.max(1,...jours.map(d=>d.n));
+  const ent=(t.entites||[]).slice(0,8), maxE=Math.max(1,...ent.map(e=>e.n));
+  return `<div class="cr-chiffres">${tuiles.map(([v,l,s])=>`<div class="cr-chiffre"><b>${esc(v)}</b><span>${esc(l)}</span><small>${esc(s)}</small></div>`).join("")}</div>
+    <div class="cr-grille">
+      <section class="cr-section"><h3>Enquêtes sur 14 jours</h3>
+        <div class="cr-jours" role="img" aria-label="Enquêtes par jour sur 14 jours">${jours.map((d,i)=>`<div title="${esc(jourCourt(d.jour))} : ${d.n} ${pl(d.n,"enquête")}"><i style="height:${d.n?Math.max(6,d.n/max*100):2}%"></i>${i%2?"":`<small>${esc(jourCourt(d.jour).split(" ")[0])}</small>`}</div>`).join("")}</div></section>
+      <section class="cr-section"><h3>Entités les plus croisées</h3>${ent.length?`<ul class="cr-liste">${ent.map(e=>`<li><span>${esc(nomEntite(e.reelle))}</span><small>${e.n} ${pl(e.n,"fois")} · ${p(e.ok,e.n)} trouvée</small><span class="part"><i style="width:${e.n/maxE*100}%"></i></span></li>`).join("")}</ul>`:`<p class="vide">Aucune enquête pour l’instant.</p>`}</section>
+      <section class="cr-section"><h3>Lieux</h3>${(t.lieux||[]).length?`<ul class="cr-liste">${t.lieux.map(l=>`<li><span>${esc(l.lieu)}</span><small>${l.n} ${pl(l.n,"enquête")}</small></li>`).join("")}</ul>`:`<p class="petit">Aucun lieu renseigné.</p>`}</section>
+      <section class="cr-section"><h3>Difficultés</h3>${(t.niveaux||[]).length?`<ul class="cr-liste">${t.niveaux.map(v=>`<li><span>${esc(nomNiveau(v.niveau))}</span><small>${v.n} ${pl(v.n,"enquête")} · ${p(v.ok,v.n)} de réussite</small></li>`).join("")}</ul>`:`<p class="petit">—</p>`}</section>
+    </div>`;
+}
+function vueAnnonces(){
+  const fichier=(Array.isArray(window.GRIMOIRE_ANNONCES)?window.GRIMOIRE_ANNONCES:[]).filter(a=>!CR.annonces.some(b=>b.id===a.id));
+  const ligne=(a,modif)=>{ const [s,c]=statutAnnonce(a);
+    return `<li><div class="ligne"><b>${esc(a.titre)}</b><span class="cr-statut ${c}">${s}</span></div>
+      <span class="petit">${esc(a.genre||"Annonce")}${a.debut?" · du "+esc(jourCourt(a.debut)):""}${a.fin?" au "+esc(jourCourt(a.fin)):""}</span>
+      ${modif?`<span class="ligne"><button class="lien" type="button" data-act="cr-annonce-modifier" data-id="${esc(a.id)}">Modifier</button><button class="lien" type="button" data-act="cr-annonce-retirer" data-id="${esc(a.id)}">${CR.retirer===a.id?"Confirmer le retrait":"Retirer"}</button></span>`:`<span class="petit">Dans annonces.js, tenue à jour par la veille automatique.</span>`}</li>`; };
+  const e=CR.edit;
+  return `<div class="cr-grille">
+    <section class="cr-section"><h3>${e&&e.id?"Modifier l’annonce":"Nouvelle annonce"}</h3>
+      <form id="f-annonce" class="champs">
+        <label>Titre<input name="titre" id="an-titre" maxlength="80" required></label>
+        <div class="cr-deux-champs"><label>Petit titre<input name="genre" id="an-genre" maxlength="30" placeholder="Événement"></label>
+          <label>Lien officiel<input name="lien" id="an-lien" type="url" placeholder="https://…"></label></div>
+        <div class="cr-deux-champs"><label>Du<input name="debut" id="an-debut" type="date"></label><label>Au<input name="fin" id="an-fin" type="date"></label></div>
+        <label>Texte<textarea name="texte" id="an-texte" maxlength="1800" placeholder="Un paragraphe par ligne vide, 6 au plus."></textarea></label>
+        <div class="ligne"><button class="btn plein" type="submit">${e&&e.id?"Enregistrer":"Publier l’annonce"}</button>${e?`<button class="lien" type="button" data-act="cr-annonce-nouvelle">Annuler</button>`:""}</div>
+        <p class="message" id="msg-annonce" role="status">${esc(CR.msg)}</p>
+      </form></section>
+    <section class="cr-section"><h3>Annonces publiées</h3>
+      ${CR.annonces.length?`<ul class="cr-annonces">${CR.annonces.map(a=>ligne(a,true)).join("")}</ul>`:`<p class="petit">Aucune annonce écrite depuis l’appli.</p>`}
+      ${fichier.length?`<h3>Annonces du fichier</h3><ul class="cr-annonces">${fichier.map(a=>ligne(a,false)).join("")}</ul>`:""}
+    </section></div>`;
+}
+function remplirFormAnnonce(){
+  const e=CR.edit||{}; const v=(id,x)=>{ const el=$("#"+id); if(el) el.value=x??""; };
+  v("an-titre",e.titre); v("an-genre",e.genre); v("an-lien",e.lien); v("an-debut",e.debut); v("an-fin",e.fin);
+  v("an-texte",(e.texte||[]).join("\n\n"));
+}
+function vueJoueurs(t){
+  const liste=t.liste||[];
+  return `<p class="petit">${liste.length} ${pl(liste.length,"joueur")}. Touche un joueur pour le renommer, voir ou supprimer ses enquêtes, ou supprimer son compte.</p>
+    <ul class="cr-joueurs">${liste.map(j=>{ const ouvert=CR.joueur===j.id, moi=j.id===uid();
+      return `<li class="cr-joueur${ouvert?" ouvert":""}"><button class="cr-tete" type="button" data-act="cr-joueur" data-id="${esc(j.id)}" aria-expanded="${ouvert}">
+          <b>${j.createur?`<span class="nom-createur">${esc(j.pseudo)}</span>${SCEAU}`:esc(j.pseudo)}${moi?` <small class="petit">toi</small>`:""}</b><small class="petit">${j.enquetes} ${pl(j.enquetes,"enquête")}</small>
+          <small class="petit">code ${esc(j.code)} · inscrit le ${esc(jourCourt(j.created_at))}</small><small class="petit">${j.derniere?"actif le "+esc(jourCourt(j.derniere)):"jamais actif"}</small></button>
+        ${ouvert?detailJoueur(j):""}</li>`; }).join("")}</ul>`;
+}
+function detailJoueur(j){
+  const protege=j.createur||j.id===uid();
+  return `<div class="cr-detail">
+    <form id="f-renommer" class="champs" data-id="${esc(j.id)}"><label>Pseudo<input name="pseudo" id="cr-pseudo" minlength="2" maxlength="24" required value="${esc(j.pseudo)}"></label>
+      <div class="ligne"><button class="btn" type="submit">Renommer</button></div><p class="message" id="msg-renommer" role="status"></p></form>
+    <div class="histo">${CR.enq===null?`<p class="petit">Chargement…</p>`:CR.enq.length?CR.enq.map(e=>`<div class="enq ${reussie(e)?"ok":"rate"}"><span class="quoi">${reussie(e)?esc(nomEntite(e.reelle)):`<s>${esc(nomEntite(e.annoncee))}</s> → ${esc(nomEntite(e.reelle))}`}</span>
+        <span class="issue ${reussie(e)?"":"rate"}">${reussie(e)?"trouvée":"ratée"}</span><span class="meta"><span>${esc(quand(e.created_at))}</span><span>${esc(e.lieu||"lieu non précisé")}</span></span>
+        <span class="actions"><button class="lien" type="button" data-act="cr-enquete-suppr" data-id="${esc(e.id)}">${CR.supprEnq===e.id?"Confirmer la suppression":"Supprimer"}</button></span></div>`).join(""):`<p class="vide">Aucune enquête.</p>`}</div>
+    ${protege?"":`<div class="ligne"><button class="btn cr-danger${CR.supprCompte===j.id?" plein":""}" type="button" data-act="cr-compte-suppr" data-id="${esc(j.id)}">${CR.supprCompte===j.id?"Confirmer : supprimer définitivement ce compte":"Supprimer le compte"}</button>
+      ${CR.supprCompte===j.id?`<span class="petit">Profil, enquêtes et amitiés de ${esc(j.pseudo)} seront effacés. Impossible de revenir en arrière.</span>`:""}</div>`}
+  </div>`;
+}
+async function chargerEnquetesJoueur(id){
+  CR.enq=null; rendreCreateur();
+  const {data,error}=await sb.rpc("enquetes_joueur",{p_id:id});
+  if(CR.joueur!==id) return;
+  CR.enq=error?[]:(data||[]); rendreCreateur();
+}
+const slug=t=>String(t).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,30)||"annonce";
+async function soumettreAnnonce(f){
+  const msg=t=>{ CR.msg=t; const m=$("#msg-annonce"); if(m) m.textContent=t; };
+  const d=Object.fromEntries(new FormData(f).entries());
+  const texte=String(d.texte||"").split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean);
+  if(texte.length>6) return msg("Six paragraphes au plus.");
+  if(d.lien&&!/^https:\/\//.test(d.lien)) return msg("Le lien doit commencer par https://");
+  if(d.debut&&d.fin&&d.debut>d.fin) return msg("La date de fin précède la date de début.");
+  const ligne={titre:d.titre.trim(), genre:(d.genre||"").trim()||"Annonce", lien:d.lien||null, debut:d.debut||null, fin:d.fin||null, texte, updated_at:new Date().toISOString()};
+  const id=CR.edit&&CR.edit.id?CR.edit.id:slug(ligne.titre)+"-"+(ligne.debut||isoJour(new Date())).replace(/-/g,"").slice(2);
+  msg("Enregistrement…");
+  const {error}=await sb.from("annonces").upsert({id,...ligne});
+  if(error) return msg("Refusé : "+error.message);
+  CR.edit=null; CR.msg="Annonce enregistrée : elle s’affiche pour tous les joueurs pendant ses dates.";
+  await chargerCreateur(); rafraichirAnnonces();
+}
+async function soumettreRenommer(f){
+  const m=$("#msg-renommer"), id=f.dataset.id, pseudo=new FormData(f).get("pseudo");
+  const {data,error}=await sb.rpc("moderer_pseudo",{p_id:id,p_pseudo:pseudo});
+  if(error||data!=="ok"){ if(m){ m.className="message erreur"; m.textContent=error?error.message:data==="invalide"?"Entre 2 et 24 caractères.":"Joueur introuvable."; } return; }
+  await chargerCreateur(); await chargerAmis(); rendreTout(); toast("Pseudo modifié");
+}
+Object.assign(ACT,{
+  "cr-vue":b=>{ CR.vue=b.dataset.id; CR.retirer=null; rendreCreateur(); return false; },
+  "cr-actualiser":()=>{ chargerCreateur(); return false; },
+  "cr-ambiance":()=>{ let v=true; try{ v=localStorage.getItem(CLE_AMB_CREA)!=="0"; localStorage.setItem(CLE_AMB_CREA,v?"0":"1"); }catch(e){} rendreCreateur(); return false; },
+  "cr-annonce-modifier":b=>{ CR.edit=CR.annonces.find(a=>a.id===b.dataset.id)||null; CR.msg=""; rendreCreateur(); $("#an-titre")&&$("#an-titre").focus(); return false; },
+  "cr-annonce-nouvelle":()=>{ CR.edit=null; CR.msg=""; rendreCreateur(); return false; },
+  "cr-annonce-retirer":b=>{
+    const id=b.dataset.id;
+    if(CR.retirer!==id){ CR.retirer=id; rendreCreateur(); return false; }
+    CR.retirer=null;
+    (async()=>{ const {error}=await sb.from("annonces").delete().eq("id",id); toast(error?"Retrait impossible":"Annonce retirée"); await chargerCreateur(); rafraichirAnnonces(); })();
+    return false;
+  },
+  "cr-joueur":b=>{
+    const id=b.dataset.id; CR.supprEnq=null; CR.supprCompte=null;
+    if(CR.joueur===id){ CR.joueur=null; rendreCreateur(); return false; }
+    CR.joueur=id; chargerEnquetesJoueur(id); return false;
+  },
+  "cr-enquete-suppr":b=>{
+    const id=b.dataset.id;
+    if(CR.supprEnq!==id){ CR.supprEnq=id; rendreCreateur(); return false; }
+    CR.supprEnq=null;
+    (async()=>{ const {data,error}=await sb.rpc("moderer_enquete",{p_id:id}); toast(error||data!=="supprimee"?"Suppression impossible":"Enquête supprimée");
+      const j=CR.joueur; await chargerCreateur(); if(j) chargerEnquetesJoueur(j); })();
+    return false;
+  },
+  "cr-compte-suppr":b=>{
+    const id=b.dataset.id;
+    if(CR.supprCompte!==id){ CR.supprCompte=id; rendreCreateur(); return false; }
+    CR.supprCompte=null;
+    (async()=>{ const {data,error}=await sb.rpc("moderer_compte",{p_id:id});
+      toast(error?"Suppression impossible : "+error.message:data==="supprime"?"Compte supprimé":"Suppression refusée ("+data+")");
+      CR.joueur=null; await chargerCreateur(); await chargerAmis(); rendreTout(); })();
+    return false;
+  }
+});
 document.addEventListener("submit",e=>{
   const f=e.target; e.preventDefault();
   if(f.id==="cloture") soumettreCloture();
@@ -1682,6 +1908,8 @@ document.addEventListener("submit",e=>{
   else if(f.id==="f-recup") soumettreRecup(f);
   else if(f.id==="f-pseudo") soumettrePseudo(f);
   else if(f.id==="f-ami") soumettreAmi(f);
+  else if(f.id==="f-annonce") soumettreAnnonce(f);
+  else if(f.id==="f-renommer") soumettreRenommer(f);
 });
 document.addEventListener("change",e=>{
   if(e.target.id==="c-reelle") reelleTouchee=true;
@@ -1698,23 +1926,37 @@ document.addEventListener("click",e=>{
   const f=ACT[b.dataset.act]; if(f&&f(b)!==false) rendre();
 });
 
-/* Annonces : événements du jeu en cours, lus dans annonces.js. Une annonce s’affiche entre ses dates de début et de fin,
-   dépliée la première fois, puis repliée sur une ligne une fois refermée. */
+/* Annonces : événements du jeu en cours, lus dans annonces.js et dans la table « annonces » de Supabase
+   (écrites depuis l’Espace créateur ; à identifiant égal, celle de la base l’emporte). Une annonce s’affiche entre
+   ses dates de début et de fin, dépliée la première fois, puis repliée sur une ligne une fois refermée. */
 (function(){
   const CLE_LUES="grimoire-annonces-lues";
   const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-  const auj=iso(new Date());
-  const liste=(Array.isArray(window.GRIMOIRE_ANNONCES)?window.GRIMOIRE_ANNONCES:[]).filter(a=>a&&a.id&&a.titre&&(!a.debut||a.debut<=auj)&&(!a.fin||a.fin>=auj));
-  if(!liste.length) return;
-  let lues=[]; try{ const l=JSON.parse(localStorage.getItem(CLE_LUES)||"[]"); if(Array.isArray(l)) lues=l; }catch(e){}
   const jour=t=>{ const [a,m,j]=t.split("-").map(Number); return (j===1?"1er":j)+" "+new Date(a,m-1,j).toLocaleDateString("fr-FR",{month:"long"}); };
   const z=$("#annonces");
-  z.innerHTML=liste.map(a=>`<details class="annonce" data-id="${esc(a.id)}"${lues.includes(a.id)?"":" open"}>
+  let lues=[]; try{ const l=JSON.parse(localStorage.getItem(CLE_LUES)||"[]"); if(Array.isArray(l)) lues=l; }catch(e){}
+  let base=[];
+  function afficher(){
+    const auj=iso(new Date());
+    const parId=new Map();
+    (Array.isArray(window.GRIMOIRE_ANNONCES)?window.GRIMOIRE_ANNONCES:[]).forEach(a=>{ if(a&&a.id) parId.set(a.id,a); });
+    base.forEach(a=>{ if(a&&a.id) parId.set(a.id,a); });
+    const liste=[...parId.values()].filter(a=>a.titre&&(!a.debut||a.debut<=auj)&&(!a.fin||a.fin>=auj));
+    if(!liste.length){ z.hidden=true; z.innerHTML=""; return; }
+    z.innerHTML=liste.map(a=>`<details class="annonce" data-id="${esc(a.id)}"${lues.includes(a.id)?"":" open"}>
     <summary><span class="label">${esc(a.genre||"Annonce")}${a.fin?" · jusqu’au "+jour(a.fin):""}</span><b>${esc(a.titre)}</b></summary>
     <div class="corps">${[].concat(a.texte||[]).map(t=>`<p>${esc(t)}</p>`).join("")}${/^https:\/\//.test(a.lien||"")?`<p><a href="${esc(a.lien)}" target="_blank" rel="noopener">Annonce officielle</a></p>`:""}</div></details>`).join("");
-  z.hidden=false;
+    z.hidden=false;
+  }
   z.addEventListener("toggle",e=>{ const id=e.target.dataset&&e.target.dataset.id; if(!id||e.target.open||lues.includes(id)) return;
     lues=[...lues,id].slice(-20); try{ localStorage.setItem(CLE_LUES,JSON.stringify(lues)); }catch(x){} },true);
+  rafraichirAnnonces=async()=>{
+    if(!sb) return;
+    const {data,error}=await sb.from("annonces").select("id,genre,titre,debut,fin,texte,lien");
+    if(!error){ base=data||[]; afficher(); }          // table absente (base pas encore à jour) : on garde le fichier seul
+  };
+  afficher();
+  rafraichirAnnonces();
 })();
 
 /* Orbes d’ambiance */

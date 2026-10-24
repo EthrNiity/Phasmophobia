@@ -77,6 +77,17 @@ Qui voit quoi :
 
 Les enquêtes clôturées sans être connecté restent sur l'appareil et sont ajoutées au compte à la connexion suivante.
 
+## Espace créateur
+
+Le compte qui porte le sceau « Créateur » (colonne `profiles.createur`, réglée à la main dans Supabase) voit, dans l'onglet Amis, un Espace créateur :
+
+- **Tableau de bord** : joueurs, activité sur 14 jours, entités les plus croisées, lieux et difficultés ;
+- **Annonces** : écrire, modifier et retirer des annonces (table `annonces`), affichées à tous en plus de celles de `annonces.js` ;
+- **Joueurs** : renommer un joueur, supprimer une enquête ou un compte (définitif) ;
+- **Ambiance du créateur** : thème or et braise, et pseudo mis en valeur partout.
+
+Chaque action est vérifiée dans la base (`est_createur()`), pas seulement masquée dans l'appli.
+
 ## Sauvegarde
 
 Avant toute manipulation de la base (nouvelle migration, nettoyage de tables, changement de projet), exporte les données :

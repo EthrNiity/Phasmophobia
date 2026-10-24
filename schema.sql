@@ -250,6 +250,121 @@ language sql stable security definer set search_path = public as $$
    group by p.id, p.pseudo, p.createur;
 $$;
 
+-- ───────────────────────── Espace créateur ─────────────────────────
+-- Tout ce qui suit est réservé au compte qui porte le sceau « Créateur » (profiles.createur),
+-- et vérifié ici, dans la base : l'appli ne fait qu'afficher.
+
+-- Vrai si le joueur connecté est le créateur.
+create or replace function public.est_createur() returns boolean
+language sql stable security definer set search_path = public as $$
+  select coalesce((select createur from public.profiles where id = auth.uid()), false);
+$$;
+
+-- Annonces écrites depuis l'appli, en plus du fichier annonces.js. Tout le monde les lit, même sans compte ;
+-- seul le créateur les écrit, les modifie ou les retire.
+create table if not exists public.annonces (
+  id         text primary key check (id ~ '^[a-z0-9-]{2,40}$'),
+  genre      text not null default 'Annonce' check (char_length(genre) between 1 and 30),
+  titre      text not null check (char_length(titre) between 1 and 80),
+  debut      date,
+  fin        date,
+  texte      text[] not null default '{}' check (cardinality(texte) <= 6),
+  lien       text check (lien is null or lien ~ '^https://'),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  check (debut is null or fin is null or debut <= fin)
+);
+alter table public.annonces enable row level security;
+drop policy if exists annonces_lecture on public.annonces;
+create policy annonces_lecture on public.annonces for select to anon, authenticated using (true);
+drop policy if exists annonces_ecriture on public.annonces;
+create policy annonces_ecriture on public.annonces for all to authenticated
+  using (public.est_createur()) with check (public.est_createur());
+revoke all on public.annonces from anon, authenticated;
+grant select on public.annonces to anon, authenticated;
+grant insert, update, delete on public.annonces to authenticated;
+
+-- Tableau de bord : chiffres de toute l'appli (jamais les adresses mail).
+create or replace function public.tableau_createur() returns json
+language plpgsql stable security definer set search_path = public as $$
+declare
+  auj date := (now() at time zone 'Europe/Paris')::date;
+begin
+  if not public.est_createur() then raise exception 'Réservé au créateur' using errcode = '42501'; end if;
+  return json_build_object(
+    'joueurs',     (select count(*) from public.profiles),
+    'nouveaux_7j', (select count(*) from public.profiles where created_at > now() - interval '7 days'),
+    'actifs_7j',   (select count(distinct user_id) from public.investigations where created_at > now() - interval '7 days'),
+    'enquetes',    (select count(*) from public.investigations),
+    'enquetes_7j', (select count(*) from public.investigations where created_at > now() - interval '7 days'),
+    'trouvees',    (select count(*) from public.investigations where correct),
+    'survies',     (select count(*) from public.investigations where survecu),
+    'parfaites',   (select count(*) from public.investigations where parfaite),
+    'entites', (select coalesce(json_agg(e order by e.n desc, e.reelle), '[]'::json) from (
+                  select reelle, count(*) as n, count(*) filter (where correct) as ok
+                    from public.investigations group by reelle) e),
+    'lieux',   (select coalesce(json_agg(l order by l.n desc, l.lieu), '[]'::json) from (
+                  select lieu, count(*) as n from public.investigations
+                   where lieu is not null group by lieu order by count(*) desc limit 8) l),
+    'niveaux', (select coalesce(json_agg(v order by v.n desc), '[]'::json) from (
+                  select coalesce(niveau, 'preuves-' || difficulte) as niveau, count(*) as n,
+                         count(*) filter (where correct) as ok
+                    from public.investigations group by 1) v),
+    'par_jour', (select json_agg(d order by d.jour) from (
+                  select g::date as jour,
+                         (select count(*) from public.investigations
+                           where (created_at at time zone 'Europe/Paris')::date = g::date) as n
+                    from generate_series(auj - 13, auj, interval '1 day') g) d),
+    'liste', (select coalesce(json_agg(j order by j.derniere desc nulls last, j.pseudo), '[]'::json) from (
+                  select p.id, p.pseudo, p.code, p.createur, p.created_at,
+                         count(i.id) as enquetes, count(i.id) filter (where i.correct) as trouvees,
+                         max(i.created_at) as derniere
+                    from public.profiles p left join public.investigations i on i.user_id = p.id
+                   group by p.id) j)
+  );
+end $$;
+
+-- Modération : enquêtes d'un joueur, pseudo, enquête ou compte.
+create or replace function public.enquetes_joueur(p_id uuid) returns setof public.investigations
+language plpgsql stable security definer set search_path = public as $$
+begin
+  if not public.est_createur() then raise exception 'Réservé au créateur' using errcode = '42501'; end if;
+  return query select * from public.investigations where user_id = p_id order by created_at desc limit 200;
+end $$;
+
+create or replace function public.moderer_pseudo(p_id uuid, p_pseudo text) returns text
+language plpgsql security definer set search_path = public as $$
+declare
+  p text := trim(coalesce(p_pseudo, ''));
+begin
+  if not public.est_createur() then raise exception 'Réservé au créateur' using errcode = '42501'; end if;
+  if char_length(p) not between 2 and 24 then return 'invalide'; end if;
+  update public.profiles set pseudo = p where id = p_id;
+  if not found then return 'introuvable'; end if;
+  return 'ok';
+end $$;
+
+create or replace function public.moderer_enquete(p_id uuid) returns text
+language plpgsql security definer set search_path = public as $$
+begin
+  if not public.est_createur() then raise exception 'Réservé au créateur' using errcode = '42501'; end if;
+  delete from public.investigations where id = p_id;
+  if not found then return 'introuvable'; end if;
+  return 'supprimee';
+end $$;
+
+-- Supprime un compte et tout ce qui en dépend (profil, enquêtes, amitiés). Jamais le sien, ni celui d'un créateur.
+create or replace function public.moderer_compte(p_id uuid) returns text
+language plpgsql security definer set search_path = public, auth as $$
+begin
+  if not public.est_createur() then raise exception 'Réservé au créateur' using errcode = '42501'; end if;
+  if p_id = auth.uid() then return 'soi-meme'; end if;
+  if coalesce((select createur from public.profiles where id = p_id), false) then return 'createur'; end if;
+  delete from auth.users where id = p_id;
+  if not found then return 'introuvable'; end if;
+  return 'supprime';
+end $$;
+
 -- Droits d'exécution : uniquement les joueurs connectés, et jamais les fonctions internes.
 revoke all on function public.code_ami()                 from public, anon, authenticated;
 revoke all on function public.handle_new_user()          from public, anon, authenticated;
@@ -264,6 +379,18 @@ grant execute on function public.sont_lies(uuid, uuid)       to authenticated;
 grant execute on function public.demander_ami(text)          to authenticated;
 grant execute on function public.repondre_ami(uuid, boolean) to authenticated;
 grant execute on function public.classement()                to authenticated;
+revoke all on function public.est_createur()              from public, anon;
+revoke all on function public.tableau_createur()          from public, anon;
+revoke all on function public.enquetes_joueur(uuid)       from public, anon;
+revoke all on function public.moderer_pseudo(uuid, text)  from public, anon;
+revoke all on function public.moderer_enquete(uuid)       from public, anon;
+revoke all on function public.moderer_compte(uuid)        from public, anon;
+grant execute on function public.est_createur()             to authenticated;
+grant execute on function public.tableau_createur()         to authenticated;
+grant execute on function public.enquetes_joueur(uuid)      to authenticated;
+grant execute on function public.moderer_pseudo(uuid, text) to authenticated;
+grant execute on function public.moderer_enquete(uuid)      to authenticated;
+grant execute on function public.moderer_compte(uuid)       to authenticated;
 
 -- Fait relire le schéma à l'API tout de suite, pour que l'appli voie les nouvelles colonnes.
 notify pgrst, 'reload schema';
