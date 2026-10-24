@@ -100,6 +100,12 @@ button{font:inherit;color:inherit;cursor:pointer}
 #losange.glisse{transition:left .7s cubic-bezier(.3,.8,.2,1)}
 .onglets .btn{flex:none;padding:6px 12px}
 .onglets .court{display:none}
+#onglets button[hidden]{display:none}
+#o-createur{color:color-mix(in srgb,var(--cierge) 65%,var(--cendre))}
+#o-createur:hover,#o-createur[aria-selected="true"]{color:var(--cierge)}
+#o-createur svg{width:9px;height:9px;fill:currentColor}
+#o-createur .court{align-items:center;padding-inline:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 @media (max-width:700px){
   #onglets{gap:0}
   #onglets button{padding:14px 8px 15px;font-size:11.5px;letter-spacing:.04em}
@@ -111,6 +117,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 @media (max-width:400px){
   #onglets button{padding:14px 6px 15px;font-size:11px;letter-spacing:.02em}
 }
+@media (max-width:370px){#onglets button{padding-inline:4px;letter-spacing:0}}
 
 main{display:grid;grid-template-columns:minmax(0,1fr);overflow-x:clip}
 main>section{grid-area:1/1;min-width:0;padding-block:28px 8px;display:flex;flex-direction:column;gap:30px}
@@ -398,7 +405,7 @@ input,select{font:inherit;color:inherit;background:var(--nuit);border:1px solid 
 .createur-note{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
 .createur-note .createur{margin-left:0}
 /* ───── Espace créateur ───── */
-#bloc-createur{margin-top:34px;padding:20px 20px 22px;border:1px solid color-mix(in srgb,var(--cierge) 45%,var(--trait));border-radius:var(--feuille);background:linear-gradient(160deg,color-mix(in srgb,var(--cierge) 7%,var(--voile)),var(--voile) 55%);box-shadow:0 0 40px -18px var(--cierge)}
+#bloc-createur{margin-top:6px;padding:20px 20px 22px;border:1px solid color-mix(in srgb,var(--cierge) 45%,var(--trait));border-radius:var(--feuille);background:linear-gradient(160deg,color-mix(in srgb,var(--cierge) 7%,var(--voile)),var(--voile) 55%);box-shadow:0 0 40px -18px var(--cierge)}
 #bloc-createur>header h2::before{background:var(--cierge)}
 #bloc-createur .choix button[aria-pressed="true"]{background:var(--cierge);border-color:var(--cierge);color:var(--nuit);box-shadow:0 0 16px -4px var(--cierge)}
 .cr-chiffres{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
@@ -658,6 +665,8 @@ footer{margin-top:36px;padding-top:16px;color:var(--cendre);font-size:13.5px;max
           </div>
         </div>
       </div>
+    </section>
+    <section id="t-createur" hidden>
       <div class="bloc" id="bloc-createur" hidden></div>
     </section>
   </main>
@@ -961,10 +970,11 @@ function traits(g){
 const AMB={n:16,sale:true,redessine:null};
 
 /* Onglets */
-const TABS=[["enquete","Enquête"],["minuteurs","Minuteurs"],["aide","Aide-mémoire","Aide"],["carnet","Carnet"],["amis","Amis"]];
+const TABS=[["enquete","Enquête"],["minuteurs","Minuteurs"],["aide","Aide-mémoire","Aide"],["carnet","Carnet"],["amis","Amis"],["createur","Créateur",`<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M5 0L10 5L5 10L0 5Z"/></svg><span class="sr">Créateur</span>`]];
 const h=location.hash.replace("#",""); if(TABS.some(t=>t[0]===h)) TAB=h;
 if(!TABS.some(t=>t[0]===TAB)) TAB="enquete";
 $("#onglets").innerHTML=TABS.map(([id,n,court])=>`<button role="tab" id="o-${id}" data-tab="${id}" aria-controls="t-${id}">${court?`<span class="long">${n}</span><span class="court">${court}</span>`:n}</button>`).join("")+`<i id="losange" aria-hidden="true"></i>`;
+$("#o-createur").hidden=true;   /* affiché seulement pour le compte créateur (voir rendreCreateur) */
 const CALME=matchMedia("(prefers-reduced-motion: reduce)").matches;
 let minuterie=null;
 function placerLosange(){ const b=$("#o-"+TAB); $("#losange").style.left=(b.offsetLeft+b.offsetWidth/2)+"px"; }
@@ -1753,7 +1763,9 @@ function statutAnnonce(a){ const auj=isoJour(new Date()); if(a.fin&&a.fin<auj) r
 function rendreCreateur(){
   const z=$("#bloc-createur"); if(!z) return;
   ambianceCreateur();
-  if(!estCreateur()){ z.hidden=true; return; }
+  const o=$("#o-createur"), voit=estCreateur();
+  if(o.hidden===voit){ o.hidden=!voit; placerLosange(); }
+  if(!voit){ z.hidden=true; if(TAB==="createur") allerA("amis",false); return; }
   z.hidden=false;
   if(!CR.t&&!CR.charge&&!CR.erreur){ chargerCreateur(); return; }
   let amb=true; try{ amb=localStorage.getItem(CLE_AMB_CREA)!=="0"; }catch(e){}

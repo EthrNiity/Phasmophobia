@@ -176,7 +176,7 @@ if (process.argv.includes("--page")) {
       await page.waitForTimeout(800);
       const texte = await page.textContent("body");
       if (!texte.includes(`${GHOSTS.length} entités possibles`)) erreur(`Page : « ${GHOSTS.length} entités possibles » n'apparaît pas à l'ouverture.`);
-      for (const id of await page.$$eval("#onglets [data-tab]", b => b.map(x => x.dataset.tab))) {
+      for (const id of await page.$$eval("#onglets [data-tab]", b => b.filter(x => !x.hidden).map(x => x.dataset.tab))) {   // onglets visibles seulement
         await page.click(`#onglets [data-tab="${id}"]`);
         await page.waitForTimeout(1200);
       }
