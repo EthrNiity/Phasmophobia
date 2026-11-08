@@ -18,12 +18,32 @@
   "build": {
     "appId": "io.github.ethrniity.grimoire-overlay",
     "productName": "Grimoire Overlay",
-    "artifactName": "Grimoire-Overlay-${version}-${arch}-${target}.${ext}",
-    "files": ["main.js", "preload.js", "hors-ligne.html", "icone.png", "icone-plateau.png"],
-    "directories": { "output": "dist" },
+    "files": [
+      "main.js",
+      "preload.js",
+      "hors-ligne.html",
+      "icone.png",
+      "icone-plateau.png"
+    ],
+    "directories": {
+      "output": "dist"
+    },
     "win": {
       "icon": "icone.png",
-      "target": [{ "target": "nsis", "arch": ["x64"] }, { "target": "portable", "arch": ["x64"] }]
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
     },
     "nsis": {
       "oneClick": false,
@@ -31,8 +51,11 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Grimoire Overlay"
+      "shortcutName": "Grimoire Overlay",
+      "artifactName": "Grimoire-Overlay-${version}-installeur.${ext}"
     },
-    "portable": { "artifactName": "Grimoire-Overlay-${version}-portable.exe" }
+    "portable": {
+      "artifactName": "Grimoire-Overlay-${version}-portable.exe"
+    }
   }
 }

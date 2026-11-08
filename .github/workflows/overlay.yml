@@ -43,7 +43,7 @@ jobs:
           tag="overlay-v$version"
           notes="Grimoire Overlay $version pour Windows 10/11.
 
-          - **Grimoire-Overlay-$version-x64-nsis.exe** : installeur (raccourci sur le bureau et dans le menu Démarrer).
+          - **Grimoire-Overlay-$version-installeur.exe** : installeur (raccourci sur le bureau et dans le menu Démarrer).
           - **Grimoire-Overlay-$version-portable.exe** : sans installation, à lancer directement.
 
           Le programme n'est pas signé : au premier lancement, Windows peut afficher « Windows a protégé votre ordinateur ». Clique sur **Informations complémentaires**, puis **Exécuter quand même**."
