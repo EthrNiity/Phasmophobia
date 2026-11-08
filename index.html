@@ -494,6 +494,99 @@ textarea{font:inherit;font-family:var(--f-texte);font-size:16px;color:var(--os);
 
 .toast{position:fixed;left:50%;bottom:calc(78px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:9;background:var(--os);color:var(--nuit);padding:9px 18px;border-radius:var(--petale);font-family:var(--f-data);font-size:13px;max-width:calc(100% - 32px);text-align:center}
 footer{margin-top:36px;padding-top:16px;color:var(--cendre);font-size:13.5px;max-width:80ch;background:linear-gradient(90deg,var(--trait),transparent) top/100% 1px no-repeat}
+footer .lien-overlay{color:var(--follet);text-underline-offset:3px;white-space:nowrap}
+/* ───── Mode compact : une colonne étroite à garder à côté du jeu (fenêtre overlay, second écran, téléphone) ───── */
+.nav-droite{display:flex;align-items:center;gap:6px;flex:none}
+@media (max-width:700px){.btn-compact{display:none}}
+.compact-seul{display:none}
+:root[data-compact] .compact-seul{display:flex}
+:root[data-compact] .entete,:root[data-compact] .onglets,:root[data-compact] footer,:root[data-compact] .barre,
+:root[data-compact] #annonces,:root[data-compact] #cloture-zone,:root[data-compact] #ecartees,:root[data-compact] .planche .mode,
+:root[data-compact] #n-aide,:root[data-compact] #lune-aide,:root[data-compact] .q-chasse,:root[data-compact] .bloc>header,
+:root[data-compact] #pas-etat,:root[data-compact] .colonne>.bloc:first-child .question>.label{display:none!important}
+:root[data-compact] body{font-size:14px}
+:root[data-compact] .page{padding:8px 10px 10px;max-width:none}
+:root[data-compact] main>section{padding-block:6px 0;gap:10px}
+:root[data-compact] .deux{display:flex;flex-direction:column;gap:9px}
+:root[data-compact] .colonne{display:contents}
+:root[data-compact] #verdict{order:1}
+:root[data-compact] .colonne>.bloc:first-child{order:2}
+:root[data-compact] .mini-minuteurs{order:3}
+:root[data-compact] .colonne:first-child>.bloc:nth-child(2){order:4}
+:root[data-compact] .colonne-fixe>.bloc{order:5}
+:root[data-compact] .aide-touches{order:6}
+:root[data-compact] .bloc{gap:8px}
+
+.compact-tete{align-items:center;justify-content:space-between;gap:8px;padding-bottom:6px;background:linear-gradient(90deg,var(--trait),transparent) bottom/100% 1px no-repeat;-webkit-app-region:drag}
+.ct-titre{display:inline-flex;align-items:center;gap:7px;font-family:var(--f-titre);font-size:18px;letter-spacing:.02em}
+.ct-titre svg{width:13px;height:16px;color:var(--follet)}
+.ct-actions{display:flex;gap:4px;-webkit-app-region:no-drag}
+.ct-btn{display:grid;place-items:center;width:30px;height:30px;padding:0;border-radius:9px 3px 9px 3px;border:1px solid var(--trait);background:var(--voile2);color:var(--cendre)}
+.ct-btn:hover{color:var(--os);border-color:var(--follet)}
+.ct-btn svg{width:15px;height:15px}
+
+/* Verdict ramassé : la planchette rapetisse, le nom reste lisible d’un coup d’œil */
+:root[data-compact] .verdict{padding:7px 12px 7px 8px;gap:10px;border-radius:22px 5px 22px 5px}
+:root[data-compact] .planchette{width:44px;height:53px}
+:root[data-compact] .verdict h2{font-size:21px}
+:root[data-compact] .verdict .conseil{margin-top:1px;font-size:12.5px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* Sept sceaux sur une ligne */
+:root[data-compact] .planche{padding:14px 6px 8px;border-radius:70px 70px 14px 14px / 30px 30px 14px 14px;gap:8px}
+:root[data-compact] .planche::before{inset:4px;border-radius:66px 66px 10px 10px / 27px 27px 10px 10px}
+:root[data-compact] .sceaux{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px;padding-bottom:6px}
+:root[data-compact] .sceau{width:auto;gap:3px}
+:root[data-compact] .sceau .disque{width:36px;height:36px;box-shadow:0 0 0 2px var(--voile),0 0 0 3px var(--trait)}
+:root[data-compact] .sceau[data-etat="1"] .disque{box-shadow:0 0 0 2px var(--voile),0 0 0 3px var(--follet),0 0 16px var(--lueur)}
+:root[data-compact] .sceau[data-etat="-1"] .disque{box-shadow:0 0 0 2px var(--voile),0 0 0 3px var(--sang)}
+:root[data-compact] .sceau svg{width:21px;height:21px}
+:root[data-compact] .sceau .nom{font-size:10.5px;line-height:1.1;overflow-wrap:anywhere}
+:root[data-compact] .sceau:nth-child(1),:root[data-compact] .sceau:nth-child(7){transform:translateY(7px)}
+:root[data-compact] .sceau:nth-child(2),:root[data-compact] .sceau:nth-child(6){transform:translateY(3px)}
+:root[data-compact] .sceau:nth-child(3),:root[data-compact] .sceau:nth-child(5){transform:none}
+:root[data-compact] .sceau .kbd{display:block}
+.sceau .kbd{display:none;font-family:var(--f-data);font-size:9px;line-height:1;color:var(--cendre);opacity:.75}
+:root[data-compact] .choix{gap:4px}
+:root[data-compact] .choix button{padding:4px 8px;font-size:11.5px}
+:root[data-compact] .choix button svg{width:11px;height:11px;margin-right:4px}
+:root[data-compact] #seg-n{justify-content:center}
+
+/* Minuteurs en pastilles */
+.mini-minuteurs{gap:6px;align-items:stretch}
+.mini-min,.mini-chasse{border:1px solid var(--trait);background:var(--voile);color:var(--cendre);border-radius:var(--petale);padding:5px 9px;font-family:var(--f-data);font-size:11px;line-height:1.2}
+.mini-min{flex:1 1 0;min-width:0;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1px 6px;align-items:baseline;text-align:left}
+.mm-nom{font-size:10px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mm-chrono{font-size:16px;font-weight:500;line-height:1;color:var(--os);font-variant-numeric:tabular-nums}
+.mm-etat{grid-column:1/-1;font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini-min:hover,.mini-chasse:hover{border-color:var(--follet);color:var(--os)}
+.mini-min.calme{border-color:var(--follet);background:var(--halo)}.mini-min.calme .mm-etat{color:var(--follet)}
+.mini-min.danger{border-color:var(--sang)}.mini-min.danger .mm-etat{color:var(--sang)}
+.mini-min.veille{border-color:var(--cierge)}.mini-min.veille .mm-etat{color:var(--cierge)}
+.mini-chasse{flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;text-transform:uppercase;letter-spacing:.06em;color:var(--sang);border-color:color-mix(in srgb,var(--sang) 55%,var(--trait))}
+.mini-chasse svg{width:16px;height:16px}
+
+/* Rond des pas et météo sur une ligne */
+:root[data-compact] .colonne:first-child>.bloc:nth-child(2){flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px 12px}
+:root[data-compact] .colonne:first-child>.bloc:nth-child(2) .question>span:first-child{display:none}
+:root[data-compact] .pas{grid-template-columns:auto auto;gap:8px}
+:root[data-compact] .tambour{width:60px;height:60px;margin:3px;box-shadow:0 0 0 3px var(--nuit),0 0 0 4px var(--trait)}
+:root[data-compact] .tambour.mesure{box-shadow:0 0 0 3px var(--nuit),0 0 0 4px var(--follet),0 0 18px var(--lueur)}
+:root[data-compact] .tambour svg{width:20px;height:20px}
+:root[data-compact] .tambour b{font-size:17px}
+:root[data-compact] .tambour small{font-size:8.5px}
+:root[data-compact] .pas-cote{gap:4px}
+
+/* Entités : lignes courtes, fiche dépliable au besoin */
+:root[data-compact] .rangs{gap:5px}
+:root[data-compact] details.rang>summary{padding:6px 10px;gap:3px 10px}
+:root[data-compact] .rang-nom{font-size:15px}
+:root[data-compact] .rang-pct{font-size:13px}
+:root[data-compact] .rang-bar{height:6px}
+:root[data-compact] .rang .puces{display:none}
+:root[data-compact] .rang .fiche{padding:8px 10px 10px;font-size:13.5px}
+.aide-touches{flex-wrap:wrap;gap:3px 10px;justify-content:center;font-family:var(--f-data);font-size:10.5px;color:var(--cendre);opacity:.8;padding-top:2px}
+.aide-touches kbd{font:inherit;color:var(--os);border:1px solid var(--trait);border-radius:4px;padding:0 4px;margin-right:3px}
+:root[data-compact] .toast{bottom:12px;font-size:12px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -506,7 +599,15 @@ footer{margin-top:36px;padding-top:16px;color:var(--cendre);font-size:13.5px;max
     <h1><svg viewBox="0 0 100 120" aria-hidden="true"><path d="M12 112V50a38 38 0 0 1 76 0v62l-12.7-11-12.6 11L50 101l-12.7 11-12.6-11z" fill="none" stroke="currentColor" stroke-width="7" stroke-linejoin="round"/><circle cx="37" cy="50" r="6" fill="currentColor"/><circle cx="63" cy="50" r="6" fill="currentColor"/></svg>Grimoire des Entités</h1>
   </header>
 
-  <nav class="onglets" aria-label="Sections du grimoire"><div role="tablist" id="onglets"></div><button class="btn" data-act="reset" aria-label="Nouvelle enquête"><span class="long">Nouvelle enquête</span><span class="court"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 8a5.500 5.500 0 1 1-1.700-4"/><path d="M13.500 1.800v3.200h-3.200"/></svg></span></button></nav>
+  <div class="compact-tete compact-seul">
+    <span class="ct-titre"><svg viewBox="0 0 100 120" aria-hidden="true"><path d="M12 112V50a38 38 0 0 1 76 0v62l-12.7-11-12.6 11L50 101l-12.7 11-12.6-11z" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"/><circle cx="37" cy="50" r="7" fill="currentColor"/><circle cx="63" cy="50" r="7" fill="currentColor"/></svg>Grimoire</span>
+    <span class="ct-actions">
+      <button class="ct-btn" data-act="reset" title="Nouvelle enquête" aria-label="Nouvelle enquête"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 8a5.500 5.500 0 1 1-1.700-4"/><path d="M13.500 1.800v3.200h-3.200"/></svg></button>
+      <button class="ct-btn" data-act="compact-quitter" title="Vue complète : carnet, aide-mémoire, amis" aria-label="Vue complète"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.500 2.500h4v4M6.500 13.500h-4v-4M13.500 2.500L9 7M2.500 13.500L7 9"/></svg></button>
+    </span>
+  </div>
+
+  <nav class="onglets" aria-label="Sections du grimoire"><div role="tablist" id="onglets"></div><span class="nav-droite"><button class="btn discret btn-compact" data-act="compact" title="Mode compact : à garder à côté du jeu">Compact</button><button class="btn" data-act="reset" aria-label="Nouvelle enquête"><span class="long">Nouvelle enquête</span><span class="court"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 8a5.500 5.500 0 1 1-1.700-4"/><path d="M13.500 1.800v3.200h-3.200"/></svg></span></button></span></nav>
 
   <main>
     <!-- ENQUÊTE -->
@@ -539,16 +640,22 @@ footer{margin-top:36px;padding-top:16px;color:var(--cendre);font-size:13.5px;max
                 </div>
               </div>
             </div>
-            <div class="question">
+            <div class="question q-meteo">
               <span>Météo du contrat</span>
               <div class="choix"><button class="lune" data-act="lune" id="btn-lune" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="currentColor"/></svg>Lune de sang</button></div>
               <p class="petit" id="lune-aide" hidden>Ciel rouge et pluie fine : les entités sont environ 15 % plus rapides en chasse. Les vitesses des fiches en tiennent compte.</p>
             </div>
-            <div class="question">
+            <div class="question q-chasse">
               <span>Première chasse, selon la santé mentale moyenne</span>
               <div class="choix" id="seg-chasse" role="group" aria-label="Moment de la première chasse"></div>
             </div>
           </div>
+        </div>
+
+        <div class="mini-minuteurs compact-seul" role="group" aria-label="Minuteurs">
+          <button class="mini-min" id="mini-enc" data-act="mini-enc" title="Encens utilisé : lance le minuteur (appuie encore pour le remettre à zéro)"><span class="mm-nom">Encens</span><span class="mm-chrono">0:00</span><span class="mm-etat">prêt</span></button>
+          <button class="mini-min" id="mini-cd" data-act="mini-cd" title="Fin de chasse : lance le minuteur (appuie encore pour le remettre à zéro)"><span class="mm-nom">Fin chasse</span><span class="mm-chrono">0:00</span><span class="mm-etat">prêt</span></button>
+          <button class="mini-chasse" data-act="mini-chasse" title="Une chasse démarre : le Grimoire conclut selon le minuteur en cours"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 1.800L14.600 13.600H1.400z"/><path d="M8 6.200v3.400M8 11.700v.1"/></svg>Chasse</button>
         </div>
 
         <div class="colonne colonne-fixe" id="resultat">
@@ -586,6 +693,7 @@ footer{margin-top:36px;padding-top:16px;color:var(--cendre);font-size:13.5px;max
             <div id="ecartees"></div>
           </div>
         </div>
+        <p class="aide-touches compact-seul" id="aide-touches"></p>
       </div>
     </section>
 
@@ -705,7 +813,7 @@ footer{margin-top:36px;padding-top:16px;color:var(--cendre);font-size:13.5px;max
     </section>
   </main>
 
-  <footer>Outil de fan non officiel, sans lien avec Kinetic Games. Données de la version <span id="version-jeu">0.19.1</span> du jeu, <span id="date-donnees">octobre 2026</span>.</footer>
+  <footer>Outil de fan non officiel, sans lien avec Kinetic Games. Données de la version <span id="version-jeu">0.19.1</span> du jeu, <span id="date-donnees">octobre 2026</span>. <a class="lien-overlay" href="https://github.com/EthrNiity/Phasmophobia/releases/latest" target="_blank" rel="noopener">Overlay pour jouer en même temps (Windows)</a></footer>
 </div>
 
 <div class="barre" id="barre"><span id="barre-txt"></span><button class="btn" data-act="voir">Voir</button></div>
@@ -1057,9 +1165,9 @@ const GLYPHES={
   dot:`<g fill="currentColor" stroke="none">${[8,16,24].map(y=>[8,16,24].map(x=>`<circle cx="${x}" cy="${y}" r="${x===16&&y===16?2.6:1.7}"/>`).join("")).join("")}</g>`
 };
 const ETATS={"0":"à vérifier","1":"trouvée","-1":"exclue"};
-$("#preuves").innerHTML=EV.map(e=>`<button class="sceau" id="p-${e.id}" data-act="ev" data-id="${e.id}" data-etat="0">
+$("#preuves").innerHTML=EV.map((e,i)=>`<button class="sceau" id="p-${e.id}" data-act="ev" data-id="${e.id}" data-etat="0">
   <span class="disque"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${GLYPHES[e.id]}</svg></span>
-  <span class="nom">${e.c==="UV"?"Ultraviolet":e.c}</span></button>`).join("");
+  <span class="nom">${e.c==="UV"?"Ultraviolet":e.c}</span><span class="kbd" aria-hidden="true">${i+1}</span></button>`).join("");
 
 /* La lune décroît avec la difficulté : pleine, gibbeuse, demi, croissant, nouvelle. */
 const LUNES={normale:`<circle cx="8" cy="8" r="6" fill="currentColor"/>`,pro:`<path d="M8 2a6 6 0 0 1 0 12a3.400 6 0 0 1 0-12z" fill="currentColor"/>`,cauchemar:`<path d="M8 2a6 6 0 0 1 0 12z" fill="currentColor"/>`,demence:`<path d="M8 2a6 6 0 0 1 0 12a3.400 6 0 0 0 0-12z" fill="currentColor"/>`,zero:``};
@@ -1190,7 +1298,18 @@ const T={enc:null,cd:null}, DUREE={enc:180,cd:30};
 const mmss=s=>Math.floor(s/60)+":"+String(Math.floor(s%60)).padStart(2,"0");
 function etat(id,txt,cls){ const e=$("#"+id+"-etat"); e.textContent=txt; e.className="etat"+(cls?" "+cls:""); }
 function aiguille(id,s){ $("#"+id+"-chrono").textContent=mmss(s); $("#"+id+"-arc").setAttribute("stroke-dashoffset",(TOUR*(1-Math.min(1,s/DUREE[id]))).toFixed(1)); }
-function zero(id){ T[id]=null; aiguille(id,0); etat(id,"En attente."); }
+function zero(id){ T[id]=null; aiguille(id,0); etat(id,"En attente."); majMini(); }
+/* Pastilles du mode compact : même chrono et mêmes seuils que les cadrans. */
+function majMini(){
+  [["enc",[[60,"aucune chasse","calme"],[90,"Démon seul","danger"],[180,"tous sauf Esprit","veille"],[Infinity,"délai écoulé",""]]],
+   ["cd",[[20,"aucune chasse","calme"],[25,"Démon seul","danger"],[Infinity,"chasse possible","veille"]]]].forEach(([id,paliers])=>{
+    const b=$("#mini-"+id); if(!b) return;
+    const s=T[id]?(Date.now()-T[id])/1000:null, p=s==null?null:paliers.find(x=>s<x[0]);
+    b.querySelector(".mm-chrono").textContent=mmss(s||0);
+    b.querySelector(".mm-etat").textContent=p?p[1]:"prêt";
+    b.className="mini-min"+(p&&p[2]?" "+p[2]:"");
+  });
+}
 function tick(){
   if(T.enc){ const s=(Date.now()-T.enc)/1000; aiguille("enc",s);
     if(s<60) etat("enc","Aucune chasse possible.","calme");
@@ -1201,6 +1320,7 @@ function tick(){
     if(s<20) etat("cd","Aucune chasse possible.","calme");
     else if(s<25) etat("cd","Seul un Démon peut déjà rechasser.","danger");
     else etat("cd","Délai écoulé : nouvelle chasse possible.","veille"); }
+  if(T.enc||T.cd) majMini();
 }
 setInterval(tick,250);
 
@@ -1272,8 +1392,77 @@ const ACT={
   "cd-chasse":()=>{ if(!T.cd){ toast("Lance d’abord le minuteur à la fin d’une chasse"); return false; }
     const s=Math.round((Date.now()-T.cd)/1000); T.cd=null;
     if(s<25){ S.vu.demon=true; delete S.struck.demon; etat("cd",`Nouvelle chasse après ${s} s : c’est un Démon.`,"danger"); toast("Démon désigné dans l’enquête"); return; }
-    etat("cd",`Nouvelle chasse après ${s} s : délai normal.`); return false; }
+    etat("cd",`Nouvelle chasse après ${s} s : délai normal.`); return false; },
+  /* Mode compact : pastilles et bouton Chasse */
+  "mini-enc":()=>{ if(T.enc){ zero("enc"); toast("Minuteur d’encens à zéro"); } else { T.enc=Date.now(); tick(); } majMini(); return false; },
+  "mini-cd":()=>{ if(T.cd){ zero("cd"); toast("Minuteur entre chasses à zéro"); } else { T.cd=Date.now(); tick(); } majMini(); return false; },
+  "mini-chasse":()=>{ return chasseDemarre(); },
+  compact:()=>{ modeCompact(true); return false; },
+  "compact-quitter":()=>{ modeCompact(false); return false; }
 };
+/* Une chasse démarre : conclut avec le minuteur en cours (encens d’abord), puis relance « Entre deux chasses » à la fin. */
+function chasseDemarre(){
+  let r=false;
+  if(T.enc){ r=ACT["enc-chasse"](); toast($("#enc-etat").textContent); }
+  else if(T.cd){ r=ACT["cd-chasse"](); toast($("#cd-etat").textContent); }
+  else { toast("Aucun minuteur lancé : encens (E) ou fin de chasse (F)"); return false; }
+  majMini(); return r;
+}
+
+/* ───── Mode compact ─────
+   ?vue=compact force le mode (fenêtre overlay), ?vue=complet le coupe ; sinon le dernier choix est gardé sur l’appareil.
+   Le programme overlay pour Windows expose window.grimoireOverlay : il agrandit ou rétrécit sa fenêtre en même temps. */
+const CLE_COMPACT="grimoire-compact";
+const OVERLAY=window.grimoireOverlay||null;
+function modeCompact(oui,silencieux){
+  const r=document.documentElement;
+  if(oui){ r.dataset.compact=""; if(TAB!=="enquete") allerA("enquete",false); } else delete r.dataset.compact;
+  try{ localStorage.setItem(CLE_COMPACT,oui?"1":"0"); }catch(e){}
+  try{ const u=new URL(location.href); if(u.searchParams.has("vue")){ u.searchParams.set("vue",oui?"compact":"complet"); history.replaceState(null,"",u); } }catch(e){}
+  if(OVERLAY&&OVERLAY.vue&&!silencieux) OVERLAY.vue(oui?"compact":"complet");
+  if(!oui) requestAnimationFrame(placerLosange);
+  majMini();
+}
+const TOUCHES=[["1–7","preuves"],["E","encens"],["F","fin de chasse"],["C","chasse"],["P","pas"],["L","lune"],["D","difficulté"]];
+$("#aide-touches").innerHTML=(OVERLAY&&OVERLAY.prefixe?`<span>${esc0(OVERLAY.prefixe)} +</span>`:"")+TOUCHES.map(([k,n])=>`<span><kbd>${k}</kbd>${n}</span>`).join("");
+function esc0(t){ return String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+/* Raccourcis : au clavier dans l’appli (onglet Enquête ou mode compact), ou depuis le jeu via le programme overlay. */
+function raccourci(k){
+  k=String(k||"").toLowerCase();
+  const n=parseInt(k,10);
+  if(n>=1&&n<=EV.length){ const b=$("#p-"+EV[n-1].id); ACT.ev(b); rendre(); const v=S.ev[EV[n-1].id];
+    if(OVERLAY) toast(EV[n-1].n+" : "+(v===1?"trouvée":v===-1?"exclue":"effacée")); return true; }
+  const f={
+    e:()=>ACT["mini-enc"](), f:()=>ACT["mini-cd"](),
+    c:()=>{ if(chasseDemarre()!==false) rendre(); },
+    p:()=>battre(),
+    l:()=>{ ACT.lune(); rendre(); if(OVERLAY) toast(S.lune?"Lune de sang activée":"Lune de sang retirée"); },
+    d:()=>{ const i=NIVEAUX.findIndex(v=>v.id===S.d), v=NIVEAUX[(i+1)%NIVEAUX.length]; S.d=v.id; S.n=v.n; rendre(); toast("Difficulté : "+v.nom); },
+    n:()=>{ repartir(); rendre(); toast("Nouvelle enquête : relevés et minuteurs à zéro"); },
+    v:()=>modeCompact(!document.documentElement.hasAttribute("data-compact"))
+  }[k];
+  if(!f) return false;
+  f(); return true;
+}
+document.addEventListener("keydown",e=>{
+  if(e.ctrlKey||e.altKey||e.metaKey||e.repeat) return;
+  const t=e.target, compact=document.documentElement.hasAttribute("data-compact");
+  if(t&&t.closest&&t.closest("input,select,textarea,[contenteditable]")) return;
+  if(!compact&&TAB!=="enquete") return;
+  if(!$("#signalement").hidden) return;
+  /* N (nouvelle enquête) seulement en compact : en vue complète, le bouton suffit et évite un effacement par erreur. */
+  if(e.key.toLowerCase()==="n"&&!compact) return;
+  if(raccourci(e.key)) e.preventDefault();
+});
+window.addEventListener("grimoire:raccourci",e=>{ raccourci(e.detail); });
+window.addEventListener("grimoire:message",e=>{ if(e.detail) toast(String(e.detail)); });
+{
+  let vue=null; try{ vue=new URL(location.href).searchParams.get("vue"); }catch(e){}
+  let garde=false; try{ garde=localStorage.getItem(CLE_COMPACT)==="1"; }catch(e){}
+  const oui=vue==="compact"?true:vue==="complet"?false:garde;
+  if(oui) modeCompact(true,true); else majMini();
+}
 /* ───────────────── Carnet d’enquêtes, compte, amis, classement ─────────────────
    Sans configuration Supabase (config.js vide), tout fonctionne en mode local : le carnet reste sur l’appareil.
    Avec Supabase : comptes par mail, carnet dans le compte, amis par code, classement. */

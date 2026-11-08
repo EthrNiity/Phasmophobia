@@ -13,6 +13,7 @@ Appli en un seul fichier (HTML, CSS et JavaScript sans framework), hébergée su
 | `config.js` | Adresse et clé publique du projet Supabase (à remplir) |
 | `supabase.js` | Bibliothèque supabase-js 2.117.2, embarquée pour ne dépendre d'aucun CDN |
 | `schema.sql` | Tables, règles d'accès et fonctions à exécuter une fois dans Supabase |
+| `overlay/` | Programme Windows « Grimoire Overlay » (Electron) : le Grimoire dans une fenêtre au-dessus du jeu |
 | `verifier.mjs` | Contrôle des données avant publication (`node verifier.mjs`, ou `--page` pour ouvrir l'appli dans Chromium) |
 
 Tant que `config.js` est vide, l'appli tourne en **mode local** : tout fonctionne sauf les comptes, les amis et le classement, et le carnet reste sur l'appareil.
@@ -108,3 +109,38 @@ Avant toute manipulation de la base (nouvelle migration, nettoyage de tables, ch
 - Pas encore d'installation en appli (manifeste et mode hors ligne) ni de notifications.
 
 Outil de fan, sans lien avec Kinetic Games.
+
+## Jouer en même temps : mode compact et overlay
+
+### Mode compact
+
+Bouton **Compact** dans la barre des onglets (écrans larges), ou adresse `…/Phasmophobia/?vue=compact`. Une seule colonne étroite : verdict, preuves, minuteurs en pastilles, rond des pas, entités. Le bouton ↗ revient à la vue complète. Le choix est gardé sur l’appareil.
+
+Raccourcis clavier (onglet Enquête ou mode compact) :
+
+| Touche | Action |
+|---|---|
+| `1` à `7` | Preuve : trouvée, exclue, effacée (dans l’ordre des sceaux) |
+| `E` | Encens utilisé : lance le minuteur (de nouveau : remise à zéro) |
+| `F` | Fin de chasse : lance le minuteur entre deux chasses |
+| `C` | Une chasse démarre : conclut selon le minuteur en cours (Démon, pas un Esprit…) |
+| `P` | Un pas entendu (rond des pas) |
+| `L` | Lune de sang |
+| `D` | Difficulté suivante |
+| `N` | Nouvelle enquête (mode compact seulement) |
+
+### Grimoire Overlay pour Windows
+
+Petite fenêtre toujours au premier plan, posée au-dessus de Phasmophobia. Elle affiche le site en ligne : les mises à jour du site y arrivent toutes seules.
+
+- **Téléchargement** : [Releases du dépôt](https://github.com/EthrNiity/Phasmophobia/releases/latest), installeur ou version portable. Programme non signé : à la première ouverture, « Informations complémentaires » puis « Exécuter quand même ».
+- **Dans le jeu** : Options > Graphismes > mode d’affichage **Fenêtré sans bordure**. En plein écran exclusif, Windows n’affiche rien par-dessus le jeu.
+- **Raccourcis depuis le jeu** : `Ctrl+Maj` + les touches du tableau ci-dessus, sans quitter le jeu. En plus :
+  `Ctrl+Maj+G` afficher ou masquer · `Ctrl+Maj+T` clics traversants (la souris passe au jeu) · `Ctrl+Maj+O` opacité · `Ctrl+Maj+M` écran suivant.
+- **Menu** : clic droit sur l’icône près de l’horloge. Opacité, premier plan, clics traversants, écran suivant, préfixe des raccourcis (`Ctrl+Maj`, `Alt+Maj` ou `Ctrl+Alt`), option pavé numérique `1` à `7` pour les preuves, quitter.
+- Fermer la fenêtre la masque seulement ; pour arrêter le programme : **Quitter** dans ce menu. Tant qu’il tourne, ses raccourcis sont réservés (par exemple `Ctrl+Maj+N` ou `Ctrl+Maj+T` dans un navigateur).
+
+Le programme est fabriqué par GitHub Actions (`.github/workflows/overlay.yml`) à chaque modification du dossier `overlay/`. Pour publier une nouvelle version, augmente `version` dans `overlay/package.json`.
+
+Essai sur un ordinateur : `cd overlay && npm install && npm start` (variable `GRIMOIRE_SITE` pour pointer vers une copie locale, par exemple `http://localhost:8000/`).
+

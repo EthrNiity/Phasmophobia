@@ -1,0 +1,53 @@
+# Fabrique le programme Windows « Grimoire Overlay » et le publie dans les Releases du dépôt.
+# Se lance à chaque modification du dossier overlay/, ou à la main (onglet Actions > Run workflow).
+name: Overlay Windows
+
+on:
+  push:
+    branches: [main]
+    paths: ["overlay/**", ".github/workflows/overlay.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: overlay
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: overlay/package-lock.json
+
+      - name: Installer
+        run: npm ci
+
+      - name: Fabriquer l’installeur et la version portable
+        run: npx electron-builder --win nsis portable --publish never
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+
+      - name: Publier dans les Releases
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version=$(node -p "require('./package.json').version")
+          tag="overlay-v$version"
+          notes="Grimoire Overlay $version pour Windows 10/11.
+
+          - **Grimoire-Overlay-$version-x64-nsis.exe** : installeur (raccourci sur le bureau et dans le menu Démarrer).
+          - **Grimoire-Overlay-$version-portable.exe** : sans installation, à lancer directement.
+
+          Le programme n'est pas signé : au premier lancement, Windows peut afficher « Windows a protégé votre ordinateur ». Clique sur **Informations complémentaires**, puis **Exécuter quand même**."
+          if ! gh release view "$tag" >/dev/null 2>&1; then
+            gh release create "$tag" --title "Grimoire Overlay $version" --notes "$notes" --latest
+          fi
+          gh release upload "$tag" dist/*.exe --clobber
