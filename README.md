@@ -128,6 +128,7 @@ Raccourcis clavier (onglet Enquête ou mode compact) :
 | `L` | Lune de sang |
 | `D` | Difficulté suivante |
 | `N` | Nouvelle enquête (mode compact seulement) |
+| `R` | Clôturer l’enquête : entité, survie, objectifs (aussi le bouton ✓ en haut du mode compact) |
 
 ### Grimoire Overlay pour Windows
 
