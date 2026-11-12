@@ -3,13 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0e0c18">
+<meta name="theme-color" content="#1d1410">
 <link rel="icon" href="icone.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icone-180.png">
 <link rel="manifest" href="manifest.json">
 <meta name="description" content="Carnet d’enquête non officiel pour Phasmophobia : preuves, entités possibles, minuteurs, carnet et classement entre amis.">
 <title>Grimoire des Entités</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IM+Fell+English+SC&family=Spectral:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,500;0,700;1,400;1,700&family=Caveat:wght@500;600&family=Grenze+Gotisch:wght@500&family=IM+Fell+English:ital@0;1&family=Special+Elite&display=swap">
 <style>
 /* Base */
 :root{padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
@@ -596,6 +597,268 @@ footer .lien-overlay{color:var(--follet);text-underline-offset:3px;white-space:n
 .aide-touches kbd{font:inherit;color:var(--os);border:1px solid var(--trait);border-radius:4px;padding:0 4px;margin-right:3px}
 :root[data-compact] .toast{bottom:12px;font-size:12px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ═════════ Le livre ═════════
+   Le grimoire posé ouvert sur la table du camion : couverture de cuir, page de vélin, encre ferro-gallique,
+   rubriques au minium, sceaux de cire verte pour les preuves trouvées. Plus la difficulté monte, plus la page vieillit
+   et brûle sur les bords. En mode compact (overlay, à côté du jeu), la même page lue à la lampe : sombre, peu d’éblouissement. */
+:root:root{
+  color-scheme: light;
+  --cuir:#1d1410; --cuir2:#2a1d16; --dore:#d6b46a;
+  --nuit:#eadfc4; --voile:#f1e8d1; --voile2:#f7f0de; --trait:#c4ae86;
+  --os:#2a1d13; --cendre:#68523e;
+  --follet:#1f5f55; --sur-follet:#f6efdc; --cierge:#80520c; --sang:#9a2414; --ecto:#4a3768;
+  --halo:rgba(31,95,85,.10); --lueur:rgba(31,95,85,.32);
+  --brule:rgba(110,62,18,.10); --tache:rgba(140,96,40,.07);
+  --f-titre:"IM Fell English",Georgia,serif;
+  --f-gothique:"Grenze Gotisch","IM Fell English",Georgia,serif;
+  --f-texte:"Alegreya",Georgia,"Times New Roman",serif;
+  --f-data:"Special Elite","Courier New",ui-monospace,monospace;
+  --f-main:"Caveat","Segoe Print","Bradley Hand",cursive;
+  --feuille:3px; --petale:3px; --vignette:.35;
+  --lune:#9a1220; --lune-ciel:rgba(205,14,32,.38); --lune-bord:rgba(92,0,12,.5);
+}
+/* La page vieillit avec la difficulté : vélin propre, puis jauni, roussi, brûlé, presque calciné */
+:root:root[data-niveau="p"]{--nuit:#e4d4b0; --voile:#ecdfc1; --voile2:#f3e8cf; --trait:#bba279; --cendre:#644d38; --brule:rgba(110,60,15,.28); --tache:rgba(140,90,30,.10); --vignette:.45}
+:root:root[data-niveau="2"]{--nuit:#dcc79e; --voile:#e5d4b1; --voile2:#ede0c2; --trait:#b0966a; --cendre:#5d4632; --brule:rgba(85,40,8,.5); --tache:rgba(120,72,20,.14); --vignette:.55}
+:root:root[data-niveau="1"]{--nuit:#d1b98b; --voile:#dbc69d; --voile2:#e3d1ac; --trait:#a58a5b; --os:#22160c; --cendre:#533d28; --follet:#174d44; --cierge:#6a420a; --sang:#861d10; --brule:rgba(45,18,2,.72); --tache:rgba(100,55,10,.18); --vignette:.65}
+:root:root[data-niveau="0"]{--nuit:#c3a877; --voile:#cdb487; --voile2:#d6c095; --trait:#987c4d; --os:#1c1209; --cendre:#4a3522; --follet:#123f38; --cierge:#5c3907; --sang:#781a0e; --brule:rgba(22,8,0,.86); --tache:rgba(80,40,5,.22); --vignette:.75}
+:root:root[data-createur][data-createur][data-createur]{--follet:#7a4f06; --sur-follet:#fbf3df; --ecto:#8e3f10; --halo:rgba(122,79,6,.10); --lueur:rgba(122,79,6,.3)}
+.nom-createur.nom-createur{background:linear-gradient(100deg,#7a4b00,#a8690f 50%,#6c4100);-webkit-background-clip:text;background-clip:text;text-shadow:none}
+
+/* La table : cuir sombre, la lueur des orbes flotte autour du livre */
+body{background:radial-gradient(ellipse 120% 80% at 50% 20%,var(--cuir2),var(--cuir) 70%);color:var(--os);font-size:16.5px;line-height:1.55}
+body::after{opacity:.34}
+.page{max-width:1240px}
+
+/* Couverture : le titre doré, gaufré dans le cuir */
+.entete{padding-block:30px 18px}
+.entete h1{font-family:var(--f-gothique);font-size:clamp(36px,6.4vw,58px);font-weight:400;letter-spacing:.01em;color:var(--dore);
+  background:linear-gradient(180deg,#f0d896 0%,#c99a45 55%,#8e6424 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 1px 0 rgba(0,0,0,.9)) drop-shadow(0 -1px 0 rgba(255,220,150,.12))}
+.entete h1 svg{color:#c99a45;-webkit-text-fill-color:initial}
+.entete::after{content:"";display:block;width:min(300px,60%);height:9px;margin:10px auto 0;
+  background:radial-gradient(circle,#b88d45 0 2px,transparent 2.5px) center/9px 9px no-repeat,linear-gradient(90deg,transparent,#8e6a2e 25%,#8e6a2e 45%,transparent 45%,transparent 55%,#8e6a2e 55%,#8e6a2e 75%,transparent) center/100% 1px no-repeat}
+
+/* Onglets : marque-pages de papier qui dépassent du haut du livre */
+.onglets{margin-inline:0;padding-inline:14px;background-image:none;gap:10px}
+.onglets.colle{background-color:color-mix(in srgb,var(--cuir) 88%,transparent)}
+#onglets{gap:4px;align-items:flex-end}
+#losange{display:none}
+#onglets button{font-family:var(--f-titre);font-size:16.5px;letter-spacing:.01em;text-transform:none;color:#4a3826;
+  background:linear-gradient(180deg,#d8c6a0,#c7b28a);border-radius:7px 7px 0 0;padding:9px 15px 8px;margin-top:8px;
+  box-shadow:inset 0 1px 0 rgba(255,250,235,.45),0 -1px 0 rgba(0,0,0,.35);transition:margin .25s,padding .25s,color .3s}
+#onglets button:hover{color:var(--os);margin-top:4px;padding-bottom:12px}
+#onglets button[aria-selected="true"]{color:var(--os);background:var(--nuit);margin-top:0;padding:12px 18px 12px;box-shadow:inset 0 1px 0 rgba(255,250,235,.5),0 -2px 6px rgba(0,0,0,.35)}
+#onglets button[aria-selected="true"]::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:4px;background:var(--nuit)}
+#o-createur{color:#7a4f06}
+#o-createur:hover,#o-createur[aria-selected="true"]{color:#7a4f06}
+.onglets .btn{background:transparent;border-color:rgba(214,180,106,.4);color:#e6cf98;font-family:var(--f-texte);font-size:14.5px}
+.onglets .btn:hover{border-color:var(--dore);color:#f4e2b6}
+.onglets .btn.discret{color:#bca172}
+@media (max-width:700px){
+  .onglets{padding-inline:6px}
+  #onglets button{padding:8px 9px 7px;font-size:14.5px}
+  #onglets button[aria-selected="true"]{padding:11px 10px}
+}
+@media (max-width:400px){#onglets button{padding-inline:6px;font-size:13.5px}}
+
+/* La page : vélin taché, tranche de feuillets empilés, bords qui brunissent avec l’âge */
+main{position:relative;padding:28px clamp(16px,4vw,52px) 40px;border-radius:2px 2px 4px 4px;
+  background:
+    radial-gradient(closest-side at 18% 22%,var(--tache),transparent),
+    radial-gradient(closest-side at 82% 70%,var(--tache),transparent 80%),
+    radial-gradient(ellipse 60% 40% at 70% 12%,rgba(255,252,240,.35),transparent),
+    var(--nuit);
+  box-shadow:0 0 0 1px rgba(60,35,15,.4),3px 4px 0 -1px #dccbab,3px 4px 0 0 rgba(60,35,15,.35),6px 8px 0 -1px #d2bf9a,6px 8px 0 0 rgba(60,35,15,.35),9px 12px 0 -1px #c8b48d,9px 12px 0 0 rgba(60,35,15,.3),0 34px 70px -18px rgba(0,0,0,.85)}
+main::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;z-index:3;
+  box-shadow:inset 0 0 30px 2px var(--brule),inset 0 0 90px 10px color-mix(in srgb,var(--brule) 45%,transparent)}
+/* Double page sur grand écran : la reliure au milieu de l’enquête */
+@media (min-width:940px){
+  .deux{column-gap:84px}
+  main:has(> #t-enquete:not([hidden])){background:
+    linear-gradient(90deg,transparent calc(50% - 70px),rgba(70,40,15,.05) calc(50% - 26px),rgba(70,40,15,.22) calc(50% - 3px),rgba(30,15,5,.38) 50%,rgba(70,40,15,.2) calc(50% + 3px),rgba(70,40,15,.05) calc(50% + 26px),transparent calc(50% + 70px)),
+    radial-gradient(closest-side at 18% 22%,var(--tache),transparent),
+    radial-gradient(closest-side at 82% 70%,var(--tache),transparent 80%),
+    var(--nuit)}
+}
+/* Une seule page sur téléphone : couture de reliure à gauche */
+@media (max-width:939px){
+  main{margin-inline:-6px;padding-left:28px}
+  main::before{content:"";position:absolute;left:11px;top:14px;bottom:14px;width:0;border-left:1.5px dashed color-mix(in srgb,var(--trait) 80%,var(--os));opacity:.7;pointer-events:none}
+}
+/* Tourner la page */
+main{perspective:1800px}
+@keyframes sort-g{to{opacity:0;transform:rotateY(10deg) translateX(-14px);filter:none}}
+@keyframes sort-d{to{opacity:0;transform:rotateY(-10deg) translateX(14px);filter:none}}
+@keyframes vient-g{from{opacity:0;transform:rotateY(-14deg) translateX(-18px);filter:none}}
+@keyframes vient-d{from{opacity:0;transform:rotateY(14deg) translateX(18px);filter:none}}
+main>section.vient-g,main>section.sort-d{transform-origin:100% 50%}
+main>section.vient-d,main>section.sort-g{transform-origin:0 50%}
+
+/* Écritures : titres gothiques à l’encre rouge, mentions à la plume, données à la machine à écrire */
+h1,h2,h3{font-family:var(--f-titre);letter-spacing:0}
+.bloc>header{background:none;border-bottom:1px solid var(--trait);box-shadow:0 3px 0 -2px var(--trait);padding-bottom:7px}
+.bloc>header h2{font-family:var(--f-gothique);font-size:29px;color:var(--sang);line-height:1}
+.bloc>header h2::before{display:none}
+.bloc>header h2::first-letter{font-size:1.25em}
+.label,#onglets button,.tambour small,.traits dt,details.ecartees summary,thead th,.champs label,.cr-statut,.mm-nom,.mini-chasse{text-transform:none;letter-spacing:.01em}
+.label{font-family:var(--f-texte);font-style:italic;font-size:14.5px;color:var(--cendre)}
+.petit{font-size:14.5px}
+.question>span:first-child{font-family:var(--f-texte);font-style:italic;color:var(--cendre)}
+.traits dt{font-family:var(--f-texte);font-style:italic;font-size:14.5px;font-weight:700}
+details.ecartees summary{font-family:var(--f-texte);font-style:italic;font-size:15px}
+thead th{font-family:var(--f-texte);font-style:italic;font-size:14px;background:transparent;border-bottom:1.5px solid var(--os)}
+.champs label{font-family:var(--f-texte);font-style:italic;font-size:14.5px}
+.legende,.lien,.annonce .corps a,details.savoir>summary{font-family:var(--f-texte);font-style:italic;font-size:14.5px}
+::selection{background:color-mix(in srgb,var(--sang) 25%,transparent)}
+
+/* Boutons : étiquettes à l’encre, l’option choisie est tamponnée */
+.btn,.choix button{font-family:var(--f-texte);font-size:15px;background:transparent;border:1px solid color-mix(in srgb,var(--trait) 70%,var(--os));color:var(--os)}
+.choix button{color:var(--cendre);padding:6px 13px}
+.btn:hover,.choix button:hover{border-color:var(--os);color:var(--os)}
+.btn.plein,.btn[aria-pressed="true"],.choix button[aria-pressed="true"]{background:var(--os);border-color:var(--os);color:var(--nuit);font-weight:500;box-shadow:none}
+.choix button.lune[aria-pressed="true"]{background:var(--lune);border-color:var(--lune);color:#fbe9e2;box-shadow:0 0 14px rgba(154,18,32,.35)}
+input,select,textarea{background:transparent;border:0;border-bottom:1.5px solid color-mix(in srgb,var(--trait) 60%,var(--os));border-radius:0;font-family:var(--f-main);font-size:21px;line-height:1.1;color:var(--os)}
+.champs label>input,.champs label>select{font-family:var(--f-main);font-size:21px}
+select option{font-family:var(--f-texte);font-size:16px}
+textarea{border:1.5px solid color-mix(in srgb,var(--trait) 60%,var(--os));font-size:20px;
+  background:repeating-linear-gradient(transparent 0 27px,color-mix(in srgb,var(--trait) 55%,transparent) 27px 28px);line-height:28px}
+:focus-visible{outline-color:var(--sang)}
+
+/* La planche des preuves : cadre gravé à double filet, sans fond */
+.planche{background:transparent;border:1.5px solid color-mix(in srgb,var(--trait) 55%,var(--os))}
+.planche::before{border-color:var(--trait);opacity:1}
+.sceau{color:var(--cendre)}
+.sceau .disque{background:color-mix(in srgb,var(--voile2) 60%,transparent);border:1.5px dashed color-mix(in srgb,var(--trait) 50%,var(--os));box-shadow:none}
+.sceau:hover .disque{border-color:var(--os)}
+.sceau .nom{font-family:var(--f-texte);font-size:14.5px}
+/* Trouvée : sceau de cire verte, bord irrégulier */
+.sceau[data-etat="1"]{color:var(--follet)}
+.sceau[data-etat="1"] .disque{border:0;color:#f3ecd6;border-radius:47% 53% 50% 50% / 52% 46% 54% 48%;
+  background:radial-gradient(circle at 34% 28%,color-mix(in srgb,var(--follet) 55%,#fff) 0,var(--follet) 38%,color-mix(in srgb,var(--follet) 70%,#000) 100%);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--follet) 82%,#000),2px 3px 5px rgba(40,20,5,.45),inset 0 0 0 5px color-mix(in srgb,var(--follet) 85%,#000),inset 0 0 0 6px rgba(255,255,255,.18);transform:rotate(-4deg) scale(1.06)}
+.sceau[data-etat="1"] .nom{font-weight:700}
+/* Exclue : barrée d’un trait de plume rouge */
+.sceau[data-etat="-1"]{color:var(--sang)}
+.sceau[data-etat="-1"] .disque{border:1.5px solid color-mix(in srgb,var(--sang) 60%,transparent);box-shadow:none;background:transparent}
+.sceau[data-etat="-1"] .disque::after{height:2.5px;left:-8px;right:-8px;border-radius:2px;transform:rotate(-38deg);background:linear-gradient(90deg,transparent,var(--sang) 12%,var(--sang) 80%,transparent)}
+.sceau[data-etat="-1"] .nom{text-decoration:line-through 1.5px var(--sang)}
+.sceau.eclat .disque::before{border-color:var(--follet);border-radius:inherit}
+.planche .mode{font-family:var(--f-texte);font-style:italic;font-size:14px}
+.mini{border-color:color-mix(in srgb,var(--trait) 50%,var(--os))}
+.mini.t{border-radius:47% 53% 50% 50%}
+
+/* Rond des pas : un cachet d’encre */
+.tambour{background:radial-gradient(circle at 50% 35%,var(--voile2),var(--voile));border:1.5px solid color-mix(in srgb,var(--trait) 50%,var(--os));box-shadow:0 0 0 5px var(--nuit),0 0 0 6px var(--trait)}
+.tambour small{font-family:var(--f-texte);font-style:italic;font-size:12.5px}
+.tambour b{font-family:var(--f-data);font-weight:400}
+
+/* Verdict : une rubrique encadrée, le nom de l’entité écrit en grand */
+.verdict{background:color-mix(in srgb,var(--voile2) 55%,transparent);border:1.5px solid var(--os);border-radius:2px;box-shadow:inset 0 0 0 4px var(--nuit),inset 0 0 0 5px color-mix(in srgb,var(--trait) 70%,var(--os))}
+.verdict h2{font-family:var(--f-titre);font-size:clamp(28px,4.4vw,36px);line-height:1.05}
+.verdict .conseil{font-family:var(--f-main);font-size:21px;line-height:1.2;color:color-mix(in srgb,var(--sang) 75%,var(--os))}
+.verdict .conseil b{font-weight:700;color:var(--sang)}
+.verdict.alerte{border-color:var(--sang);box-shadow:inset 0 0 0 4px var(--nuit),inset 0 0 0 5px var(--sang)}
+.planchette .corps{fill:color-mix(in srgb,var(--follet) 10%,transparent);stroke:var(--os);stroke-width:2.2}
+.planchette .oeil{fill:var(--sang)}
+.planchette text{font-family:var(--f-main);font-size:26px;font-weight:600;fill:var(--sang)}
+
+/* Entités : un registre ligné, la probabilité notée à la main dans la marge */
+.rangs{gap:0;border-top:1.5px solid var(--os)}
+details.rang{background:transparent;border:0;border-bottom:1px solid var(--trait);border-radius:0}
+details.rang:first-child{background:linear-gradient(90deg,color-mix(in srgb,var(--follet) 9%,transparent),transparent 70%)}
+details.rang>summary{padding:10px 6px 10px 4px}
+details.rang[open]{background:color-mix(in srgb,var(--voile2) 50%,transparent)}
+.rang-nom{font-family:var(--f-titre);font-weight:400;font-size:21px}
+.rang-pct{font-family:var(--f-main);font-size:25px;font-weight:600;line-height:.9;color:var(--sang)}
+.rang-bar{height:4px}
+.rang-bar i{background:color-mix(in srgb,var(--os) 45%,transparent);clip-path:polygon(0 30%,100% 0,100% 100%,0 70%)}
+details.rang:first-child .rang-bar i{background:var(--follet)}
+.puce{font-family:var(--f-data);font-size:12px;border-radius:2px;border-color:color-mix(in srgb,var(--trait) 70%,var(--os))}
+.puce.ok{background:color-mix(in srgb,var(--follet) 12%,transparent)}
+.fiche{background:none;border-top:1px dashed var(--trait)}
+.fiche .signe::before{background:var(--sang);width:6px;height:6px}
+.fiche .chiffres{font-size:13px}
+.ecartees li b{text-decoration-color:var(--sang);text-decoration-thickness:1.5px}
+.ecartees li span{font-size:12.5px}
+
+/* Cartes rapportées (minuteurs, carnet, amis) : fiches de papier glissées entre les pages */
+.minuteur,.bete,.enq,.podium>li:not(.detail),.cloture,.fiche-aide,.defi,.annonce,.amis-liste li,.cr-chiffre,.cr-joueur,.cr-annonces li,.cr-signal,.signal{
+  background:var(--voile2);border-color:color-mix(in srgb,var(--trait) 75%,transparent);box-shadow:1px 2px 0 rgba(90,60,25,.12),0 6px 16px -10px rgba(60,35,10,.45)}
+.minuteur{border-radius:2px}
+.minuteur:nth-child(odd){transform:rotate(-.4deg)} .minuteur:nth-child(even){transform:rotate(.35deg)}
+.cadran .rail{stroke:color-mix(in srgb,var(--trait) 50%,transparent)}
+.cadran .temps{stroke:var(--sang)}
+.cadran .chrono{font-family:var(--f-data);font-weight:400}
+.cadran .rep{font-family:var(--f-texte)}
+.etat{font-family:var(--f-main);font-size:23px;font-weight:600}
+.annonce{border-color:var(--cierge)}
+.annonce>summary b{font-family:var(--f-titre);font-weight:400;font-size:19px}
+.defile{border-radius:2px;background:color-mix(in srgb,var(--voile2) 50%,transparent)}
+.pt.g{box-shadow:0 0 0 3px var(--voile2),0 0 0 4px var(--follet)}
+.medaillon b{background:var(--voile2);font-family:var(--f-main);font-size:30px;font-weight:600;color:var(--sang);box-shadow:0 0 0 4px var(--nuit),0 0 0 5px var(--trait)}
+.anneau .val{font-family:var(--f-main);font-size:32px;font-weight:600}
+.anneau .fond{stroke:color-mix(in srgb,var(--trait) 55%,transparent)}
+.anneau{filter:none}
+.bete b,.enq .quoi,.podium .qui,.defi b{font-family:var(--f-titre);font-weight:400;font-size:19px}
+.part{background:color-mix(in srgb,var(--trait) 55%,transparent);border-radius:0}
+.part i{background:var(--follet);border-radius:0}
+.jour h3{font-family:var(--f-main);font-size:24px;font-weight:600;color:var(--sang)}
+.fil{border-left:1.5px solid var(--trait)}
+.fil .enq::before{box-shadow:0 0 0 3px var(--nuit);border-radius:47% 53% 50% 50%}
+.podium .place{font-family:var(--f-gothique);color:var(--cendre)}
+.podium>li:first-child .place{color:var(--sang);text-shadow:none}
+.podium .valeur b{font-family:var(--f-main);font-size:27px;font-weight:600}
+.tuiles b{background:var(--voile2);border-radius:2px;box-shadow:inset 0 -3px 0 color-mix(in srgb,var(--trait) 60%,transparent);font-family:var(--f-data);font-weight:400}
+.vide{border-radius:2px;font-family:var(--f-texte);font-style:italic}
+#bloc-createur{background:linear-gradient(160deg,color-mix(in srgb,#b8862a 10%,var(--voile2)),var(--voile2) 55%);border-radius:2px;box-shadow:1px 2px 0 rgba(90,60,25,.12)}
+.cr-chiffre b,.cr-fiab{font-family:var(--f-main);font-weight:600}
+.createur{border-radius:2px}
+
+/* Bas de page et barre mobile */
+footer{background:none;color:#a99372;border-top:1px solid rgba(214,180,106,.22);margin-top:44px}
+footer .lien-overlay{color:var(--dore)}
+.barre{background:var(--voile2);border-top:1.5px solid var(--os);border-radius:0;box-shadow:0 -10px 30px rgba(40,22,8,.35);font-family:var(--f-texte);font-style:italic;font-size:14.5px}
+.barre b{font-family:var(--f-titre);font-style:normal;font-size:19px}
+.toast{background:var(--os);color:var(--nuit);border-radius:2px;font-family:var(--f-texte);font-size:15px}
+.vue-joueur{font-family:var(--f-texte)}
+
+/* Lune de sang (météo permanente) : la page baigne dans une lumière rouge, une lune monte dans la marge */
+:root[data-lune] main{box-shadow:0 0 0 1px rgba(60,10,10,.5),3px 4px 0 -1px #d9b8a2,3px 4px 0 0 rgba(60,10,10,.35),6px 8px 0 -1px #cfab93,6px 8px 0 0 rgba(60,10,10,.35),0 34px 90px -10px rgba(160,10,25,.55)}
+:root[data-lune] main::after{box-shadow:inset 0 0 30px 2px var(--brule),inset 0 0 120px 20px rgba(150,10,25,.22);
+  background:radial-gradient(circle at calc(100% - 46px) 46px,rgba(196,24,38,.85) 0 17px,rgba(196,24,38,.25) 19px,rgba(196,24,38,.08) 50px,transparent 90px),linear-gradient(rgba(160,20,30,.07),rgba(160,20,30,.07))}
+
+/* ───── Compact : la même page lue à la lampe, sombre pour ne pas éblouir en jeu ───── */
+:root:root:root[data-compact]{
+  color-scheme: dark;
+  --nuit:#16110c; --voile:#1e1711; --voile2:#261d15; --trait:#4a3a29;
+  --os:#eadfc4; --cendre:#ae9c80;
+  --follet:#7fd3bf; --sur-follet:#0d221d; --cierge:#e3b464; --sang:#ef7a62; --ecto:#b6a2e0;
+  --halo:rgba(127,211,191,.12); --lueur:rgba(127,211,191,.42); --brule:transparent; --tache:transparent; --vignette:0;
+}
+:root:root:root[data-compact][data-createur][data-createur][data-createur]{--follet:#e9c46a; --sur-follet:#1b1408; --ecto:#d07a3a; --halo:rgba(233,196,106,.10); --lueur:rgba(233,196,106,.32)}
+:root[data-compact] body{background:var(--nuit)}
+:root[data-compact] main{padding:0;margin:0;background:none;box-shadow:none}
+:root[data-compact] main::before,:root[data-compact] main::after{display:none}
+:root[data-compact] .bloc>header h2{font-size:22px}
+:root[data-compact] .sceau[data-etat="1"] .disque{color:#0d221d;box-shadow:0 0 0 2px color-mix(in srgb,var(--follet) 70%,#000),0 0 14px var(--lueur);transform:rotate(-4deg)}
+:root[data-compact] .sceau .nom{font-size:11.5px}
+:root[data-compact] .verdict{box-shadow:inset 0 0 0 3px var(--nuit),inset 0 0 0 4px var(--trait);border-color:var(--os)}
+:root[data-compact] .verdict h2{font-size:24px}
+:root[data-compact] .verdict .conseil{font-size:17px;line-height:1.1}
+:root[data-compact] .rang-nom{font-size:17px}
+:root[data-compact] .rang-pct{font-size:20px}
+:root[data-compact] details.rang>summary{padding:5px 4px}
+:root[data-compact] .choix button{font-size:13px;padding:3px 8px}
+:root[data-compact] .cloture{border-radius:2px}
+:root[data-compact] .mini-min,:root[data-compact] .mini-chasse{border-radius:2px}
+:root[data-compact] .mm-nom{font-family:var(--f-texte);font-style:italic;font-size:11.5px}
+:root[data-compact] .ct-titre{font-family:var(--f-gothique);font-size:21px;color:var(--cierge)}
+:root[data-compact] .ct-btn{border-radius:2px}
+:root[data-compact] input,:root[data-compact] select{font-size:17px}
+:root[data-compact] .tambour{background:var(--voile2)}
+@media (prefers-reduced-motion:reduce){.minuteur:nth-child(n){transform:none}}
 </style>
 </head>
 <body>
@@ -652,7 +915,7 @@ footer .lien-overlay{color:var(--follet);text-underline-offset:3px;white-space:n
             <div class="question q-meteo">
               <span>Météo du contrat</span>
               <div class="choix"><button class="lune" data-act="lune" id="btn-lune" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="currentColor"/></svg>Lune de sang</button></div>
-              <p class="petit" id="lune-aide" hidden>Ciel rouge et pluie fine : les entités sont environ 15 % plus rapides en chasse. Les vitesses des fiches en tiennent compte.</p>
+              <p class="petit" id="lune-aide" hidden>Météo permanente depuis l’événement Crimson Eye. Ciel rouge et pluie fine : les entités sont environ 15 % plus rapides en chasse. Les vitesses des fiches en tiennent compte.</p>
             </div>
             <div class="question q-chasse">
               <span>Première chasse, selon la santé mentale moyenne</span>
