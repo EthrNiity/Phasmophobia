@@ -810,8 +810,21 @@ details.rang:first-child .rang-bar i{background:var(--follet)}
 .etat{font-family:var(--f-main);font-size:23px;font-weight:600}
 .annonce{border-color:var(--cierge)}
 .annonce>summary b{font-family:var(--f-titre);font-weight:400;font-size:19px}
-.defile{border-radius:2px;background:color-mix(in srgb,var(--voile2) 50%,transparent)}
-.pt.g{box-shadow:0 0 0 3px var(--voile2),0 0 0 4px var(--follet)}
+.defile{border-radius:2px}
+.pt.g{box-shadow:0 0 0 2.5px var(--voile2),0 0 0 4px var(--follet)}
+.legende .pt{margin-right:4px;vertical-align:-1px}
+.legende .pt.g{margin-inline:4px 8px}
+.legende{gap:6px 18px;color:var(--cendre)}
+/* Tableau des entités : tient dans une page */
+#matrice th,#matrice td{padding:6px 3px}
+#matrice th:first-child,#matrice td:first-child{padding-left:9px}
+#matrice thead th{white-space:normal;line-height:1.15;font-size:13px;vertical-align:bottom}
+#matrice thead th.c{text-align:center}
+#matrice td.num{white-space:normal;font-size:12.5px;line-height:1.25}
+#matrice td{vertical-align:middle}
+/* Tableau plus large que la page : une ombre au bord indique qu’il défile */
+.defile{background:linear-gradient(90deg,var(--voile2) 30%,transparent) left/40px 100% no-repeat local,linear-gradient(270deg,var(--voile2) 30%,transparent) right/40px 100% no-repeat local,radial-gradient(farthest-side at 0 50%,rgba(60,30,8,.25),transparent) left/14px 100% no-repeat scroll,radial-gradient(farthest-side at 100% 50%,rgba(60,30,8,.25),transparent) right/14px 100% no-repeat scroll,color-mix(in srgb,var(--voile2) 50%,transparent)}
+.podium .valeur small{margin-left:.35em}
 .medaillon b{background:var(--voile2);font-family:var(--f-main);font-size:30px;font-weight:600;color:var(--sang);box-shadow:0 0 0 4px var(--nuit),0 0 0 5px var(--trait)}
 .anneau .val{font-family:var(--f-main);font-size:32px;font-weight:600}
 .anneau .fond{stroke:color-mix(in srgb,var(--trait) 55%,transparent)}
