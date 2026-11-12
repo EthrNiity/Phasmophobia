@@ -605,10 +605,10 @@ footer .lien-overlay{color:var(--follet);text-underline-offset:3px;white-space:n
 :root:root{
   color-scheme: light;
   --cuir:#1d1410; --cuir2:#2a1d16; --dore:#d6b46a;
-  --nuit:#eadfc4; --voile:#f1e8d1; --voile2:#f7f0de; --trait:#c4ae86;
-  --os:#2a1d13; --cendre:#68523e;
-  --follet:#1f5f55; --sur-follet:#f6efdc; --cierge:#80520c; --sang:#9a2414; --ecto:#4a3768;
-  --halo:rgba(31,95,85,.10); --lueur:rgba(31,95,85,.32);
+  --nuit:#eadfc4; --voile:#f1e8d1; --voile2:#f7f0de; --trait:#ad9468;
+  --os:#1f150c; --cendre:#52402e;
+  --follet:#0a6e57; --sur-follet:#f6efdc; --cierge:#8a5500; --sang:#b01e0e; --ecto:#46306f;
+  --halo:rgba(10,110,87,.12); --lueur:rgba(10,110,87,.35);
   --brule:rgba(110,62,18,.10); --tache:rgba(140,96,40,.07);
   --f-titre:"IM Fell English",Georgia,serif;
   --f-gothique:"Grenze Gotisch","IM Fell English",Georgia,serif;
@@ -619,10 +619,10 @@ footer .lien-overlay{color:var(--follet);text-underline-offset:3px;white-space:n
   --lune:#9a1220; --lune-ciel:rgba(205,14,32,.38); --lune-bord:rgba(92,0,12,.5);
 }
 /* La page vieillit avec la difficulté : vélin propre, puis jauni, roussi, brûlé, presque calciné */
-:root:root[data-niveau="p"]{--nuit:#e4d4b0; --voile:#ecdfc1; --voile2:#f3e8cf; --trait:#bba279; --cendre:#644d38; --brule:rgba(110,60,15,.28); --tache:rgba(140,90,30,.10); --vignette:.45}
-:root:root[data-niveau="2"]{--nuit:#dcc79e; --voile:#e5d4b1; --voile2:#ede0c2; --trait:#b0966a; --cendre:#5d4632; --brule:rgba(85,40,8,.5); --tache:rgba(120,72,20,.14); --vignette:.55}
-:root:root[data-niveau="1"]{--nuit:#d1b98b; --voile:#dbc69d; --voile2:#e3d1ac; --trait:#a58a5b; --os:#22160c; --cendre:#533d28; --follet:#174d44; --cierge:#6a420a; --sang:#861d10; --brule:rgba(45,18,2,.72); --tache:rgba(100,55,10,.18); --vignette:.65}
-:root:root[data-niveau="0"]{--nuit:#c3a877; --voile:#cdb487; --voile2:#d6c095; --trait:#987c4d; --os:#1c1209; --cendre:#4a3522; --follet:#123f38; --cierge:#5c3907; --sang:#781a0e; --brule:rgba(22,8,0,.86); --tache:rgba(80,40,5,.22); --vignette:.75}
+:root:root[data-niveau="p"]{--nuit:#e4d4b0; --voile:#ecdfc1; --voile2:#f3e8cf; --trait:#a88d60; --cendre:#4f3c2b; --brule:rgba(110,60,15,.28); --tache:rgba(140,90,30,.10); --vignette:.45}
+:root:root[data-niveau="2"]{--nuit:#dcc79e; --voile:#e5d4b1; --voile2:#ede0c2; --trait:#9f8455; --cendre:#4a3726; --brule:rgba(85,40,8,.5); --tache:rgba(120,72,20,.14); --vignette:.55}
+:root:root[data-niveau="1"]{--nuit:#d1b98b; --voile:#dbc69d; --voile2:#e3d1ac; --trait:#93784a; --os:#1c1209; --cendre:#433020; --follet:#08594a; --cierge:#6a420a; --sang:#861d10; --brule:rgba(45,18,2,.72); --tache:rgba(100,55,10,.18); --vignette:.65}
+:root:root[data-niveau="0"]{--nuit:#c3a877; --voile:#cdb487; --voile2:#d6c095; --trait:#86693c; --os:#170e06; --cendre:#3b2817; --follet:#064b3e; --cierge:#5c3907; --sang:#781a0e; --brule:rgba(22,8,0,.86); --tache:rgba(80,40,5,.22); --vignette:.75}
 :root:root[data-createur][data-createur][data-createur]{--follet:#7a4f06; --sur-follet:#fbf3df; --ecto:#8e3f10; --halo:rgba(122,79,6,.10); --lueur:rgba(122,79,6,.3)}
 .nom-createur.nom-createur{background:linear-gradient(100deg,#7a4b00,#a8690f 50%,#6c4100);-webkit-background-clip:text;background-clip:text;text-shadow:none}
 
@@ -664,19 +664,23 @@ body::after{opacity:.34}
 @media (max-width:400px){#onglets button{padding-inline:6px;font-size:13.5px}}
 
 /* La page : vélin taché, tranche de feuillets empilés, bords qui brunissent avec l’âge */
-main{position:relative;padding:28px clamp(16px,4vw,52px) 40px;border-radius:2px 2px 4px 4px;
+main{--pm:28px clamp(16px,4vw,52px) 40px;position:relative;padding:var(--pm);border-radius:2px 2px 4px 4px;min-height:calc(100svh - 190px);
   background:
     radial-gradient(closest-side at 18% 22%,var(--tache),transparent),
     radial-gradient(closest-side at 82% 70%,var(--tache),transparent 80%),
     radial-gradient(ellipse 60% 40% at 70% 12%,rgba(255,252,240,.35),transparent),
     var(--nuit);
   box-shadow:0 0 0 1px rgba(60,35,15,.4),3px 4px 0 -1px #dccbab,3px 4px 0 0 rgba(60,35,15,.35),6px 8px 0 -1px #d2bf9a,6px 8px 0 0 rgba(60,35,15,.35),9px 12px 0 -1px #c8b48d,9px 12px 0 0 rgba(60,35,15,.3),0 34px 70px -18px rgba(0,0,0,.85)}
+@media (min-width:940px){main{box-shadow:0 0 0 1px rgba(60,35,15,.4),3px 4px 0 -1px #dccbab,3px 4px 0 0 rgba(60,35,15,.35),6px 8px 0 -1px #d2bf9a,6px 8px 0 0 rgba(60,35,15,.35),9px 12px 0 -1px #c8b48d,9px 12px 0 0 rgba(60,35,15,.3),-3px 4px 0 -1px #dccbab,-3px 4px 0 0 rgba(60,35,15,.35),-6px 8px 0 -1px #d2bf9a,-6px 8px 0 0 rgba(60,35,15,.35),-9px 12px 0 -1px #c8b48d,-9px 12px 0 0 rgba(60,35,15,.3),0 34px 70px -18px rgba(0,0,0,.85)}}
 main::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;z-index:3;
   box-shadow:inset 0 0 30px 2px var(--brule),inset 0 0 90px 10px color-mix(in srgb,var(--brule) 45%,transparent)}
 /* Double page sur grand écran : la reliure au milieu de l’enquête */
 @media (min-width:940px){
-  .deux{column-gap:84px}
-  main:has(> #t-enquete:not([hidden])){background:
+  .deux,.minuteurs{column-gap:84px}
+  .minuteurs{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .minuteurs+.petit{max-width:calc(50% - 42px)}
+  .cr-grille{column-gap:84px}
+  main,.face{background:
     linear-gradient(90deg,transparent calc(50% - 70px),rgba(70,40,15,.05) calc(50% - 26px),rgba(70,40,15,.22) calc(50% - 3px),rgba(30,15,5,.38) 50%,rgba(70,40,15,.2) calc(50% + 3px),rgba(70,40,15,.05) calc(50% + 26px),transparent calc(50% + 70px)),
     radial-gradient(closest-side at 18% 22%,var(--tache),transparent),
     radial-gradient(closest-side at 82% 70%,var(--tache),transparent 80%),
@@ -684,17 +688,29 @@ main::after{content:"";position:absolute;inset:0;pointer-events:none;border-radi
 }
 /* Une seule page sur téléphone : couture de reliure à gauche */
 @media (max-width:939px){
-  main{margin-inline:-6px;padding-left:28px}
+  main{margin-inline:-6px;--pm:28px clamp(16px,4vw,52px) 40px 28px}
   main::before{content:"";position:absolute;left:11px;top:14px;bottom:14px;width:0;border-left:1.5px dashed color-mix(in srgb,var(--trait) 80%,var(--os));opacity:.7;pointer-events:none}
 }
-/* Tourner la page */
-main{perspective:1800px}
-@keyframes sort-g{to{opacity:0;transform:rotateY(10deg) translateX(-14px);filter:none}}
-@keyframes sort-d{to{opacity:0;transform:rotateY(-10deg) translateX(14px);filter:none}}
-@keyframes vient-g{from{opacity:0;transform:rotateY(-14deg) translateX(-18px);filter:none}}
-@keyframes vient-d{from{opacity:0;transform:rotateY(14deg) translateX(18px);filter:none}}
-main>section.vient-g,main>section.sort-d{transform-origin:100% 50%}
-main>section.vient-d,main>section.sort-g{transform-origin:0 50%}
+/* Tourner la page : une vraie feuille pivote autour de la reliure, de droite à gauche pour avancer */
+main{perspective:2600px}
+.feuille{position:absolute;inset:0;z-index:4;pointer-events:none;transform-style:preserve-3d;transform-origin:50% 50%;animation:tourne .85s cubic-bezier(.45,.05,.3,1) both}
+.feuille.recule{animation-name:retourne}
+.feuille.simple{transform-origin:0 50%}
+.feuille.simple.recule{animation-name:revient}
+@keyframes tourne{from{transform:rotateY(0)}to{transform:rotateY(-180deg)}}
+@keyframes retourne{from{transform:rotateY(0)}to{transform:rotateY(180deg)}}
+@keyframes revient{from{transform:rotateY(-180deg)}to{transform:rotateY(0)}}
+.face{position:absolute;inset:0;padding:var(--pm);overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;background-color:var(--nuit)}
+.face.verso{transform:rotateY(180deg)}
+.face::after{content:"";position:absolute;inset:0;pointer-events:none;animation:ombre .85s ease-in-out both}
+.avance .recto::after,.recule .verso::after{background:linear-gradient(90deg,rgba(60,30,8,.45),transparent 30%)}
+.avance .verso::after,.recule .recto::after{background:linear-gradient(270deg,rgba(60,30,8,.45),transparent 30%)}
+@keyframes ombre{0%,100%{opacity:0}50%{opacity:1}}
+.face>section{display:flex;flex-direction:column;gap:30px;padding-block:28px 8px;min-width:0}
+@media (min-width:940px){
+  .avance .recto,.recule .verso{clip-path:inset(0 0 0 50%)}
+  .avance .verso,.recule .recto{clip-path:inset(0 50% 0 0)}
+}
 
 /* Écritures : titres gothiques à l’encre rouge, mentions à la plume, données à la machine à écrire */
 h1,h2,h3{font-family:var(--f-titre);letter-spacing:0}
@@ -714,8 +730,8 @@ thead th{font-family:var(--f-texte);font-style:italic;font-size:14px;background:
 ::selection{background:color-mix(in srgb,var(--sang) 25%,transparent)}
 
 /* Boutons : étiquettes à l’encre, l’option choisie est tamponnée */
-.btn,.choix button{font-family:var(--f-texte);font-size:15px;background:transparent;border:1px solid color-mix(in srgb,var(--trait) 70%,var(--os));color:var(--os)}
-.choix button{color:var(--cendre);padding:6px 13px}
+.btn,.choix button{font-family:var(--f-texte);font-size:15px;background:color-mix(in srgb,var(--voile2) 55%,transparent);border:1.5px solid color-mix(in srgb,var(--trait) 45%,var(--os));color:var(--os)}
+.choix button{padding:6px 13px}
 .btn:hover,.choix button:hover{border-color:var(--os);color:var(--os)}
 .btn.plein,.btn[aria-pressed="true"],.choix button[aria-pressed="true"]{background:var(--os);border-color:var(--os);color:var(--nuit);font-weight:500;box-shadow:none}
 .choix button.lune[aria-pressed="true"]{background:var(--lune);border-color:var(--lune);color:#fbe9e2;box-shadow:0 0 14px rgba(154,18,32,.35)}
@@ -729,8 +745,8 @@ textarea{border:1.5px solid color-mix(in srgb,var(--trait) 60%,var(--os));font-s
 /* La planche des preuves : cadre gravé à double filet, sans fond */
 .planche{background:transparent;border:1.5px solid color-mix(in srgb,var(--trait) 55%,var(--os))}
 .planche::before{border-color:var(--trait);opacity:1}
-.sceau{color:var(--cendre)}
-.sceau .disque{background:color-mix(in srgb,var(--voile2) 60%,transparent);border:1.5px dashed color-mix(in srgb,var(--trait) 50%,var(--os));box-shadow:none}
+.sceau{color:color-mix(in srgb,var(--os) 82%,var(--nuit))}
+.sceau .disque{background:color-mix(in srgb,var(--voile2) 75%,transparent);border:1.5px dashed color-mix(in srgb,var(--trait) 35%,var(--os));box-shadow:none}
 .sceau:hover .disque{border-color:var(--os)}
 .sceau .nom{font-family:var(--f-texte);font-size:14.5px}
 /* Trouvée : sceau de cire verte, bord irrégulier */
@@ -741,7 +757,8 @@ textarea{border:1.5px solid color-mix(in srgb,var(--trait) 60%,var(--os));font-s
 .sceau[data-etat="1"] .nom{font-weight:700}
 /* Exclue : barrée d’un trait de plume rouge */
 .sceau[data-etat="-1"]{color:var(--sang)}
-.sceau[data-etat="-1"] .disque{border:1.5px solid color-mix(in srgb,var(--sang) 60%,transparent);box-shadow:none;background:transparent}
+.sceau[data-etat="-1"] .disque{border:1.5px solid var(--sang);box-shadow:none;background:color-mix(in srgb,var(--sang) 8%,transparent)}
+.sceau[data-etat="-1"] svg{opacity:.7}
 .sceau[data-etat="-1"] .disque::after{height:2.5px;left:-8px;right:-8px;border-radius:2px;transform:rotate(-38deg);background:linear-gradient(90deg,transparent,var(--sang) 12%,var(--sang) 80%,transparent)}
 .sceau[data-etat="-1"] .nom{text-decoration:line-through 1.5px var(--sang)}
 .sceau.eclat .disque::before{border-color:var(--follet);border-radius:inherit}
@@ -767,16 +784,19 @@ textarea{border:1.5px solid color-mix(in srgb,var(--trait) 60%,var(--os));font-s
 /* Entités : un registre ligné, la probabilité notée à la main dans la marge */
 .rangs{gap:0;border-top:1.5px solid var(--os)}
 details.rang{background:transparent;border:0;border-bottom:1px solid var(--trait);border-radius:0}
-details.rang:first-child{background:linear-gradient(90deg,color-mix(in srgb,var(--follet) 9%,transparent),transparent 70%)}
+details.rang:first-child{background:linear-gradient(90deg,color-mix(in srgb,var(--follet) 16%,transparent),transparent 80%);box-shadow:inset 3px 0 0 var(--follet)}
+details.rang:first-child .rang-nom{color:var(--follet);font-size:23px}
 details.rang>summary{padding:10px 6px 10px 4px}
 details.rang[open]{background:color-mix(in srgb,var(--voile2) 50%,transparent)}
 .rang-nom{font-family:var(--f-titre);font-weight:400;font-size:21px}
 .rang-pct{font-family:var(--f-main);font-size:25px;font-weight:600;line-height:.9;color:var(--sang)}
 .rang-bar{height:4px}
-.rang-bar i{background:color-mix(in srgb,var(--os) 45%,transparent);clip-path:polygon(0 30%,100% 0,100% 100%,0 70%)}
+.rang-bar i{background:color-mix(in srgb,var(--os) 55%,transparent);clip-path:polygon(0 30%,100% 0,100% 100%,0 70%)}
 details.rang:first-child .rang-bar i{background:var(--follet)}
 .puce{font-family:var(--f-data);font-size:12px;border-radius:2px;border-color:color-mix(in srgb,var(--trait) 70%,var(--os))}
-.puce.ok{background:color-mix(in srgb,var(--follet) 12%,transparent)}
+.puce{color:var(--os)}
+.puce.ok{background:var(--follet);border-color:var(--follet);color:var(--sur-follet)}
+.puce.fausse{color:var(--cierge)}
 .fiche{background:none;border-top:1px dashed var(--trait)}
 .fiche .signe::before{background:var(--sang);width:6px;height:6px}
 .fiche .chiffres{font-size:13px}
@@ -1001,56 +1021,70 @@ footer .lien-overlay{color:var(--dore)}
 
     <!-- AIDE-MÉMOIRE -->
     <section id="t-aide" hidden>
-      <div class="bloc" id="bloc-fiche">
-        <header><h2>Fiche d’une entité</h2><select id="fiche-choix" aria-label="Choisir une entité"></select></header>
-        <div id="fiche-aide"></div>
-      </div>
-      <div class="bloc">
-        <header><h2>Les <span class="nb-entites">30</span> entités</h2></header>
-        <div class="legende"><span><i class="pt"></i> preuve</span><span><i class="pt g"></i> jamais cachée en Cauchemar et Démence</span><span><i class="pt f"></i> orbes en plus (Mimic)</span></div>
-        <div class="defile"><table id="matrice"></table></div>
-      </div>
-      <div class="bloc">
-        <header><h2>Objets maudits</h2><span class="label">un seul par contrat</span></header>
-        <div class="defile"><table id="objets"></table></div>
-        <p class="petit">Une chasse maudite ne laisse qu’une seconde pour fuir, dure 20 s de plus et ne se bloque pas à l’encens.</p>
-      </div>
-      <div class="bloc">
-        <header><h2>Cartes de tarot</h2><span class="label">10 cartes par paquet</span></header>
-        <div class="defile"><table id="tarot"></table></div>
-        <p class="petit">Pendant une chasse, toutes les cartes tirées sont des Fous.</p>
-      </div>
-      <div class="bloc">
-        <header><h2>Repères</h2></header>
-        <ul class="reperes">
-          <li>Seuil de chasse standard : 50 % de santé mentale moyenne. Vitesse standard : 1,7 m/s.</li>
-          <li>À vue, presque toutes accélèrent jusqu’à 1,65 fois leur vitesse en 13 s environ.</li>
-          <li>Sous une Lune de sang (ciel rouge, pluie fine), les entités sont environ 15 % plus rapides en chasse et la santé mentale baisse plus vite.</li>
-          <li>Tu marches à 1,6 m/s et sprintes à 3 m/s pendant 3 s.</li>
-          <li>En chasse, elle entend ta voix à 9 m et un appareil allumé en main à 7,5 m. Un appareil posé au sol ne l’attire pas.</li>
-          <li>Le crucifix bloque une chasse qui démarre dans sa portée, pas une chasse en cours.</li>
-        </ul>
+      <div class="deux">
+        <div class="colonne">
+          <div class="bloc" id="bloc-fiche">
+            <header><h2>Fiche d’une entité</h2><select id="fiche-choix" aria-label="Choisir une entité"></select></header>
+            <div id="fiche-aide"></div>
+          </div>
+          <div class="bloc">
+            <header><h2>Objets maudits</h2><span class="label">un seul par contrat</span></header>
+            <div class="defile"><table id="objets"></table></div>
+            <p class="petit">Une chasse maudite ne laisse qu’une seconde pour fuir, dure 20 s de plus et ne se bloque pas à l’encens.</p>
+          </div>
+          <div class="bloc">
+            <header><h2>Repères</h2></header>
+            <ul class="reperes">
+              <li>Seuil de chasse standard : 50 % de santé mentale moyenne. Vitesse standard : 1,7 m/s.</li>
+              <li>À vue, presque toutes accélèrent jusqu’à 1,65 fois leur vitesse en 13 s environ.</li>
+              <li>Sous une Lune de sang (ciel rouge, pluie fine), les entités sont environ 15 % plus rapides en chasse et la santé mentale baisse plus vite.</li>
+              <li>Tu marches à 1,6 m/s et sprintes à 3 m/s pendant 3 s.</li>
+              <li>En chasse, elle entend ta voix à 9 m et un appareil allumé en main à 7,5 m. Un appareil posé au sol ne l’attire pas.</li>
+              <li>Le crucifix bloque une chasse qui démarre dans sa portée, pas une chasse en cours.</li>
+            </ul>
+          </div>
+    
+        </div>
+        <div class="colonne">
+          <div class="bloc">
+            <header><h2>Les <span class="nb-entites">30</span> entités</h2></header>
+            <div class="legende"><span><i class="pt"></i> preuve</span><span><i class="pt g"></i> jamais cachée en Cauchemar et Démence</span><span><i class="pt f"></i> orbes en plus (Mimic)</span></div>
+            <div class="defile"><table id="matrice"></table></div>
+          </div>
+          <div class="bloc">
+            <header><h2>Cartes de tarot</h2><span class="label">10 cartes par paquet</span></header>
+            <div class="defile"><table id="tarot"></table></div>
+            <p class="petit">Pendant une chasse, toutes les cartes tirées sont des Fous.</p>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- CARNET -->
     <section id="t-carnet" hidden>
-      <div class="bloc">
-        <header><h2>Mon carnet</h2><span class="label" id="carnet-mode"></span></header>
-        <div class="bilan" id="stats"></div>
-        <p class="petit" id="carnet-note" hidden></p>
-      </div>
-      <div class="bloc">
-        <header><h2>Réussite</h2><span class="label">où tu trouves, où tu te trompes</span></header>
-        <div id="reussites"></div>
-      </div>
-      <div class="bloc">
-        <header><h2>Bestiaire</h2><span class="label" id="bestiaire-compte"></span></header>
-        <div id="stats-entites"></div>
-      </div>
-      <div class="bloc">
-        <header><h2>Historique</h2><button class="btn discret" data-act="exporter">Exporter en JSON</button></header>
-        <div class="histo" id="historique"></div>
+      <div class="deux">
+        <div class="colonne">
+          <div class="bloc">
+            <header><h2>Mon carnet</h2><span class="label" id="carnet-mode"></span></header>
+            <div class="bilan" id="stats"></div>
+            <p class="petit" id="carnet-note" hidden></p>
+          </div>
+          <div class="bloc">
+            <header><h2>Réussite</h2><span class="label">où tu trouves, où tu te trompes</span></header>
+            <div id="reussites"></div>
+          </div>
+        </div>
+        <div class="colonne">
+          <div class="bloc">
+            <header><h2>Bestiaire</h2><span class="label" id="bestiaire-compte"></span></header>
+            <div id="stats-entites"></div>
+          </div>
+          <div class="bloc">
+            <header><h2>Historique</h2><button class="btn discret" data-act="exporter">Exporter en JSON</button></header>
+            <div class="histo" id="historique"></div>
+          </div>
+    
+        </div>
       </div>
     </section>
 
@@ -1404,9 +1438,10 @@ const CALME=matchMedia("(prefers-reduced-motion: reduce)").matches;
 let minuterie=null;
 function placerLosange(){ const b=$("#o-"+TAB); $("#losange").style.left=(b.offsetLeft+b.offsetWidth/2)+"px"; }
 function montrer(id){
-  TABS.forEach(([t])=>{ const sec=$("#t-"+t); sec.hidden=t!==id; sec.classList.remove("sort-g","sort-d","vient-g","vient-d"); });
+  TABS.forEach(([t])=>{ const sec=$("#t-"+t); sec.hidden=t!==id; sec.style.clipPath=""; sec.classList.remove("sort-g","sort-d","vient-g","vient-d"); });
+  document.querySelectorAll("main>.feuille").forEach(f=>f.remove());
 }
-/* Changement de page : l’ancienne se dissout d’un côté pendant que la nouvelle se forme de l’autre, le losange glisse sous l’onglet. */
+/* Changement de page : la feuille tourne autour de la reliure (vers la gauche pour avancer, vers la droite pour revenir). */
 function allerA(id,anime){
   const avant=TABS.findIndex(t=>t[0]===TAB), apres=TABS.findIndex(t=>t[0]===id), ancien=TAB;
   TAB=id;
@@ -1417,13 +1452,31 @@ function allerA(id,anime){
   ecrire();
   clearTimeout(minuterie);
   if(!anime||CALME||avant===apres){ montrer(id); return; }
+  tourner(ancien,id,apres>avant);
+}
+/* La feuille qui tourne porte une copie de l’ancienne page au recto et de la nouvelle au verso.
+   Dessous, chaque moitié du livre garde la bonne page jusqu’à ce que la feuille la recouvre. */
+function tourner(ancien,id,avance){
   montrer(ancien);
-  const droite=apres>avant, vieux=$("#t-"+ancien), neuf=$("#t-"+id), haut=$(".entete").offsetHeight;
+  const main=$("main"), vieux=$("#t-"+ancien), neuf=$("#t-"+id), haut=$(".entete").offsetHeight;
+  const double=matchMedia("(min-width:940px)").matches&&!document.documentElement.hasAttribute("data-compact");
+  const copie=sec=>{ const c=sec.cloneNode(true); c.hidden=false; c.className="";   /* les id restent : $() trouve toujours l’original, placé avant */
+    const sel=sec.querySelectorAll("select"), cs=c.querySelectorAll("select"); sel.forEach((x,i)=>{ if(cs[i]) cs[i].value=x.value; });
+    return c; };
+  const face=(cls,sec)=>{ const f=document.createElement("div"); f.className="face "+cls; if(sec) f.append(copie(sec)); return f; };
+  const feuille=document.createElement("div");
+  feuille.className="feuille "+(avance?"avance":"recule")+(double?"":" simple");
+  feuille.setAttribute("aria-hidden","true"); feuille.inert=true;
+  neuf.hidden=false;
+  if(double){
+    feuille.append(face("recto",vieux),face("verso",neuf));
+    vieux.style.clipPath=avance?"inset(0 50% 0 0)":"inset(0 0 0 50%)";
+    neuf.style.clipPath=avance?"inset(0 0 0 50%)":"inset(0 50% 0 0)";
+  } else if(avance){ feuille.append(face("recto",vieux)); vieux.hidden=true; }
+  else { feuille.append(face("recto",neuf)); neuf.style.clipPath="inset(0 0 0 100%)"; }
+  main.append(feuille);
   if(window.scrollY>haut) window.scrollTo({top:haut,behavior:"smooth"});
-  neuf.hidden=false; void neuf.offsetWidth;
-  vieux.classList.add(droite?"sort-g":"sort-d");
-  neuf.classList.add(droite?"vient-d":"vient-g");
-  minuterie=setTimeout(()=>montrer(id),980);
+  minuterie=setTimeout(()=>montrer(id),870);
 }
 
 /* Sceaux des preuves */
