@@ -695,7 +695,8 @@ main::after{content:"";position:absolute;inset:0;pointer-events:none;border-radi
   main::before{content:"";position:absolute;left:11px;top:14px;bottom:14px;width:0;border-left:1.5px dashed color-mix(in srgb,var(--trait) 80%,var(--os));opacity:.7;pointer-events:none}
 }
 /* Tourner la page : la feuille est faite de bandes articulées qui se courbent, le bord extérieur part en premier */
-main{perspective:2200px}
+main{perspective:2800px}
+main.tourne{overflow:clip}
 .feuille{position:absolute;inset:0;z-index:4;pointer-events:none;transform-style:preserve-3d}
 .bande{position:absolute;top:0;bottom:0;transform-style:preserve-3d}
 .bande>.face{position:absolute;inset:0;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden}
@@ -1447,7 +1448,7 @@ let minuterie=null;
 function placerLosange(){ const b=$("#o-"+TAB); $("#losange").style.left=(b.offsetLeft+b.offsetWidth/2)+"px"; }
 function montrer(id){
   TABS.forEach(([t])=>{ const sec=$("#t-"+t); sec.hidden=t!==id; sec.style.clipPath=""; sec.classList.remove("sort-g","sort-d","vient-g","vient-d"); });
-  document.querySelectorAll("main>.feuille,main>.portee").forEach(f=>f.remove()); tourEnCours++;
+  document.querySelectorAll("main>.feuille,main>.portee").forEach(f=>f.remove()); tourEnCours++; $("main").classList.remove("tourne");
 }
 /* Changement de page : la feuille tourne autour de la reliure (vers la gauche pour avancer, vers la droite pour revenir). */
 function allerA(id,anime){
@@ -1470,7 +1471,7 @@ function tourner(ancien,id,avance){
   montrer(ancien);
   const main=$("main"), vieux=$("#t-"+ancien), neuf=$("#t-"+id), haut=$(".entete").offsetHeight;
   const double=matchMedia("(min-width:940px)").matches&&!document.documentElement.hasAttribute("data-compact");
-  const W=main.clientWidth, N=double?9:7, larg=double?W/2:W, w=larg/N, R=getComputedStyle(main).borderRadius;
+  const W=main.clientWidth, N=double?14:10, larg=double?W/2:W, w=larg/N, R=getComputedStyle(main).borderRadius;
   const fond=(sec,x)=>{ const f=document.createElement("div"); f.className="fond"; f.style.width=W+"px"; f.style.left=(-x)+"px"; f.style.borderRadius=R;
     const c=sec.cloneNode(true); c.hidden=false; c.className=""; c.style.clipPath="";   /* les id restent : $() trouve toujours l’original, placé avant */
     const a=sec.querySelectorAll("select"), b=c.querySelectorAll("select"); a.forEach((x,i)=>{ if(b[i]) b[i].value=x.value; });
@@ -1496,12 +1497,13 @@ function tourner(ancien,id,avance){
   if(double){ vieux.style.clipPath=avance?"inset(0 50% 0 0)":"inset(0 0 0 50%)"; neuf.style.clipPath=avance?"inset(0 0 0 50%)":"inset(0 50% 0 0)"; }
   else if(avance) vieux.hidden=true; else neuf.style.clipPath="inset(0 0 0 100%)";
   // La perspective part du milieu de l’écran, pas du milieu d’une page très longue
-  const r=main.getBoundingClientRect(); main.style.perspectiveOrigin=`50% ${Math.max(0,innerHeight/2-r.top)}px`;
+  const r=main.getBoundingClientRect(); main.style.perspectiveOrigin=`50% ${Math.max(0,-r.top)}px`;   // vue depuis le haut de la page : la feuille ne monte jamais sur les onglets
+  main.classList.add("tourne");
   main.append(portee,feuille);
   if(window.scrollY>haut) window.scrollTo({top:haut,behavior:"smooth"});
   const D=double?1050:850, t0=performance.now(), jeton=++tourEnCours;
   const lisse=t=>t<=0?0:t>=1?1:t*t*(3-2*t);
-  const retard=k=>.32*(1-k/(N-1));           // le bord intérieur part après le bord extérieur
+  const retard=k=>.2*(1-k/(N-1));            // le bord intérieur suit le bord extérieur de peu : une courbe douce
   function image(now){
     if(jeton!==tourEnCours||!feuille.isConnected) return;
     let p=Math.min(1,(now-t0)/D); const q=(!double&&!avance)?1-p:p;   // sur téléphone, revenir = la feuille revient à plat
