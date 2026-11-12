@@ -605,11 +605,12 @@ footer .lien-overlay{color:var(--follet);text-underline-offset:3px;white-space:n
 :root:root{
   color-scheme: light;
   --cuir:#1d1410; --cuir2:#2a1d16; --dore:#d6b46a;
-  --nuit:#eadfc4; --voile:#f1e8d1; --voile2:#f7f0de; --trait:#ad9468;
+  --nuit:#efe6cd; --voile:#f5eedb; --voile2:#faf5e7; --trait:#ad9468;
   --os:#1f150c; --cendre:#52402e;
   --follet:#0a6e57; --sur-follet:#f6efdc; --cierge:#8a5500; --sang:#b01e0e; --ecto:#46306f;
   --halo:rgba(10,110,87,.12); --lueur:rgba(10,110,87,.35);
-  --brule:rgba(110,62,18,.10); --tache:rgba(140,96,40,.07);
+  --brule:rgba(110,62,18,.08); --tache:rgba(140,96,40,.05); --lustre:rgba(255,251,238,.35); --sur-cire:#f3ecd6;
+  --nom-crea:linear-gradient(100deg,#7a4b00,#a8690f 50%,#6c4100);
   --f-titre:"IM Fell English",Georgia,serif;
   --f-gothique:"Grenze Gotisch","IM Fell English",Georgia,serif;
   --f-texte:"Alegreya",Georgia,"Times New Roman",serif;
@@ -618,13 +619,22 @@ footer .lien-overlay{color:var(--follet);text-underline-offset:3px;white-space:n
   --feuille:3px; --petale:3px; --vignette:.35;
   --lune:#9a1220; --lune-ciel:rgba(205,14,32,.38); --lune-bord:rgba(92,0,12,.5);
 }
-/* La page vieillit avec la difficulté : vélin propre, puis jauni, roussi, brûlé, presque calciné */
-:root:root[data-niveau="p"]{--nuit:#e4d4b0; --voile:#ecdfc1; --voile2:#f3e8cf; --trait:#a88d60; --cendre:#4f3c2b; --brule:rgba(110,60,15,.28); --tache:rgba(140,90,30,.10); --vignette:.45}
-:root:root[data-niveau="2"]{--nuit:#dcc79e; --voile:#e5d4b1; --voile2:#ede0c2; --trait:#9f8455; --cendre:#4a3726; --brule:rgba(85,40,8,.5); --tache:rgba(120,72,20,.14); --vignette:.55}
-:root:root[data-niveau="1"]{--nuit:#d1b98b; --voile:#dbc69d; --voile2:#e3d1ac; --trait:#93784a; --os:#1c1209; --cendre:#433020; --follet:#08594a; --cierge:#6a420a; --sang:#861d10; --brule:rgba(45,18,2,.72); --tache:rgba(100,55,10,.18); --vignette:.65}
-:root:root[data-niveau="0"]{--nuit:#c3a877; --voile:#cdb487; --voile2:#d6c095; --trait:#86693c; --os:#170e06; --cendre:#3b2817; --follet:#064b3e; --cierge:#5c3907; --sang:#781a0e; --brule:rgba(22,8,0,.86); --tache:rgba(80,40,5,.22); --vignette:.75}
-:root:root[data-createur][data-createur][data-createur]{--follet:#7a4f06; --sur-follet:#fbf3df; --ecto:#8e3f10; --halo:rgba(122,79,6,.10); --lueur:rgba(122,79,6,.3)}
-.nom-createur.nom-createur{background:linear-gradient(100deg,#7a4b00,#a8690f 50%,#6c4100);-webkit-background-clip:text;background-clip:text;text-shadow:none}
+/* La page vieillit avec la difficulté : vélin propre, jauni, roussi, brûlé, puis calciné (encre pâle sur page noircie) */
+:root:root[data-niveau="p"]{--nuit:#e2cfa6; --voile:#e9dab7; --voile2:#f0e4c6; --trait:#a68b5c; --cendre:#4b3827; --brule:rgba(120,65,15,.38); --tache:rgba(150,95,30,.17); --lustre:rgba(255,248,225,.25); --vignette:.45}
+:root:root[data-niveau="2"]{--nuit:#ccae7c; --voile:#d6bb8e; --voile2:#dfc8a0; --trait:#8f7246; --os:#170e05; --cendre:#3f2c19; --follet:#075544; --cierge:#6a3f00; --sang:#8c1607; --brule:rgba(70,30,4,.68); --tache:rgba(110,60,10,.25); --lustre:rgba(255,240,205,.16); --vignette:.6}
+:root:root[data-niveau="1"]{--nuit:#a9895a; --voile:#b39466; --voile2:#bea173; --trait:#75592f; --os:#110902; --cendre:#2b1c0c; --follet:#03342a; --cierge:#4b2b00; --sang:#650d03; --ecto:#2c1a4a; --brule:rgba(25,8,0,.9); --tache:rgba(60,25,0,.32); --lustre:rgba(255,230,180,.08); --vignette:.72}
+:root:root[data-niveau="0"]{color-scheme:dark; --nuit:#241a12; --voile:#2d2117; --voile2:#36291d; --trait:#5e4630; --os:#eadcc0; --cendre:#b9a483; --follet:#6fd3b8; --sur-follet:#0b221c; --cierge:#f0b55e; --sang:#ff8466; --ecto:#c3a8ff; --halo:rgba(111,211,184,.12); --lueur:rgba(111,211,184,.4); --brule:rgba(255,105,25,.28); --tache:rgba(0,0,0,.28); --lustre:rgba(255,200,140,.04); --sur-cire:#0b221c; --vignette:.8}
+/* Ambiance du créateur : pages sombres, encre pâle et dorure ; elles s’assombrissent encore avec la difficulté */
+:root:root[data-createur][data-createur][data-createur]:not([data-compact]){color-scheme:dark;
+  --nuit:#2e2318; --voile:#372a1d; --voile2:#403123; --trait:#6a5236; --os:#f1e4c4; --cendre:#c2ab85;
+  --follet:#e9c46a; --sur-follet:#1b1408; --ecto:#e0894a; --cierge:#f2c46b; --sang:#ff8a6a;
+  --halo:rgba(233,196,106,.12); --lueur:rgba(233,196,106,.36); --brule:rgba(233,180,90,.14); --tache:rgba(0,0,0,.22); --lustre:rgba(255,215,140,.05);
+  --sur-cire:#2a1a05; --nom-crea:linear-gradient(100deg,#f3d27a,#e7a64a 45%,#f6e3a8)}
+:root:root[data-createur][data-createur][data-createur]:not([data-compact])[data-niveau="p"]{--nuit:#271d13; --voile:#30241a; --voile2:#392b1e; --brule:rgba(240,160,70,.18)}
+:root:root[data-createur][data-createur][data-createur]:not([data-compact])[data-niveau="2"]{--nuit:#20170f; --voile:#291e14; --voile2:#322518; --trait:#5c4529; --brule:rgba(250,140,50,.22); --tache:rgba(0,0,0,.3)}
+:root:root[data-createur][data-createur][data-createur]:not([data-compact])[data-niveau="1"]{--nuit:#19110a; --voile:#22170e; --voile2:#2a1d12; --trait:#523b22; --cendre:#b39a74; --brule:rgba(255,115,35,.27); --tache:rgba(0,0,0,.36)}
+:root:root[data-createur][data-createur][data-createur]:not([data-compact])[data-niveau="0"]{--nuit:#100a06; --voile:#170f09; --voile2:#1e140c; --trait:#47331d; --cendre:#a88f6a; --brule:rgba(255,80,20,.32); --tache:rgba(0,0,0,.45)}
+.nom-createur.nom-createur{background:var(--nom-crea);-webkit-background-clip:text;background-clip:text;text-shadow:none}
 
 /* La table : cuir sombre, la lueur des orbes flotte autour du livre */
 body{background:radial-gradient(ellipse 120% 80% at 50% 20%,var(--cuir2),var(--cuir) 70%);color:var(--os);font-size:16.5px;line-height:1.55}
@@ -645,10 +655,10 @@ body::after{opacity:.34}
 .onglets.colle{background-color:color-mix(in srgb,var(--cuir) 88%,transparent)}
 #onglets{gap:4px;align-items:flex-end}
 #losange{display:none}
-#onglets button{font-family:var(--f-titre);font-size:16.5px;letter-spacing:.01em;text-transform:none;color:#4a3826;isolation:isolate;
+#onglets button{font-family:var(--f-titre);font-size:16.5px;letter-spacing:.01em;text-transform:none;color:color-mix(in srgb,var(--os) 72%,var(--nuit));isolation:isolate;
   background:none;padding:9px 20px 7px;margin-top:9px;transition:margin .25s,padding .25s,color .3s}
 #onglets button::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:11px 11px 0 0;transform:perspective(60px) rotateX(5deg);transform-origin:50% 100%;
-  background:linear-gradient(180deg,#d9c7a2,#bea983);box-shadow:inset 0 1px 0 rgba(255,250,235,.5),inset 0 -6px 8px -6px rgba(40,20,5,.45)}
+  background:linear-gradient(180deg,color-mix(in srgb,var(--nuit) 84%,#7a5a32),color-mix(in srgb,var(--nuit) 72%,#5e4220));box-shadow:inset 0 1px 0 rgba(255,250,235,.5),inset 0 -6px 8px -6px rgba(40,20,5,.45)}
 #onglets button:hover{color:var(--os);margin-top:5px;padding-bottom:11px}
 #onglets button[aria-selected="true"]{color:var(--sang);margin-top:0;padding:12px 22px 10px}
 #onglets button[aria-selected="true"]::before{background:linear-gradient(180deg,var(--voile2),color-mix(in srgb,var(--nuit) 93%,#6e3e12) 92%);box-shadow:inset 0 1px 0 rgba(255,250,235,.6),0 -3px 8px rgba(0,0,0,.3)}
@@ -656,11 +666,16 @@ body::after{opacity:.34}
 .onglets .btn:hover{border-color:var(--dore);color:#f4e2b6}
 .onglets .btn.discret{color:#bca172}
 @media (max-width:700px){
-  .onglets{padding-inline:16px 6px}
-  #onglets button{padding:8px 11px 6px;font-size:14.5px}
-  #onglets button[aria-selected="true"]{padding:11px 12px 8px}
+  .onglets{padding-inline:12px 4px}
+  /* Les intercalaires défilent s’il n’y a pas la place : jamais par-dessus le bouton « Nouvelle enquête » */
+  #onglets{flex:1 1 auto;min-width:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;padding-inline:2px;margin-bottom:0;
+    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 18px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 18px),transparent)}
+  #onglets::-webkit-scrollbar{display:none}
+  #onglets button{flex:none;padding:8px 8px 6px;font-size:14px}
+  #onglets button[aria-selected="true"]{padding:11px 11px 8px}
+  .onglets{gap:4px}
 }
-@media (max-width:400px){#onglets button{padding-inline:8px;font-size:13.5px}}
+@media (max-width:400px){#onglets button{padding-inline:7px;font-size:13.5px}#onglets button[aria-selected="true"]{padding-inline:9px}}
 
 /* La page : vélin taché, tranche de feuillets empilés, bords qui brunissent avec l’âge */
 main{--pm:28px clamp(16px,4vw,52px) 40px;position:relative;padding:var(--pm);border-radius:4px 18px 20px 4px / 4px 14px 18px 4px;min-height:calc(100svh - 190px);
@@ -681,8 +696,8 @@ main::after{content:"";position:absolute;inset:0;pointer-events:none;border-radi
   .cr-grille{column-gap:84px}
   main{border-radius:18px 18px 20px 20px / 14px 14px 18px 18px}
   main,.fond{background:
-    radial-gradient(ellipse 22% 55% at 26% 42%,rgba(255,251,238,.32),transparent),
-    radial-gradient(ellipse 22% 55% at 74% 42%,rgba(255,251,238,.32),transparent),
+    radial-gradient(ellipse 22% 55% at 26% 42%,var(--lustre),transparent),
+    radial-gradient(ellipse 22% 55% at 74% 42%,var(--lustre),transparent),
     linear-gradient(90deg,rgba(90,52,18,.2),transparent 7%,transparent 93%,rgba(90,52,18,.2)),
     linear-gradient(90deg,transparent calc(50% - 70px),rgba(70,40,15,.05) calc(50% - 26px),rgba(70,40,15,.22) calc(50% - 3px),rgba(30,15,5,.38) 50%,rgba(70,40,15,.2) calc(50% + 3px),rgba(70,40,15,.05) calc(50% + 26px),transparent calc(50% + 70px)),
     radial-gradient(closest-side at 18% 22%,var(--tache),transparent),
@@ -749,7 +764,7 @@ textarea{border:1.5px solid color-mix(in srgb,var(--trait) 60%,var(--os));font-s
 .sceau .nom{font-family:var(--f-texte);font-size:14.5px}
 /* Trouvée : sceau de cire verte, bord irrégulier */
 .sceau[data-etat="1"]{color:var(--follet)}
-.sceau[data-etat="1"] .disque{border:0;color:#f3ecd6;border-radius:47% 53% 50% 50% / 52% 46% 54% 48%;
+.sceau[data-etat="1"] .disque{border:0;color:var(--sur-cire);border-radius:47% 53% 50% 50% / 52% 46% 54% 48%;
   background:radial-gradient(circle at 34% 28%,color-mix(in srgb,var(--follet) 55%,#fff) 0,var(--follet) 38%,color-mix(in srgb,var(--follet) 70%,#000) 100%);
   box-shadow:0 0 0 3px color-mix(in srgb,var(--follet) 82%,#000),2px 3px 5px rgba(40,20,5,.45),inset 0 0 0 5px color-mix(in srgb,var(--follet) 85%,#000),inset 0 0 0 6px rgba(255,255,255,.18);transform:rotate(-4deg) scale(1.06)}
 .sceau[data-etat="1"] .nom{font-weight:700}
@@ -1473,6 +1488,7 @@ function allerA(id,anime){
   const avant=TABS.findIndex(t=>t[0]===TAB), apres=TABS.findIndex(t=>t[0]===id), ancien=TAB;
   TAB=id;
   TABS.forEach(([t])=>$("#o-"+t).setAttribute("aria-selected",t===id));
+  { const o=$("#o-"+id), l=$("#onglets"); if(o&&l.scrollWidth>l.clientWidth) l.scrollTo({left:o.offsetLeft-l.clientWidth/2+o.offsetWidth/2,behavior:CALME?"auto":"smooth"}); }
   placerLosange();
   $("#barre").hidden=id!=="enquete";
   try{ history.replaceState(null,"","#"+id); }catch(e){}
