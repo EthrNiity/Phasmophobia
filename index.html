@@ -695,7 +695,8 @@ main::after{content:"";position:absolute;inset:0;pointer-events:none;border-radi
   main::before{content:"";position:absolute;left:11px;top:14px;bottom:14px;width:0;border-left:1.5px dashed color-mix(in srgb,var(--trait) 80%,var(--os));opacity:.7;pointer-events:none}
 }
 /* Tourner la page : la feuille est faite de bandes articulées qui se courbent, le bord extérieur part en premier */
-main{perspective:2800px}
+main{perspective:2800px;transition:box-shadow .45s ease}
+main{--tranche:color-mix(in srgb,var(--nuit) 86%,#6b4520);--tranche2:color-mix(in srgb,var(--nuit) 76%,#5a3815);--fil:color-mix(in srgb,var(--nuit) 45%,#3c230d)}
 main.tourne{overflow:clip}
 .feuille{position:absolute;inset:0;z-index:4;pointer-events:none;transform-style:preserve-3d}
 .bande{position:absolute;top:0;bottom:0;transform-style:preserve-3d}
@@ -1446,9 +1447,25 @@ $("#o-createur").hidden=true;   /* affiché seulement pour le compte créateur (
 const CALME=matchMedia("(prefers-reduced-motion: reduce)").matches;
 let minuterie=null;
 function placerLosange(){ const b=$("#o-"+TAB); $("#losange").style.left=(b.offsetLeft+b.offsetWidth/2)+"px"; }
+/* Tranches du livre : sur le premier onglet, toutes les pages sont à droite ; sur le dernier, toutes à gauche. */
+function majTranches(){
+  const main=$("main"); if(!main) return;
+  const vis=TABS.filter(([t])=>!$("#o-"+t).hidden).map(([t])=>t), i=Math.max(0,vis.indexOf(TAB)), n=vis.length;
+  const double=matchMedia("(min-width:940px)").matches;
+  const g=double?Math.min(4,i):0, d=Math.min(4,n-1-i);
+  const couches=[];
+  for(let k=1;k<=Math.max(g,d);k++){
+    const c=k%2?"var(--tranche)":"var(--tranche2)", y=k*3;
+    if(k<=d) couches.push(`${k*3}px ${y}px 0 -1px ${c}`,`${k*3}px ${y}px 0 0 var(--fil)`);
+    if(k<=g) couches.push(`${-k*3}px ${y}px 0 -1px ${c}`,`${-k*3}px ${y}px 0 0 var(--fil)`);
+  }
+  const lune=document.documentElement.hasAttribute("data-lune");
+  main.style.boxShadow=["0 0 0 1px var(--fil)",...couches,lune?"0 34px 90px -10px rgba(160,10,25,.55)":"0 34px 70px -18px rgba(0,0,0,.85)"].join(",");
+}
+addEventListener("resize",()=>majTranches());
 function montrer(id){
   TABS.forEach(([t])=>{ const sec=$("#t-"+t); sec.hidden=t!==id; sec.style.clipPath=""; sec.classList.remove("sort-g","sort-d","vient-g","vient-d"); });
-  document.querySelectorAll("main>.feuille,main>.portee").forEach(f=>f.remove()); tourEnCours++; $("main").classList.remove("tourne");
+  document.querySelectorAll("main>.feuille,main>.portee").forEach(f=>f.remove()); tourEnCours++; $("main").classList.remove("tourne"); majTranches();
 }
 /* Changement de page : la feuille tourne autour de la reliure (vers la gauche pour avancer, vers la droite pour revenir). */
 function allerA(id,anime){
@@ -1503,7 +1520,7 @@ function tourner(ancien,id,avance){
   if(window.scrollY>haut) window.scrollTo({top:haut,behavior:"smooth"});
   const D=double?1050:850, t0=performance.now(), jeton=++tourEnCours;
   const lisse=t=>t<=0?0:t>=1?1:t*t*(3-2*t);
-  const retard=k=>.2*(1-k/(N-1));            // le bord intérieur suit le bord extérieur de peu : une courbe douce
+  const retard=k=>.34*(k/(N-1));             // le bord extérieur traîne derrière la reliure : la feuille se creuse en courbe
   function image(now){
     if(jeton!==tourEnCours||!feuille.isConnected) return;
     let p=Math.min(1,(now-t0)/D); const q=(!double&&!avance)?1-p:p;   // sur téléphone, revenir = la feuille revient à plat
@@ -1554,6 +1571,7 @@ function puces(g,found){
 }
 
 function rendre(){
+  queueMicrotask(majTranches);
   const res=calculer(S);
   const vivants=res.liste.filter(x=>x.p>0), morts=res.liste.filter(x=>x.p<=0);
   const racine=document.documentElement;
