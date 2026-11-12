@@ -695,16 +695,17 @@ main::after{content:"";position:absolute;inset:0;pointer-events:none;border-radi
   main::before{content:"";position:absolute;left:11px;top:14px;bottom:14px;width:0;border-left:1.5px dashed color-mix(in srgb,var(--trait) 80%,var(--os));opacity:.7;pointer-events:none}
 }
 /* Tourner la page : la feuille est faite de bandes articulées qui se courbent, le bord extérieur part en premier */
-main{perspective:2800px;transition:box-shadow .45s ease}
+main{}
 main{--tranche:color-mix(in srgb,var(--nuit) 86%,#6b4520);--tranche2:color-mix(in srgb,var(--nuit) 76%,#5a3815);--fil:color-mix(in srgb,var(--nuit) 45%,#3c230d)}
-main.tourne{overflow:clip}
-.feuille{position:absolute;inset:0;z-index:4;pointer-events:none;transform-style:preserve-3d}
-.bande{position:absolute;top:0;bottom:0;transform-style:preserve-3d}
-.bande>.face{position:absolute;inset:0;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden}
-.bande>.face.verso{transform:rotateY(180deg)}
-.bande>.face::after{content:"";position:absolute;inset:0;pointer-events:none;background:var(--ombre,none)}
-.bande>.face.recto{right:-1px}.bande>.face.verso{left:-1px}
-.recule-d .bande>.face.recto{right:0;left:-1px}.recule-d .bande>.face.verso{left:0;right:-1px}
+main.tourne{z-index:6}
+.feuille{position:absolute;left:0;right:0;z-index:4;pointer-events:none;perspective:2800px}
+.bande{position:absolute;top:0;bottom:0;left:0;will-change:transform;backface-visibility:visible}
+.bande>.face{position:absolute;inset:0 -1px 0 0;overflow:hidden}
+.bande>.face.verso{inset:0 0 0 -1px;transform:scaleX(-1)}
+.feuille *,.feuille *::before,.feuille *::after{animation:none!important;transition:none!important}
+.om{position:absolute;inset:0;pointer-events:none;opacity:0}
+.om-a{background:linear-gradient(90deg,rgb(48,24,6),transparent)}
+.om-b{background:linear-gradient(270deg,rgb(48,24,6),transparent)}
 .fond{position:absolute;top:0;bottom:0;padding:var(--pm);background-color:var(--nuit);border-radius:inherit}
 .fond>section{display:flex;flex-direction:column;gap:30px;padding-block:28px 8px;min-width:0}
 .portee{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0}
@@ -1488,56 +1489,63 @@ function tourner(ancien,id,avance){
   montrer(ancien);
   const main=$("main"), vieux=$("#t-"+ancien), neuf=$("#t-"+id), haut=$(".entete").offsetHeight;
   const double=matchMedia("(min-width:940px)").matches&&!document.documentElement.hasAttribute("data-compact");
-  const W=main.clientWidth, N=double?14:10, larg=double?W/2:W, w=larg/N, R=getComputedStyle(main).borderRadius;
-  const fond=(sec,x)=>{ const f=document.createElement("div"); f.className="fond"; f.style.width=W+"px"; f.style.left=(-x)+"px"; f.style.borderRadius=R;
+  if(window.scrollY>haut) window.scrollTo(0,haut);          // d’abord remonter, d’un coup : la feuille se construit sur ce qu’on voit
+  neuf.hidden=false;
+  const W=main.clientWidth, H=main.offsetHeight, N=double?10:7, larg=double?W/2:W, w=larg/N, R=getComputedStyle(main).borderRadius;
+  // Seule la partie visible de la page tourne : des bandes moins hautes, donc bien plus légères à animer
+  const r=main.getBoundingClientRect(), y0=Math.max(0,Math.floor(-r.top-60)), y1=Math.min(H,Math.ceil(innerHeight-r.top+60)), h=y1-y0;
+  const fond=(sec,x)=>{ const f=document.createElement("div"); f.className="fond"; f.style.cssText=`width:${W}px;height:${H}px;left:${-x}px;top:${-y0}px;border-radius:${R}`;
     const c=sec.cloneNode(true); c.hidden=false; c.className=""; c.style.clipPath="";   /* les id restent : $() trouve toujours l’original, placé avant */
     const a=sec.querySelectorAll("select"), b=c.querySelectorAll("select"); a.forEach((x,i)=>{ if(b[i]) b[i].value=x.value; });
     f.append(c); return f; };
+  const ombres=f=>{ const a=document.createElement("i"), b=document.createElement("i"); a.className="om om-a"; b.className="om om-b"; f.append(a,b); return [a,b]; };
   // Avancer : la page de droite (ou la page entière sur téléphone) part vers la gauche. Revenir : la page de gauche part vers la droite.
-  const sens=avance?-1:1;
+  const sens=avance?-1:1, aGauche=avance||!double;   // aGauche : la reliure est à gauche de chaque bande
   const recto=double?vieux:(avance?vieux:neuf), verso=double?neuf:null;
-  const feuille=document.createElement("div"); feuille.className="feuille"+(double&&!avance?" recule-d":""); feuille.setAttribute("aria-hidden","true"); feuille.inert=true;
-  const bandes=[]; let parent=feuille;
+  const feuille=document.createElement("div"); feuille.className="feuille"; feuille.setAttribute("aria-hidden","true"); feuille.inert=true;
+  feuille.style.cssText=`top:${y0}px;height:${h}px;bottom:auto;perspective-origin:50% ${Math.min(300,h*.35)}px`;
+  // Chaque bande est un calque plat, placé et tourné à la main : pas de 3D imbriquée, le navigateur n’a rien à redessiner
+  const bandes=[];
   for(let k=0;k<N;k++){
-    const b=document.createElement("div"); b.className="bande"; b.style.width=w+"px";
-    // position de la bande à plat, avant de tourner
+    const b=document.createElement("div"); b.className="bande"; b.style.width=w+"px"; b.style.transformOrigin=aGauche?"0 50%":"100% 50%";
     const x0=double?(avance?W/2+k*w:W/2-(k+1)*w):k*w;
-    if(k===0){ b.style.left=x0+"px"; } else b.style.left=(avance||!double?w:-w)+"px";
-    b.style.transformOrigin=(avance||!double)?"0 50%":"100% 50%";
-    const fr=document.createElement("div"); fr.className="face recto"; fr.append(fond(recto,x0)); b.append(fr);
-    if(verso){ const xv=avance?W/2-(k+1)*w:W/2+k*w; const fv=document.createElement("div"); fv.className="face verso"; fv.append(fond(verso,xv)); b.append(fv); }
-    parent.append(b); bandes.push(b); parent=b;
+    const fr=document.createElement("div"); fr.className="face recto"; fr.append(fond(recto,x0)); const or=ombres(fr); b.append(fr);
+    let fv=null, ov=null;
+    if(verso){ const xv=avance?W/2-(k+1)*w:W/2+k*w; fv=document.createElement("div"); fv.className="face verso"; fv.hidden=true; fv.append(fond(verso,xv)); ov=ombres(fv); b.append(fv); }
+    feuille.append(b); bandes.push({b,fr,fv,or,ov,dos:false});
   }
   const portee=document.createElement("div"); portee.className="portee";
   portee.style.background=double?"linear-gradient(90deg,transparent 28%,rgba(40,18,4,.32) 50%,transparent 72%)":"linear-gradient(90deg,rgba(40,18,4,.35),transparent 45%)";
-  neuf.hidden=false;
   if(double){ vieux.style.clipPath=avance?"inset(0 50% 0 0)":"inset(0 0 0 50%)"; neuf.style.clipPath=avance?"inset(0 0 0 50%)":"inset(0 50% 0 0)"; }
   else if(avance) vieux.hidden=true; else neuf.style.clipPath="inset(0 0 0 100%)";
-  // La perspective part du milieu de l’écran, pas du milieu d’une page très longue
-  const r=main.getBoundingClientRect(); main.style.perspectiveOrigin=`50% ${Math.max(0,-r.top)}px`;   // vue depuis le haut de la page : la feuille ne monte jamais sur les onglets
-  main.classList.add("tourne");
+  main.classList.add("tourne");            // le livre est incliné vers soi : la feuille soulevée déborde un peu sur les onglets
   main.append(portee,feuille);
-  if(window.scrollY>haut) window.scrollTo({top:haut,behavior:"smooth"});
-  const D=double?1050:850, t0=performance.now(), jeton=++tourEnCours;
-  const lisse=t=>t<=0?0:t>=1?1:t*t*(3-2*t);
+  const D=double?1100:900, jeton=++tourEnCours; let t0=0;
+  const lisse=t=>t<=0?0:t>=1?1:t*t*t*(t*(t*6-15)+10);          // départ et arrivée tout en douceur
   const retard=k=>.34*(k/(N-1));             // le bord extérieur traîne derrière la reliure : la feuille se creuse en courbe
+  const RAD=Math.PI/180, fonce=a=>.42*Math.abs(Math.sin(a*RAD));
+  const xs=double?W/2:0;                     // la reliure
   function image(now){
     if(jeton!==tourEnCours||!feuille.isConnected) return;
-    let p=Math.min(1,(now-t0)/D); const q=(!double&&!avance)?1-p:p;   // sur téléphone, revenir = la feuille revient à plat
-    let avant=0, avantPrec=0;
-    bandes.forEach((b,k)=>{ const d=retard(k), t=lisse((q-d)/(1-d)), total=180*t*(double?sens:-1);
-      b.style.transform=`rotateY(${total-avant}deg)`; avant=total;
-      // ombre continue d’une bande à l’autre : chaque bord prend la teinte de son articulation
-      const fonce=a=>(.42*Math.abs(Math.sin(a*Math.PI/180))).toFixed(3);
-      const ai=fonce(avantPrec), ae=fonce(total); avantPrec=total;
-      const g=(dir,x,y)=>`linear-gradient(${dir},rgba(48,24,6,${x}),rgba(48,24,6,${y}))`;
-      const interieurAGauche=avance||!double;
-      b.style.setProperty("--ombre",g(interieurAGauche?"90deg":"270deg",ai,ae));
-      const v=b.querySelector(".verso"); if(v) v.style.setProperty("--ombre",g(interieurAGauche?"270deg":"90deg",ai,ae)); });
+    const p=t0?Math.min(1,(now-t0)/D):0, q=(!double&&!avance)?1-p:p;   // sur téléphone, revenir = la feuille revient à plat
+    let jx=xs, jz=0, avant=0;
+    for(let k=0;k<N;k++){ const B=bandes[k], d=retard(k), t=lisse((q-d)/(1-d)), A=180*t*(double?sens:-1);
+      B.b.style.transform=`translate3d(${(aGauche?jx:jx-w).toFixed(2)}px,0,${jz.toFixed(2)}px) rotateY(${A.toFixed(2)}deg)`;
+      const dos=Math.abs(A)>90;
+      if(dos!==B.dos){ B.dos=dos; B.fr.hidden=dos; if(B.fv) B.fv.hidden=!dos; }
+      // ombre continue d’une bande à l’autre : côté reliure la teinte de l’articulation précédente, côté extérieur la sienne
+      const ai=fonce(avant).toFixed(3), ae=fonce(A).toFixed(3); avant=A;
+      if(!dos){ B.or[0].style.opacity=aGauche?ai:ae; B.or[1].style.opacity=aGauche?ae:ai; }
+      else if(B.ov){ B.ov[0].style.opacity=aGauche?ae:ai; B.ov[1].style.opacity=aGauche?ai:ae; }
+      // articulation suivante
+      if(aGauche){ jx+=w*Math.cos(A*RAD); jz-=w*Math.sin(A*RAD); } else { jx-=w*Math.cos(A*RAD); jz+=w*Math.sin(A*RAD); }
+    }
     portee.style.opacity=Math.sin(Math.PI*q).toFixed(3);
     if(p<1) requestAnimationFrame(image); else montrer(id);
   }
-  image(t0); requestAnimationFrame(image);
+  // Feuille posée à plat d’abord : sa mise en page et son dessin se font avant que le mouvement commence
+  void feuille.offsetHeight; image(0);
+  requestAnimationFrame(()=>requestAnimationFrame(t=>{ t0=t; image(t); }));
 }
 
 /* Sceaux des preuves */
