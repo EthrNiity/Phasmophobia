@@ -641,30 +641,29 @@ body::after{opacity:.34}
   background:radial-gradient(circle,#b88d45 0 2px,transparent 2.5px) center/9px 9px no-repeat,linear-gradient(90deg,transparent,#8e6a2e 25%,#8e6a2e 45%,transparent 45%,transparent 55%,#8e6a2e 55%,#8e6a2e 75%,transparent) center/100% 1px no-repeat}
 
 /* Onglets : marque-pages de papier qui dépassent du haut du livre */
-.onglets{margin-inline:0;padding-inline:14px;background-image:none;gap:10px}
+.onglets{margin-inline:0;padding-inline:30px 14px;background-image:none;gap:10px}
 .onglets.colle{background-color:color-mix(in srgb,var(--cuir) 88%,transparent)}
 #onglets{gap:4px;align-items:flex-end}
 #losange{display:none}
-#onglets button{font-family:var(--f-titre);font-size:16.5px;letter-spacing:.01em;text-transform:none;color:#4a3826;
-  background:linear-gradient(180deg,#d8c6a0,#c7b28a);border-radius:7px 7px 0 0;padding:9px 15px 8px;margin-top:8px;
-  box-shadow:inset 0 1px 0 rgba(255,250,235,.45),0 -1px 0 rgba(0,0,0,.35);transition:margin .25s,padding .25s,color .3s}
-#onglets button:hover{color:var(--os);margin-top:4px;padding-bottom:12px}
-#onglets button[aria-selected="true"]{color:var(--os);background:var(--nuit);margin-top:0;padding:12px 18px 12px;box-shadow:inset 0 1px 0 rgba(255,250,235,.5),0 -2px 6px rgba(0,0,0,.35)}
-#onglets button[aria-selected="true"]::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:4px;background:var(--nuit)}
-#o-createur{color:#7a4f06}
-#o-createur:hover,#o-createur[aria-selected="true"]{color:#7a4f06}
+#onglets button{font-family:var(--f-titre);font-size:16.5px;letter-spacing:.01em;text-transform:none;color:#4a3826;isolation:isolate;
+  background:none;padding:9px 20px 7px;margin-top:9px;transition:margin .25s,padding .25s,color .3s}
+#onglets button::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:11px 11px 0 0;transform:perspective(60px) rotateX(5deg);transform-origin:50% 100%;
+  background:linear-gradient(180deg,#d9c7a2,#bea983);box-shadow:inset 0 1px 0 rgba(255,250,235,.5),inset 0 -6px 8px -6px rgba(40,20,5,.45)}
+#onglets button:hover{color:var(--os);margin-top:5px;padding-bottom:11px}
+#onglets button[aria-selected="true"]{color:var(--sang);margin-top:0;padding:12px 22px 10px}
+#onglets button[aria-selected="true"]::before{background:linear-gradient(180deg,var(--voile2),color-mix(in srgb,var(--nuit) 93%,#6e3e12) 92%);box-shadow:inset 0 1px 0 rgba(255,250,235,.6),0 -3px 8px rgba(0,0,0,.3)}
 .onglets .btn{background:transparent;border-color:rgba(214,180,106,.4);color:#e6cf98;font-family:var(--f-texte);font-size:14.5px}
 .onglets .btn:hover{border-color:var(--dore);color:#f4e2b6}
 .onglets .btn.discret{color:#bca172}
 @media (max-width:700px){
-  .onglets{padding-inline:6px}
-  #onglets button{padding:8px 9px 7px;font-size:14.5px}
-  #onglets button[aria-selected="true"]{padding:11px 10px}
+  .onglets{padding-inline:16px 6px}
+  #onglets button{padding:8px 11px 6px;font-size:14.5px}
+  #onglets button[aria-selected="true"]{padding:11px 12px 8px}
 }
-@media (max-width:400px){#onglets button{padding-inline:6px;font-size:13.5px}}
+@media (max-width:400px){#onglets button{padding-inline:8px;font-size:13.5px}}
 
 /* La page : vélin taché, tranche de feuillets empilés, bords qui brunissent avec l’âge */
-main{--pm:28px clamp(16px,4vw,52px) 40px;position:relative;padding:var(--pm);border-radius:2px 2px 4px 4px;min-height:calc(100svh - 190px);
+main{--pm:28px clamp(16px,4vw,52px) 40px;position:relative;padding:var(--pm);border-radius:4px 18px 20px 4px / 4px 14px 18px 4px;min-height:calc(100svh - 190px);
   background:
     radial-gradient(closest-side at 18% 22%,var(--tache),transparent),
     radial-gradient(closest-side at 82% 70%,var(--tache),transparent 80%),
@@ -672,7 +671,7 @@ main{--pm:28px clamp(16px,4vw,52px) 40px;position:relative;padding:var(--pm);bor
     var(--nuit);
   box-shadow:0 0 0 1px rgba(60,35,15,.4),3px 4px 0 -1px #dccbab,3px 4px 0 0 rgba(60,35,15,.35),6px 8px 0 -1px #d2bf9a,6px 8px 0 0 rgba(60,35,15,.35),9px 12px 0 -1px #c8b48d,9px 12px 0 0 rgba(60,35,15,.3),0 34px 70px -18px rgba(0,0,0,.85)}
 @media (min-width:940px){main{box-shadow:0 0 0 1px rgba(60,35,15,.4),3px 4px 0 -1px #dccbab,3px 4px 0 0 rgba(60,35,15,.35),6px 8px 0 -1px #d2bf9a,6px 8px 0 0 rgba(60,35,15,.35),9px 12px 0 -1px #c8b48d,9px 12px 0 0 rgba(60,35,15,.3),-3px 4px 0 -1px #dccbab,-3px 4px 0 0 rgba(60,35,15,.35),-6px 8px 0 -1px #d2bf9a,-6px 8px 0 0 rgba(60,35,15,.35),-9px 12px 0 -1px #c8b48d,-9px 12px 0 0 rgba(60,35,15,.3),0 34px 70px -18px rgba(0,0,0,.85)}}
-main::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;z-index:3;
+main::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;z-index:5;
   box-shadow:inset 0 0 30px 2px var(--brule),inset 0 0 90px 10px color-mix(in srgb,var(--brule) 45%,transparent)}
 /* Double page sur grand écran : la reliure au milieu de l’enquête */
 @media (min-width:940px){
@@ -680,7 +679,11 @@ main::after{content:"";position:absolute;inset:0;pointer-events:none;border-radi
   .minuteurs{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
   .minuteurs+.petit{max-width:calc(50% - 42px)}
   .cr-grille{column-gap:84px}
-  main,.face{background:
+  main{border-radius:18px 18px 20px 20px / 14px 14px 18px 18px}
+  main,.fond{background:
+    radial-gradient(ellipse 22% 55% at 26% 42%,rgba(255,251,238,.32),transparent),
+    radial-gradient(ellipse 22% 55% at 74% 42%,rgba(255,251,238,.32),transparent),
+    linear-gradient(90deg,rgba(90,52,18,.2),transparent 7%,transparent 93%,rgba(90,52,18,.2)),
     linear-gradient(90deg,transparent calc(50% - 70px),rgba(70,40,15,.05) calc(50% - 26px),rgba(70,40,15,.22) calc(50% - 3px),rgba(30,15,5,.38) 50%,rgba(70,40,15,.2) calc(50% + 3px),rgba(70,40,15,.05) calc(50% + 26px),transparent calc(50% + 70px)),
     radial-gradient(closest-side at 18% 22%,var(--tache),transparent),
     radial-gradient(closest-side at 82% 70%,var(--tache),transparent 80%),
@@ -691,26 +694,18 @@ main::after{content:"";position:absolute;inset:0;pointer-events:none;border-radi
   main{margin-inline:-6px;--pm:28px clamp(16px,4vw,52px) 40px 28px}
   main::before{content:"";position:absolute;left:11px;top:14px;bottom:14px;width:0;border-left:1.5px dashed color-mix(in srgb,var(--trait) 80%,var(--os));opacity:.7;pointer-events:none}
 }
-/* Tourner la page : une vraie feuille pivote autour de la reliure, de droite à gauche pour avancer */
-main{perspective:2600px}
-.feuille{position:absolute;inset:0;z-index:4;pointer-events:none;transform-style:preserve-3d;transform-origin:50% 50%;animation:tourne .85s cubic-bezier(.45,.05,.3,1) both}
-.feuille.recule{animation-name:retourne}
-.feuille.simple{transform-origin:0 50%}
-.feuille.simple.recule{animation-name:revient}
-@keyframes tourne{from{transform:rotateY(0)}to{transform:rotateY(-180deg)}}
-@keyframes retourne{from{transform:rotateY(0)}to{transform:rotateY(180deg)}}
-@keyframes revient{from{transform:rotateY(-180deg)}to{transform:rotateY(0)}}
-.face{position:absolute;inset:0;padding:var(--pm);overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;background-color:var(--nuit)}
-.face.verso{transform:rotateY(180deg)}
-.face::after{content:"";position:absolute;inset:0;pointer-events:none;animation:ombre .85s ease-in-out both}
-.avance .recto::after,.recule .verso::after{background:linear-gradient(90deg,rgba(60,30,8,.45),transparent 30%)}
-.avance .verso::after,.recule .recto::after{background:linear-gradient(270deg,rgba(60,30,8,.45),transparent 30%)}
-@keyframes ombre{0%,100%{opacity:0}50%{opacity:1}}
-.face>section{display:flex;flex-direction:column;gap:30px;padding-block:28px 8px;min-width:0}
-@media (min-width:940px){
-  .avance .recto,.recule .verso{clip-path:inset(0 0 0 50%)}
-  .avance .verso,.recule .recto{clip-path:inset(0 50% 0 0)}
-}
+/* Tourner la page : la feuille est faite de bandes articulées qui se courbent, le bord extérieur part en premier */
+main{perspective:2200px}
+.feuille{position:absolute;inset:0;z-index:4;pointer-events:none;transform-style:preserve-3d}
+.bande{position:absolute;top:0;bottom:0;transform-style:preserve-3d}
+.bande>.face{position:absolute;inset:0;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.bande>.face.verso{transform:rotateY(180deg)}
+.bande>.face::after{content:"";position:absolute;inset:0;pointer-events:none;background:var(--ombre,none)}
+.bande>.face.recto{right:-1px}.bande>.face.verso{left:-1px}
+.recule-d .bande>.face.recto{right:0;left:-1px}.recule-d .bande>.face.verso{left:0;right:-1px}
+.fond{position:absolute;top:0;bottom:0;padding:var(--pm);background-color:var(--nuit);border-radius:inherit}
+.fond>section{display:flex;flex-direction:column;gap:30px;padding-block:28px 8px;min-width:0}
+.portee{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0}
 
 /* Écritures : titres gothiques à l’encre rouge, mentions à la plume, données à la machine à écrire */
 h1,h2,h3{font-family:var(--f-titre);letter-spacing:0}
@@ -1439,7 +1434,7 @@ let minuterie=null;
 function placerLosange(){ const b=$("#o-"+TAB); $("#losange").style.left=(b.offsetLeft+b.offsetWidth/2)+"px"; }
 function montrer(id){
   TABS.forEach(([t])=>{ const sec=$("#t-"+t); sec.hidden=t!==id; sec.style.clipPath=""; sec.classList.remove("sort-g","sort-d","vient-g","vient-d"); });
-  document.querySelectorAll("main>.feuille").forEach(f=>f.remove());
+  document.querySelectorAll("main>.feuille,main>.portee").forEach(f=>f.remove()); tourEnCours++;
 }
 /* Changement de page : la feuille tourne autour de la reliure (vers la gauche pour avancer, vers la droite pour revenir). */
 function allerA(id,anime){
@@ -1454,29 +1449,63 @@ function allerA(id,anime){
   if(!anime||CALME||avant===apres){ montrer(id); return; }
   tourner(ancien,id,apres>avant);
 }
-/* La feuille qui tourne porte une copie de l’ancienne page au recto et de la nouvelle au verso.
+/* La feuille qui tourne : des bandes verticales articulées, chacune avec un morceau de l’ancienne page au recto
+   et de la nouvelle au verso. Le bord extérieur part en premier, la feuille se courbe puis retombe à plat.
    Dessous, chaque moitié du livre garde la bonne page jusqu’à ce que la feuille la recouvre. */
+let tourEnCours=0;
 function tourner(ancien,id,avance){
   montrer(ancien);
   const main=$("main"), vieux=$("#t-"+ancien), neuf=$("#t-"+id), haut=$(".entete").offsetHeight;
   const double=matchMedia("(min-width:940px)").matches&&!document.documentElement.hasAttribute("data-compact");
-  const copie=sec=>{ const c=sec.cloneNode(true); c.hidden=false; c.className="";   /* les id restent : $() trouve toujours l’original, placé avant */
-    const sel=sec.querySelectorAll("select"), cs=c.querySelectorAll("select"); sel.forEach((x,i)=>{ if(cs[i]) cs[i].value=x.value; });
-    return c; };
-  const face=(cls,sec)=>{ const f=document.createElement("div"); f.className="face "+cls; if(sec) f.append(copie(sec)); return f; };
-  const feuille=document.createElement("div");
-  feuille.className="feuille "+(avance?"avance":"recule")+(double?"":" simple");
-  feuille.setAttribute("aria-hidden","true"); feuille.inert=true;
+  const W=main.clientWidth, N=double?9:7, larg=double?W/2:W, w=larg/N, R=getComputedStyle(main).borderRadius;
+  const fond=(sec,x)=>{ const f=document.createElement("div"); f.className="fond"; f.style.width=W+"px"; f.style.left=(-x)+"px"; f.style.borderRadius=R;
+    const c=sec.cloneNode(true); c.hidden=false; c.className=""; c.style.clipPath="";   /* les id restent : $() trouve toujours l’original, placé avant */
+    const a=sec.querySelectorAll("select"), b=c.querySelectorAll("select"); a.forEach((x,i)=>{ if(b[i]) b[i].value=x.value; });
+    f.append(c); return f; };
+  // Avancer : la page de droite (ou la page entière sur téléphone) part vers la gauche. Revenir : la page de gauche part vers la droite.
+  const sens=avance?-1:1;
+  const recto=double?vieux:(avance?vieux:neuf), verso=double?neuf:null;
+  const feuille=document.createElement("div"); feuille.className="feuille"+(double&&!avance?" recule-d":""); feuille.setAttribute("aria-hidden","true"); feuille.inert=true;
+  const bandes=[]; let parent=feuille;
+  for(let k=0;k<N;k++){
+    const b=document.createElement("div"); b.className="bande"; b.style.width=w+"px";
+    // position de la bande à plat, avant de tourner
+    const x0=double?(avance?W/2+k*w:W/2-(k+1)*w):k*w;
+    if(k===0){ b.style.left=x0+"px"; } else b.style.left=(avance||!double?w:-w)+"px";
+    b.style.transformOrigin=(avance||!double)?"0 50%":"100% 50%";
+    const fr=document.createElement("div"); fr.className="face recto"; fr.append(fond(recto,x0)); b.append(fr);
+    if(verso){ const xv=avance?W/2-(k+1)*w:W/2+k*w; const fv=document.createElement("div"); fv.className="face verso"; fv.append(fond(verso,xv)); b.append(fv); }
+    parent.append(b); bandes.push(b); parent=b;
+  }
+  const portee=document.createElement("div"); portee.className="portee";
+  portee.style.background=double?"linear-gradient(90deg,transparent 28%,rgba(40,18,4,.32) 50%,transparent 72%)":"linear-gradient(90deg,rgba(40,18,4,.35),transparent 45%)";
   neuf.hidden=false;
-  if(double){
-    feuille.append(face("recto",vieux),face("verso",neuf));
-    vieux.style.clipPath=avance?"inset(0 50% 0 0)":"inset(0 0 0 50%)";
-    neuf.style.clipPath=avance?"inset(0 0 0 50%)":"inset(0 50% 0 0)";
-  } else if(avance){ feuille.append(face("recto",vieux)); vieux.hidden=true; }
-  else { feuille.append(face("recto",neuf)); neuf.style.clipPath="inset(0 0 0 100%)"; }
-  main.append(feuille);
+  if(double){ vieux.style.clipPath=avance?"inset(0 50% 0 0)":"inset(0 0 0 50%)"; neuf.style.clipPath=avance?"inset(0 0 0 50%)":"inset(0 50% 0 0)"; }
+  else if(avance) vieux.hidden=true; else neuf.style.clipPath="inset(0 0 0 100%)";
+  // La perspective part du milieu de l’écran, pas du milieu d’une page très longue
+  const r=main.getBoundingClientRect(); main.style.perspectiveOrigin=`50% ${Math.max(0,innerHeight/2-r.top)}px`;
+  main.append(portee,feuille);
   if(window.scrollY>haut) window.scrollTo({top:haut,behavior:"smooth"});
-  minuterie=setTimeout(()=>montrer(id),870);
+  const D=double?1050:850, t0=performance.now(), jeton=++tourEnCours;
+  const lisse=t=>t<=0?0:t>=1?1:t*t*(3-2*t);
+  const retard=k=>.32*(1-k/(N-1));           // le bord intérieur part après le bord extérieur
+  function image(now){
+    if(jeton!==tourEnCours||!feuille.isConnected) return;
+    let p=Math.min(1,(now-t0)/D); const q=(!double&&!avance)?1-p:p;   // sur téléphone, revenir = la feuille revient à plat
+    let avant=0, avantPrec=0;
+    bandes.forEach((b,k)=>{ const d=retard(k), t=lisse((q-d)/(1-d)), total=180*t*(double?sens:-1);
+      b.style.transform=`rotateY(${total-avant}deg)`; avant=total;
+      // ombre continue d’une bande à l’autre : chaque bord prend la teinte de son articulation
+      const fonce=a=>(.42*Math.abs(Math.sin(a*Math.PI/180))).toFixed(3);
+      const ai=fonce(avantPrec), ae=fonce(total); avantPrec=total;
+      const g=(dir,x,y)=>`linear-gradient(${dir},rgba(48,24,6,${x}),rgba(48,24,6,${y}))`;
+      const interieurAGauche=avance||!double;
+      b.style.setProperty("--ombre",g(interieurAGauche?"90deg":"270deg",ai,ae));
+      const v=b.querySelector(".verso"); if(v) v.style.setProperty("--ombre",g(interieurAGauche?"270deg":"90deg",ai,ae)); });
+    portee.style.opacity=Math.sin(Math.PI*q).toFixed(3);
+    if(p<1) requestAnimationFrame(image); else montrer(id);
+  }
+  image(t0); requestAnimationFrame(image);
 }
 
 /* Sceaux des preuves */
